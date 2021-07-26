@@ -15,9 +15,10 @@
     "start": "node src/app.js",
     "lint": "eslint  --ignore-path .gitignore .",
     "format": "prettier --write --ignore-path .gitignore .",
-    "prepare": "husky install"
+    "prepare": "[ \"$NODE_ENV\" = production ] && exit 0; husky install"
   },
   "dependencies": {
+    "@sentry/node": "^6.10.0",
     "dayjs": "^1.10.6",
     "dotenv": "^10.0.0",
     "redis": "^3.1.2",
