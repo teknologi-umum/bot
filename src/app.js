@@ -4,6 +4,7 @@ import { Telegraf } from 'telegraf';
 import dotenv from 'dotenv';
 import redis from 'redis';
 import poll from './services/poll.js';
+import logger from './utlis/logger.js';
 
 const envPath = resolve(dirname(fileURLToPath(import.meta.url)), '../.env');
 dotenv.config({ path: envPath });
@@ -18,9 +19,8 @@ bot.on('message', async (context) => {
       await poll(context, cache);
     }
   } catch (error) {
-    // ganti sama error handler yang bagusan
     await context.reply('uh oh, something went wrong. ask the devs to check their logs');
-    console.error(error);
+    logger.captureException(error);
   }
 });
 

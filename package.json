@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "start": "node src/app.js",
-    "lint": "eslint  --ignore-path .gitignore .",
+    "lint": "eslint --ignore-path .gitignore .",
     "format": "prettier --write --ignore-path .gitignore .",
     "prepare": "[ \"$NODE_ENV\" = production ] && exit 0; husky install"
   },
