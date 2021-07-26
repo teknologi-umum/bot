@@ -1,0 +1,36 @@
+{
+  "name": "try-telegraf",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "GPL-3.0",
+  "type": "module",
+  "contributors": [
+    {
+      "name": "Reinaldy Rafli",
+      "email": "aldy505@tutanota.com",
+      "url": "https://github.com/aldy505"
+    }
+  ],
+  "scripts": {
+    "start": "node src/app.js",
+    "lint": "eslint  --ignore-path .gitignore .",
+    "format": "prettier --write --ignore-path .gitignore .",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "dayjs": "^1.10.6",
+    "dotenv": "^10.0.0",
+    "redis": "^3.1.2",
+    "telegraf": "^4.4.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.31.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "husky": "^7.0.1",
+    "prettier": "^2.3.2"
+  },
+  "engines": {
+    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+  }
+}
