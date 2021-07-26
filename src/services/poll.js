@@ -24,19 +24,20 @@ async function poll(context, cache) {
     const poll = context.message.poll;
 
     if (poll.type === 'regular') {
-      lastMessageContent.survey.push({ id: poll.id, text: poll.question });
+      lastMessageContent.survey.push({ id: context.message.message_id, text: poll.question });
     } else if (poll.type === 'quiz') {
-      lastMessageContent.quiz.push({ id: poll.id, text: poll.question });
+      lastMessageContent.quiz.push({ id: context.message.message_id, text: poll.question });
     }
 
-    const chatLink = (await context.getChat()).invite_link;
+    const chat = await context.getChat();
+    const chatLink = `https://t.me/${chat.username}`;
 
     const preformatMessage =
       `*${dayjs().format('DD MMMM YYYY')}*\n\n` +
       `Quiz\n` +
-      `${lastMessageContent.quiz.map((i) => `[${i.text}](${chatLink}/${i.id})\n`)}\n` +
+      `${lastMessageContent.quiz.map((i) => `[${i.text}](${chatLink}/${i.id})`).join('\n')}\n\n` +
       `Survey\n` +
-      `${lastMessageContent.survey.map((i) => `[${i.text}](${chatLink}/${i.id})\n`)}\n`;
+      `${lastMessageContent.survey.map((i) => `[${i.text}](${chatLink}/${i.id})`).join('\n')}\n`;
 
     if (lastPollDate && dayjs(lastPollDate).isSame(Date.now(), 'day')) {
       // append to existing message
