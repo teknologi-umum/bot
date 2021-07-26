@@ -29,12 +29,14 @@ async function poll(context, cache) {
       lastMessageContent.quiz.push({ id: poll.id, text: poll.question });
     }
 
+    const chatLink = (await context.getChat()).invite_link;
+
     const preformatMessage =
       `*${dayjs().format('DD MMMM YYYY')}*\n\n` +
       `Quiz\n` +
-      `${lastMessageContent.quiz.map((i) => `[${i.text}](https://t.me/${i.id})\n`)}\n` +
+      `${lastMessageContent.quiz.map((i) => `[${i.text}](${chatLink}/${i.id})\n`)}\n` +
       `Survey\n` +
-      `${lastMessageContent.survey.map((i) => `[${i.text}](https://t.me/${i.id})\n`)}\n`;
+      `${lastMessageContent.survey.map((i) => `[${i.text}](${chatLink}/${i.id})\n`)}\n`;
 
     if (lastPollDate && dayjs(lastPollDate).isSame(Date.now(), 'day')) {
       // append to existing message
