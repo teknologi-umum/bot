@@ -11,9 +11,9 @@ async function poll(context, cache) {
     const redis = redisClient(cache);
 
     const [getLastMessageContent, lastPinnedMessage, lastPollDate] = await redis.MGET(
-      'poll:message:content',
-      'poll:message:id',
-      'poll:date'
+      `poll:${String(context.message.chat.id)}:message:content`,
+      `poll:${String(context.message.chat.id)}:message:id`,
+      `poll:${String(context.message.chat.id)}:date`,
     );
     let lastMessageContent = JSON.parse(getLastMessageContent);
 
@@ -42,7 +42,7 @@ async function poll(context, cache) {
         disable_web_page_preview: true,
         parse_mode: 'MarkdownV2',
       });
-      await redis.MSET('poll:message:content', JSON.stringify(lastMessageContent));
+      await redis.MSET(`poll:${String(context.message.chat.id)}:message:content`, JSON.stringify(lastMessageContent));
     } else {
       // create new message
       const response = await context.telegram.sendMessage(context.message.chat.id, preformatMessage, {
@@ -51,12 +51,12 @@ async function poll(context, cache) {
       });
 
       await redis.MSET(
-        'poll:message:id',
+        `poll:${String(context.message.chat.id)}:message:id`,
         String(response.message_id),
-        'poll:message:content',
+        `poll:${String(context.message.chat.id)}:message:content`,
         JSON.stringify(lastMessageContent),
-        'poll:date',
-        dayjs().format()
+        `poll:${String(context.message.chat.id)}:date`,
+        dayjs().format(),
       );
       await context.telegram.pinChatMessage(context.message.chat.id, response.message_id, {
         disable_notification: false,
