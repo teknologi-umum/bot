@@ -10,6 +10,7 @@ import redisClient from '../utlis/redis.js';
 async function poll(context, cache) {
   try {
     const redis = redisClient(cache);
+    const currentTime = dayjs().add(7, 'hours').toISOString();
 
     const [getLastMessageContent, lastPinnedMessage, lastPollDate] = await redis.MGET(
       `poll:${String(context.message.chat.id)}:message:content`,
@@ -18,7 +19,7 @@ async function poll(context, cache) {
     );
     let lastMessageContent = JSON.parse(getLastMessageContent);
 
-    if (!lastMessageContent) {
+    if (!lastMessageContent || dayjs(lastPollDate).diff(currentTime, 'day') !== 0) {
       lastMessageContent = { survey: [], quiz: [] };
     }
 
@@ -40,11 +41,11 @@ async function poll(context, cache) {
       `Survey\n` +
       `${lastMessageContent.survey.map((i) => `[${i.text}](${chatLink}/${i.id})`).join('\n')}\n`;
 
-    if (lastPollDate && dayjs(lastPollDate).isSame(Date.now(), 'day')) {
+    if (lastPollDate && dayjs(lastPollDate).diff(currentTime, 'day') === 0) {
       // append to existing message
       await context.telegram.editMessageText(context.message.chat.id, Number(lastPinnedMessage), '', preformatMessage, {
-        disable_web_page_preview: true,
         parse_mode: 'MarkdownV2',
+        disable_web_page_preview: true,
       });
       await redis.MSET(`poll:${String(context.message.chat.id)}:message:content`, JSON.stringify(lastMessageContent));
     } else {
@@ -60,7 +61,7 @@ async function poll(context, cache) {
         `poll:${String(context.message.chat.id)}:message:content`,
         JSON.stringify(lastMessageContent),
         `poll:${String(context.message.chat.id)}:date`,
-        dayjs().format(),
+        currentTime,
       );
       await context.telegram.pinChatMessage(context.message.chat.id, response.message_id, {
         disable_notification: false,
