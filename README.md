@@ -1,8 +1,10 @@
-# Pin Bot for Teknologi Umum
+# Bot for Teknologi Umum
 
-Basically a telegram bot to fulfill Teknologi Umum's needs.
+Basically a _bleeding edge_ telegram bot to fulfill Teknologi Umum's _bleeding edge_ needs. Teknologi Umum is an Indonesian telegram group made for people to talk about.. basically anything, tbh. You can join through [this link](https://t.me/teknologi_umum). First thing you need to do is mute the group, it's fucking noisy.
 
-Feel free to contribute and add features.
+Feel free to contribute and add some _bleeding edge_ features.
+
+To make it even more _bleeding edge_, we're using [fly.io](https://fly.io/) for deployment and Node v16. Oh, and we're going so much _bleeding edge_ by not doing any tests at all lmao.
 
 ## License
 

@@ -4,7 +4,8 @@ import redisClient from '../utlis/redis.js';
 /**
  * Process poll created by user to not
  * @param {import('telegraf').Context<import('telegraf/typings/core/types/typegram').Update>} context
- * @param {import('../utlis/redis.js')} redis
+ * @param {import('redis').RedisClient} cache
+ * @returns {Promise<void>}
  */
 async function poll(context, cache) {
   try {

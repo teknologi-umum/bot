@@ -1,7 +1,7 @@
 {
-  "name": "try-telegraf",
+  "name": "teknologi-umum-bot",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/app.js",
   "license": "GPL-3.0",
   "type": "module",
   "contributors": [
@@ -32,6 +32,6 @@
     "prettier": "^2.3.2"
   },
   "engines": {
-    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+    "node": ">=16.0.0"
   }
 }
