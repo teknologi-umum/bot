@@ -13,7 +13,7 @@ async function help(context) {
         reply_to_message_id: context.message.chat.id,
       },
     );
-    return Promise.resolve()
+    return Promise.resolve();
   } catch (error) {
     Promise.reject(error);
   }
