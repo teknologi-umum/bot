@@ -4,8 +4,9 @@ import { Telegraf } from 'telegraf';
 import dotenv from 'dotenv';
 import redis from 'redis';
 import poll from './services/poll.js';
-import logger from './utlis/logger.js';
 import help from './services/help.js';
+import jam from './services/jam.js';
+import logger from './utlis/logger.js';
 
 const envPath = resolve(dirname(fileURLToPath(import.meta.url)), '../.env');
 dotenv.config({ path: envPath });
@@ -30,6 +31,9 @@ bot.on('message', async (context) => {
         switch (commands) {
           case 'help':
             await help(context);
+            break;
+          case 'cekjam':
+            await jam(context);
             break;
           default:
             context.reply(`Sorry, I can't recognize the command.`);

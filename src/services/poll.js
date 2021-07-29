@@ -35,7 +35,7 @@ async function poll(context, cache) {
     const chatLink = `https://t.me/${chat.username}`;
 
     const preformatMessage =
-      `<strong>${dayjs().format('DD MMMM YYYY')}</strong>\n\n` +
+      `<strong>${dayjs().add(7, 'hours').format('DD MMMM YYYY')}</strong>\n\n` +
       `Quiz\n` +
       `${lastMessageContent.quiz.map((i) => `<a href="${chatLink}/${i.id}">${i.text}</a>`).join('\n')}\n\n` +
       `Survey\n` +
