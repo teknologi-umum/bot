@@ -2,17 +2,24 @@ import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { Telegraf } from 'telegraf';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 import redis from 'redis';
 import poll from './services/poll.js';
 import help from './services/help.js';
 import jam from './services/jam.js';
 import logger from './utlis/logger.js';
+import dailyQuiz from './services/daily.js';
 
 const envPath = resolve(dirname(fileURLToPath(import.meta.url)), '../.env');
 dotenv.config({ path: envPath });
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const cache = redis.createClient(String(process.env.REDIS_URL));
+const mongo = mongoose.createConnection(process.env.DB_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  authSource: 'admin',
+});
 
 bot.on('message', async (context) => {
   try {
@@ -34,6 +41,9 @@ bot.on('message', async (context) => {
             break;
           case 'cekjam':
             await jam(context);
+            break;
+          case 'dailyquiz':
+            await dailyQuiz(context, mongo, cache);
             break;
           default:
             context.reply(`Sorry, I can't recognize the command.`);

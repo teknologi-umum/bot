@@ -21,6 +21,7 @@
     "@sentry/node": "^6.10.0",
     "dayjs": "^1.10.6",
     "dotenv": "^10.0.0",
+    "mongoose": "^5.13.5",
     "redis": "^3.1.2",
     "telegraf": "^4.4.1",
     "telegraf-command-parts": "^1.0.3"
