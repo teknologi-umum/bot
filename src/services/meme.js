@@ -12,15 +12,18 @@ async function meme(input, context) {
         break;
       case 'illuminati':
         // Sources: https://giphy.com/search/illuminati
-        await context.telegram.sendAnimation(context.message.chat.id, 'https://media.giphy.com/media/uFOW5cbNaoTaU/giphy.gif');
+        await context.telegram.sendAnimation(
+          context.message.chat.id,
+          'https://media.giphy.com/media/uFOW5cbNaoTaU/giphy.gif',
+        );
         break;
       default:
         break;
     }
-    return Promise.resolve()
+    return Promise.resolve();
   } catch (error) {
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
 }
 
-export default meme
+export default meme;

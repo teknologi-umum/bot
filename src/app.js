@@ -37,10 +37,10 @@ bot.on('message', async (context) => {
             await jam(context);
             break;
           case 'kktbsys':
-            await meme('kktbsys', context)
+            await meme('kktbsys', context);
             break;
           case 'illuminati':
-            await meme('illuminati', context)
+            await meme('illuminati', context);
             break;
           default:
             context.reply(`Sorry, I can't recognize the command.`);
