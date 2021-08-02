@@ -42,6 +42,9 @@ bot.on('message', async (context) => {
           case 'illuminati':
             await meme('illuminati', context);
             break;
+          case 'yntkts':
+            await meme('yntkts', context);
+            break;
           default:
             context.reply(`Sorry, I can't recognize the command.`);
         }
