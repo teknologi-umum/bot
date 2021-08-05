@@ -74,11 +74,12 @@ async function poll(context, cache) {
  * @returns {Promise<void>}
  */
 export function register(cache, bot) {
-  bot.on('message', async (context) => {
+  bot.on('message', async (context, next) => {
     if (context.message?.poll) {
-      await poll(context, cache);
-      return;
+      return await poll(context, cache);
     }
+
+    return next();
   });
 }
 
