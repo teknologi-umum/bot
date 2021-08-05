@@ -19,7 +19,7 @@ jobs:
           node-version: 16.x
 
       - name: Installling dependencies
-        run: npm install
+        run: npm ci --only=production --ignore-scripts
 
       - name: ESlint & Prettier
         run: npm run lint && npm run format
