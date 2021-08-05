@@ -22,8 +22,8 @@ export function register(bot) {
    bot.command('joke', async (context) => {
     let apis = "https://jokesbapak2.herokuapp.com/v1/total"; 
     let total = parseInt((await fetch(apis + "/total")
-     .then(res => res.json())).message)
-    let uid = Math.floor(Math.random(1,total) * total)
+     .then(res => res.json())).message);
+    let uid = Math.floor(Math.random(1,total) * total);
     await context.telegram.sendPhoto(context.message.chat.id, 'https://jokesbapak2.herokuapp.com/v1/id'+ uid.toString());
   });
 }
