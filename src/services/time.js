@@ -1,11 +1,16 @@
 import dayjs from 'dayjs';
 
+/**
+ * Send current time.
+ * @param {import('telegraf').Context} context
+ * @returns {Promise<void>}
+ */
 async function time(context) {
   await context.reply('Disini sekarang jam: ' + dayjs().toString());
 }
 
 /**
- * Send help to user when needed.
+ * Send current time.
  * @param {import('telegraf').Telegraf} bot
  * @returns {Promise<void>}
  */
