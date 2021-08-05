@@ -1,7 +1,7 @@
 import { getRandomQuote } from './utils.js';
 
 /**
- * Send meme.
+ * Send daily quote.
  * @param {import('telegraf').Context} context
  * @returns {Promise<void>}
  */
@@ -16,7 +16,7 @@ async function handleCommand(context) {
 }
 
 /**
- * Send meme.
+ * Send daily quote.
  * @param {import('telegraf').Telegraf} bot
  */
 export function register(bot) {
