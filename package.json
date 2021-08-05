@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
     "lint": "eslint --ignore-path .gitignore .",
     "format": "prettier --write --ignore-path .gitignore --ignore-path .prettierignore .",
     "prepare": "[ \"$NODE_ENV\" = production ] && exit 0; husky install"
@@ -35,6 +36,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "husky": "^7.0.1",
+    "nodemon": "^2.0.12",
     "prettier": "^2.3.2"
   },
   "engines": {
