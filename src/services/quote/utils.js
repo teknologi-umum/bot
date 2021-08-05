@@ -14,13 +14,16 @@ const renderTemplate = compile(
 export function extractQuoteFromHtml(response) {
   const quote = {};
 
-  const $ = cheerio.load(response);
-  const quoteNumber = randomNumber(0, 9);
+  const $root = cheerio.load(response);
+  const $content = $root('q.fbquote').eq(randomNumber(0, 9));
+  const $ = $content.parents('li');
 
-  quote.author = $('a.auteurfbnaam').eq(quoteNumber).text();
-  const time = $('span.auteur-gebsterf').eq(quoteNumber).text();
-  quote.authorRole = $('span.auteur-beschrijving').eq(quoteNumber).text() + (time ? ' (' + time + ')' : '');
-  quote.content = $('q.fbquote').eq(quoteNumber).text();
+  let period = $.find('span.auteur-gebsterf').text();
+  period = period ? ` - (${period})` : '';
+
+  quote.author = $.find('a.auteurfbnaam').text();
+  quote.authorRole = $.find('span.auteur-beschrijving').text() + period;
+  quote.content = $content.text();
 
   return quote;
 }
