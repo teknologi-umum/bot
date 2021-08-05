@@ -4,9 +4,9 @@ import { Telegraf } from 'telegraf';
 import dotenv from 'dotenv';
 import redis from 'redis';
 import poll from './services/poll.js';
-import jam from './services/jam.js';
 import logger from './utlis/logger.js';
 import meme from './services/meme.js';
+import * as time from './services/time.js';
 import * as help from './services/help.js';
 import * as quote from './services/quote.js';
 
@@ -16,6 +16,7 @@ dotenv.config({ path: envPath });
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const cache = redis.createClient(String(process.env.REDIS_URL));
 
+time.register(bot);
 help.register(bot);
 quote.register(bot);
 
@@ -34,12 +35,6 @@ bot.on('message', async (context) => {
         const commands = args.shift().replace(`@${context.me}`, '').toLowerCase();
 
         switch (commands) {
-          case 'help':
-            await help(context);
-            break;
-          case 'cekjam':
-            await jam(context);
-            break;
           case 'kktbsys':
             await meme('kktbsys', context);
             break;
