@@ -24,11 +24,13 @@ export function register(bot) {
   });
 
   bot.command('joke', async (context) => {
-    const { body } = await request('https://jokesbapak2.herokuapp.com/v1/total');
+    // TODO: Centralize the frequently usage variable
+    const api = 'https://jokesbapak2.herokuapp.com/v1'
+    const { body } = await request(`${api}/total`);
     
     const total = parseInt((await body.json()).message);
-    const uid = randomNumber(0, total).toString();
+    const id = randomNumber(0, total);
     
-    await context.telegram.sendPhoto(context.message.chat.id, apis + '/id/' + uid);
+    await context.telegram.sendPhoto(context.message.chat.id, `${api}/id/${id}`);
   });
 }
