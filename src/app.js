@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import redis from 'redis';
 import poll from './services/poll.js';
 import logger from './utlis/logger.js';
-import meme from './services/meme.js';
+import * as meme from './services/meme.js';
 import * as time from './services/time.js';
 import * as help from './services/help.js';
 import * as quote from './services/quote.js';
@@ -16,6 +16,7 @@ dotenv.config({ path: envPath });
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const cache = redis.createClient(String(process.env.REDIS_URL));
 
+meme.register(bot);
 time.register(bot);
 help.register(bot);
 quote.register(bot);
@@ -25,30 +26,6 @@ bot.on('message', async (context) => {
     // For poll related
     if (context.message?.poll) {
       await poll(context, cache);
-      return;
-    }
-
-    // For message related (including /commands@teknologiumumbot)
-    if (context.message?.text) {
-      if (context.message.text.startsWith('/') && context.message.text.includes(context.me)) {
-        const args = context.message.text.slice(1).split(/ +/);
-        const commands = args.shift().replace(`@${context.me}`, '').toLowerCase();
-
-        switch (commands) {
-          case 'kktbsys':
-            await meme('kktbsys', context);
-            break;
-          case 'illuminati':
-            await meme('illuminati', context);
-            break;
-          case 'yntkts':
-            await meme('yntkts', context);
-            break;
-          default:
-            context.reply(`Sorry, I can't recognize the command.`);
-        }
-        return;
-      }
       return;
     }
   } catch (error) {
