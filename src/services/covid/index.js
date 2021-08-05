@@ -37,7 +37,17 @@ async function covid(context, cache) {
       await context.telegram.sendMessage(chatId, 'That country name is not valid or does not exists.');
       return;
     }
-    const data = (await body.json())[0];
+    const data = (await body.json()).shift();
+
+    if (!data) {
+      return await context.telegram.sendMessage(
+        chatId,
+        `Data for the <b>${parsedCountry['Country']}</b> country is not yet available.`,
+        {
+          parse_mode: 'HTML',
+        },
+      );
+    }
 
     // TODO: total dosis vaksin
     await context.telegram.sendMessage(

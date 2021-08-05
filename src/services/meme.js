@@ -25,12 +25,12 @@ export function register(bot) {
 
   bot.command('joke', async (context) => {
     // TODO: Centralize the frequently usage variable
-    const api = 'https://jokesbapak2.herokuapp.com/v1'
+    const api = 'https://jokesbapak2.herokuapp.com/v1';
     const { body } = await request(`${api}/total`);
-    
+
     const total = parseInt((await body.json()).message);
     const id = randomNumber(0, total);
-    
+
     await context.telegram.sendPhoto(context.message.chat.id, `${api}/id/${id}`);
   });
 }
