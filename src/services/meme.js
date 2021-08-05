@@ -3,6 +3,10 @@
  * @param {import('telegraf').Telegraf} bot
  * @returns {Promise<void>}
  */
+
+import { request } from 'undici';
+import { randomNumber } from 'carret';
+
 export function register(bot) {
   bot.command('kktbsys', async (context) => {
     await context.telegram.sendPhoto(context.message.chat.id, 'https://i.ibb.co/XtSbXBT/image.png');
@@ -20,6 +24,13 @@ export function register(bot) {
   });
 
   bot.command('joke', async (context) => {
-    await context.telegram.sendPhoto(context.message.chat.id, 'https://jokesbapak2.herokuapp.com/v1/');
+    // TODO: Centralize the frequently usage variable
+    const api = 'https://jokesbapak2.herokuapp.com/v1'
+    const { body } = await request(`${api}/total`);
+    
+    const total = parseInt((await body.json()).message);
+    const id = randomNumber(0, total);
+    
+    await context.telegram.sendPhoto(context.message.chat.id, `${api}/id/${id}`);
   });
 }
