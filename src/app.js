@@ -8,6 +8,7 @@ import help from './services/help.js';
 import jam from './services/jam.js';
 import logger from './utlis/logger.js';
 import meme from './services/meme.js';
+import * as quote from './services/quote.js';
 
 const envPath = resolve(dirname(fileURLToPath(import.meta.url)), '../.env');
 dotenv.config({ path: envPath });
@@ -44,6 +45,9 @@ bot.on('message', async (context) => {
             break;
           case 'yntkts':
             await meme('yntkts', context);
+            break;
+          case quote.command:
+            await quote.handleContext(context);
             break;
           default:
             context.reply(`Sorry, I can't recognize the command.`);
