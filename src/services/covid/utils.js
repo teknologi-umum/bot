@@ -18,7 +18,7 @@ function renderTemplate(type) {
 
 /**
  * Fetch countries that can be searched and cached.
- * @param {*} redis 
+ * @param {*} redis
  * @returns {Promise<Object>}
  */
 async function fetchCountries(redis) {

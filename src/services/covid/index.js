@@ -18,7 +18,7 @@ async function covid(context, cache) {
   const [getGlobalData, getCountrySlugs] = await redis.MGET('covid:global', 'covid:countries');
 
   if (country) {
-    const countries = JSON.parse(getCountrySlugs) ?? await fetchCountries(redis);
+    const countries = JSON.parse(getCountrySlugs) ?? (await fetchCountries(redis));
     const parsedCountry =
       countries.find(
         (o) =>
