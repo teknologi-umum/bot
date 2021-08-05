@@ -28,6 +28,6 @@ export function register(bot) {
     const { body } = await request(apis + '/total');
     let total = parseInt((await body.json()).message);
     let uid = randomNumber(0, total).toString();
-    await context.telegram.sendPhoto(context.message.chat.id, 'https://jokesbapak2.herokuapp.com/v1/id/' + uid);
+    await context.telegram.sendPhoto(context.message.chat.id, apis + '/id/' + uid);
   });
 }
