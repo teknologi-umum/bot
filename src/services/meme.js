@@ -5,6 +5,7 @@
  */
 
  import { request } from 'undici';
+ import { randomNumber } from 'carret';
 
 export function register(bot) {
   bot.command('kktbsys', async (context) => {
@@ -26,7 +27,7 @@ export function register(bot) {
     let apis = "https://jokesbapak2.herokuapp.com/v1/total"; 
     let total = parseInt((await request(apis + "/total")
      .then(res => res.json())).message);
-    let uid = Math.floor(Math.random(1,total) * total).toString();
+    let uid = randomNumber(0, total).toString();
     await context.telegram.sendPhoto(context.message.chat.id, 'https://jokesbapak2.herokuapp.com/v1/id/'+ uid);
   });
 }
