@@ -14,4 +14,11 @@ async function help(context) {
   );
 }
 
-export default help;
+/**
+ * Send help to user when needed.
+ * @param {import('telegraf').Telegraf} bot
+ * @returns {Promise<void>}
+ */
+export function register(bot) {
+  bot.command('help', help);
+}
