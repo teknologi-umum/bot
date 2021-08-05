@@ -57,6 +57,7 @@ bot.on('message', async (context) => {
       return;
     }
   } catch (error) {
+    console.error(error);
     await context.reply('uh oh, something went wrong. ask the devs to check their logs.');
     logger.captureException(error);
   }

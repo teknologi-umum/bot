@@ -9,7 +9,7 @@ export async function handleContext(context) {
   const chatId = context.message.chat.id;
   const message = await getRandomQuote();
 
-  context.telegram.sendMessage(chatId, message, {
+  await context.telegram.sendMessage(chatId, message, {
     parse_mode: 'HTML',
     disable_web_page_preview: true,
   });
