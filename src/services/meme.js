@@ -18,4 +18,8 @@ export function register(bot) {
   bot.command('yntkts', async (context) => {
     await context.telegram.sendPhoto(context.message.chat.id, 'https://i.ibb.co/P1Q0650/yntkts.jpg');
   });
+  
+   bot.command('jokes', async (context) => {
+    await context.telegram.sendPhoto(context.message.chat.id, 'https://jokesbapak2.herokuapp.com/v1/');
+  });
 }
