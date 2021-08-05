@@ -16,6 +16,8 @@ dotenv.config({ path: envPath });
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const cache = redis.createClient(String(process.env.REDIS_URL));
 
+quote.register(bot);
+
 bot.on('message', async (context) => {
   try {
     // For poll related
@@ -45,9 +47,6 @@ bot.on('message', async (context) => {
             break;
           case 'yntkts':
             await meme('yntkts', context);
-            break;
-          case quote.command:
-            await quote.handleContext(context);
             break;
           default:
             context.reply(`Sorry, I can't recognize the command.`);

@@ -5,7 +5,7 @@ import { getRandomQuote } from './utils.js';
  * @param {import('telegraf').Context} context
  * @returns {Promise<void>}
  */
-export async function handleContext(context) {
+async function handleCommand(context) {
   const chatId = context.message.chat.id;
   const message = await getRandomQuote();
 
@@ -15,4 +15,10 @@ export async function handleContext(context) {
   });
 }
 
-export const command = 'quote';
+/**
+ * Send meme.
+ * @param {import('telegraf').Telegraf} bot
+ */
+export function register(bot) {
+  bot.command('quote', handleCommand);
+}
