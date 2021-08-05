@@ -11,7 +11,7 @@ import redisClient from '../../utlis/redis.js';
 async function covid(context, cache) {
   const redis = redisClient(cache);
   const chatId = context.message.chat.id;
-  const country = context.message?.text?.replace('/covid', '').replace(' ', '').toLowerCase() ?? '';
+  const country = context.message?.text?.replace('/covid', '').trim().toLowerCase() ?? '';
 
   const date = dayjs().format('DD MMMM YYYY');
 
@@ -22,9 +22,9 @@ async function covid(context, cache) {
     const parsedCountry =
       countries.find(
         (o) =>
-          o['ISO2'].toLowerCase().includes(country) ||
+          o['ISO2'].toLowerCase().includes(country.replace(/\s+/g, '')) ||
           o['Country'].toLowerCase().includes(country) ||
-          o['Slug'].toLowerCase().includes(country),
+          o['Slug'].toLowerCase().includes(country.replace(/\s+/g, '-')),
       ) ?? '';
 
     // Build the url
@@ -90,5 +90,5 @@ async function covid(context, cache) {
  * @returns {Promise<void>}
  */
 export function register(bot, cache) {
-  bot.command('covid', async (context) => await covid(context, cache));
+  bot.command('covid', (context) => covid(context, cache));
 }
