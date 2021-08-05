@@ -68,4 +68,18 @@ async function poll(context, cache) {
   }
 }
 
+/**
+ * Send help to user when needed.
+ * @param {import('telegraf').Telegraf} bot
+ * @returns {Promise<void>}
+ */
+export function register(cache, bot) {
+  bot.on('message', async (context) => {
+    if (context.message?.poll) {
+      await poll(context, cache);
+      return;
+    }
+  });
+}
+
 export default poll;

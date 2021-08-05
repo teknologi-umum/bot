@@ -3,8 +3,11 @@ import { fileURLToPath } from 'url';
 import { Telegraf } from 'telegraf';
 import dotenv from 'dotenv';
 import redis from 'redis';
-import poll from './services/poll.js';
-import logger from './utlis/logger.js';
+
+// TODO: Handle global errors
+// import logger from './utlis/logger.js';
+
+import * as poll from './services/poll.js';
 import * as meme from './services/meme.js';
 import * as time from './services/time.js';
 import * as help from './services/help.js';
@@ -20,20 +23,9 @@ meme.register(bot);
 time.register(bot);
 help.register(bot);
 quote.register(bot);
+poll.register(cache, bot);
 
-bot.on('message', async (context) => {
-  try {
-    // For poll related
-    if (context.message?.poll) {
-      await poll(context, cache);
-      return;
-    }
-  } catch (error) {
-    console.error(error);
-    await context.reply('uh oh, something went wrong. ask the devs to check their logs.');
-    logger.captureException(error);
-  }
-});
+// TODO: Handle command not found
 
 bot.launch();
 
