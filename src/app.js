@@ -12,6 +12,7 @@ import * as meme from './services/meme.js';
 import * as time from './services/time.js';
 import * as help from './services/help.js';
 import * as quote from './services/quote.js';
+import * as covid from './services/covid.js';
 
 const envPath = resolve(dirname(fileURLToPath(import.meta.url)), '../.env');
 dotenv.config({ path: envPath });
@@ -23,6 +24,7 @@ meme.register(bot);
 time.register(bot);
 help.register(bot);
 quote.register(bot);
+covid.register(bot, cache);
 poll.register(cache, bot);
 
 // TODO: Handle command not found
