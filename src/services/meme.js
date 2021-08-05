@@ -24,7 +24,7 @@ export function register(bot) {
   });
   
    bot.command('joke', async (context) => {
-    let apis = "https://jokesbapak2.herokuapp.com/v1/total"; 
+    let apis = "https://jokesbapak2.herokuapp.com/v1"; 
     let total = parseInt((await request(apis + "/total")
      .then(res => res.json())).message);
     let uid = randomNumber(0, total).toString();
