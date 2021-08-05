@@ -16,7 +16,7 @@ export function extractQuoteFromHtml(response) {
   const $ = cheerio.load(response);
 
   quote.author = $('a.auteurfbnaam').first().text();
-  quote.quote = $('q.fbquote').first().text();
+  quote.content = $('q.fbquote').first().text();
 
   return quote;
 }
