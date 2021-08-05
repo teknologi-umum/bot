@@ -2,6 +2,7 @@ import { readFileSync } from 'fs';
 import { join } from 'desm';
 import { request } from 'undici';
 import { compile } from 'tempura';
+import { randomNumber } from 'carret';
 import * as cheerio from 'cheerio';
 
 const renderTemplate = compile(
@@ -13,10 +14,16 @@ const renderTemplate = compile(
 export function extractQuoteFromHtml(response) {
   const quote = {};
 
-  const $ = cheerio.load(response);
+  const $root = cheerio.load(response);
+  const $content = $root('q.fbquote').eq(randomNumber(0, 9));
+  const $ = $content.parents('li');
 
-  quote.author = $('a.auteurfbnaam').first().text();
-  quote.content = $('q.fbquote').first().text();
+  let period = $.find('span.auteur-gebsterf').text();
+  period = period ? ` - (${period})` : '';
+
+  quote.author = $.find('a.auteurfbnaam').text();
+  quote.authorRole = $.find('span.auteur-beschrijving').text() + period;
+  quote.content = $content.text();
 
   return quote;
 }
@@ -29,10 +36,7 @@ export function fetchRandomQuote() {
 }
 
 export function formatQuote(quote) {
-  return renderTemplate({
-    content: quote.content.trim(),
-    author: quote.author,
-  });
+  return renderTemplate(quote);
 }
 
 export async function getRandomQuote() {

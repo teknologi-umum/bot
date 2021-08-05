@@ -13,12 +13,14 @@
   ],
   "scripts": {
     "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
     "lint": "eslint --ignore-path .gitignore .",
     "format": "prettier --write --ignore-path .gitignore --ignore-path .prettierignore .",
     "prepare": "[ \"$NODE_ENV\" = production ] && exit 0; husky install"
   },
   "dependencies": {
     "@sentry/node": "^6.10.0",
+    "carret": "^1.0.0",
     "cheerio": "^1.0.0-rc.10",
     "dayjs": "^1.10.6",
     "desm": "^1.1.0",
@@ -34,6 +36,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "husky": "^7.0.1",
+    "nodemon": "^2.0.12",
     "prettier": "^2.3.2"
   },
   "engines": {
