@@ -24,10 +24,11 @@ export function register(bot) {
   });
 
   bot.command('joke', async (context) => {
-    let apis = 'https://jokesbapak2.herokuapp.com/v1';
-    const { body } = await request(apis + '/total');
-    let total = parseInt((await body.json()).message);
-    let uid = randomNumber(0, total).toString();
+    const { body } = await request('https://jokesbapak2.herokuapp.com/v1/total');
+    
+    const total = parseInt((await body.json()).message);
+    const uid = randomNumber(0, total).toString();
+    
     await context.telegram.sendPhoto(context.message.chat.id, apis + '/id/' + uid);
   });
 }
