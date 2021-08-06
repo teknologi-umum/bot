@@ -21,13 +21,19 @@ dotenv.config({ path: envPath });
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const cache = redis.createClient(String(process.env.REDIS_URL));
 
-meme.register(bot);
-time.register(bot);
-help.register(bot);
-quote.register(bot);
-covid.register(bot, cache);
-poll.register(cache, bot);
-snap.register(bot);
+const commands = [
+  meme.register(bot),
+  time.register(bot),
+  help.register(bot),
+  quote.register(bot),
+  covid.register(bot, cache),
+  poll.register(cache, bot),
+  snap.register(bot),
+]
+  .filter((v) => Array.isArray(v))
+  .flat();
+
+bot.telegram.setMyCommands(commands);
 
 // TODO: Handle command not found
 

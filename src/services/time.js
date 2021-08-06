@@ -16,4 +16,11 @@ async function time(context) {
  */
 export function register(bot) {
   bot.command('now', time);
+
+  return [
+    {
+      command: 'now',
+      description: 'Get server time.',
+    },
+  ];
 }

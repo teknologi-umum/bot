@@ -21,4 +21,11 @@ async function handleCommand(context) {
  */
 export function register(bot) {
   bot.command('quote', handleCommand);
+
+  return [
+    {
+      command: 'quote',
+      description: 'Get random quote from great people.',
+    },
+  ];
 }

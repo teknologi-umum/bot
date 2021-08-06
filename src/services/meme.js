@@ -33,4 +33,20 @@ export function register(bot) {
 
     await context.telegram.sendPhoto(context.message.chat.id, `${api}/id/${id}`);
   });
+
+  return [
+    {
+      command: 'joke',
+      description: 'Get random joke from https://jokesbapak2.herokuapp.com/v1.',
+    },
+    {
+      command: 'kktbsys',
+    },
+    {
+      command: 'yntkts',
+    },
+    {
+      command: 'illuminati',
+    },
+  ];
 }

@@ -28,4 +28,11 @@ async function snap(context) {
  */
 export function register(bot) {
   bot.command('snap', snap);
+
+  return [
+    {
+      command: 'snap',
+      description: 'Screenshot the code in the reply message.',
+    },
+  ];
 }

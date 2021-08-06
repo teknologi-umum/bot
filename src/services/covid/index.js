@@ -101,4 +101,11 @@ async function covid(context, cache) {
  */
 export function register(bot, cache) {
   bot.command('covid', (context) => covid(context, cache));
+
+  return [
+    {
+      command: 'covid',
+      description: 'Get covid report from global or specific country.',
+    },
+  ];
 }
