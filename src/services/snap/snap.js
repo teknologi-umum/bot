@@ -7,8 +7,8 @@ import { generateImage } from './utils.js';
  */
 async function snap(context) {
   if (context.message.reply_to_message) {
-    const isOwner = context.message.from.id === replyMessage.from.id;
     const replyMessage = context.message.reply_to_message;
+    const isOwner = context.message.from.id === replyMessage.from.id;
     const code = replyMessage.text;
 
     await context.replyWithPhoto(
