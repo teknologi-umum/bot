@@ -41,12 +41,15 @@ export function register(bot) {
     },
     {
       command: 'kktbsys',
+      description: 'Kamu kenapa tanya saya begitu?',
     },
     {
       command: 'yntkts',
+      description: 'Yo ndak tahu! Kok tanya saya.',
     },
     {
       command: 'illuminati',
+      description: "Please don't.",
     },
   ];
 }
