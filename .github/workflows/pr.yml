@@ -19,7 +19,7 @@ jobs:
           node-version: 16.x
 
       - name: Installling dependencies
-        run: npm ci --only=production --ignore-scripts
+        run: npm ci --only=production
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
