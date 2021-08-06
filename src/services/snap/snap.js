@@ -22,11 +22,11 @@ async function snap(context) {
     );
 
     // Snap message
-    await context.deleteMessage(replyMessage.message_id);
+    await context.deleteMessage(context.message.message_id);
 
     if (context.message.from.id === replyMessage.from.id) {
       // Target message to snap
-      await context.deleteMessage(context.message.message_id);
+      await context.deleteMessage(replyMessage.message_id);
     }
   }
 }
