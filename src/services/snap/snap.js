@@ -21,8 +21,13 @@ async function snap(context) {
       },
     );
 
-    await context.deleteMessage(context.message.message_id);
+    // Snap message
     await context.deleteMessage(replyMessage.message_id);
+
+    if (context.message.from.id === replyMessage.from.id) {
+      // Target message to snap
+      await context.deleteMessage(context.message.message_id);
+    }
   }
 }
 
