@@ -7,18 +7,21 @@ import { generateImage } from './utils.js';
  */
 async function snap(context) {
   if (context.message.reply_to_message) {
-    const code = context.message.reply_to_message.text;
+    const replyMessage = context.message.reply_to_message;
+    const code = replyMessage.text;
 
     await context.replyWithPhoto(
       {
         source: await generateImage(code),
       },
       {
-        reply_to_message_id: context.message.reply_to_message.message_id,
+        caption: replyMessage.from.username
+          ? `@${replyMessage.from.username}`
+          : `${replyMessage.from.first_name} ${replyMessage.from.last_name}`,
       },
     );
 
-    // await context.deleteMessage(context.message.reply_to_message.message_id);
+    await context.deleteMessage(replyMessage.message_id);
   }
 }
 
