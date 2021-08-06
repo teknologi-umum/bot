@@ -1,6 +1,6 @@
 import { request } from 'undici';
 import dayjs from 'dayjs';
-import { fetchCountries, renderTemplate } from './utils.js';
+import { renderTemplate } from './utils.js';
 import redisClient from '../../utlis/redis.js';
 
 /**
@@ -14,36 +14,26 @@ async function covid(context, cache) {
   const re = new RegExp(`^/covid@${context.me}|/covid`);
   const country = context.message?.text?.replace(re, '').trim().toLowerCase() ?? '';
 
-  const date = dayjs().format('DD MMMM YYYY');
-
-  const [getGlobalData, getCountrySlugs] = await redis.MGET('covid:global', 'covid:countries');
+  const [getGlobalData] = await redis.MGET('covid:global');
 
   if (country) {
-    const countries = JSON.parse(getCountrySlugs) ?? (await fetchCountries(redis));
-    const parsedCountry =
-      countries.find(
-        (o) =>
-          o['ISO2'].toLowerCase().includes(country.replace(/\s+/g, '')) ||
-          o['Country'].toLowerCase().includes(country) ||
-          o['Slug'].toLowerCase().includes(country.replace(/\s+/g, '-')),
-      ) ?? '';
-
     // Build the url
-    const url = new URL(parsedCountry['Slug'], 'https://api.covid19api.com/country/');
-    url.searchParams.append('from', dayjs().subtract(2, 'day').toISOString());
-    url.searchParams.append('to', dayjs().subtract(1, 'day').toISOString());
+    const url = new URL(country, 'https://corona.lmao.ninja/v2/countries/');
+    url.searchParams.append('strict', true);
+    url.searchParams.append('yesterday', false);
+    url.searchParams.append('query', '');
 
     const { body, statusCode } = await request(url.toString());
     if (statusCode === 404) {
       await context.telegram.sendMessage(chatId, 'That country name is not valid or does not exists.');
       return;
     }
-    const data = (await body.json()).shift();
+    const data = await body.json();
 
     if (!data) {
       return await context.telegram.sendMessage(
         chatId,
-        `Data for the <b>${parsedCountry['Country']}</b> country is not yet available.`,
+        `Data for the <b>${data.country}</b> country is not yet available.`,
         {
           parse_mode: 'HTML',
         },
@@ -54,12 +44,12 @@ async function covid(context, cache) {
     await context.telegram.sendMessage(
       chatId,
       renderTemplate('country')({
-        date,
-        country: parsedCountry['Country'],
-        confirmed: data['Confirmed'].toLocaleString('id-ID') ?? 0,
-        deaths: data['Deaths'].toLocaleString('id-ID') ?? 0,
-        recovered: data['Recovered'].toLocaleString('id-ID') ?? 0,
-        active: data['Active'].toLocaleString('id-ID') ?? 0,
+        date: dayjs(data.updated).format('DD MMMM YYYY'),
+        country: data.country,
+        confirmed: data.todayCases.toLocaleString('id-ID') ?? 0,
+        deaths: data.todayDeaths.toLocaleString('id-ID') ?? 0,
+        recovered: data.todayRecovered.toLocaleString('id-ID') ?? 0,
+        active: data.active.toLocaleString('id-ID') ?? 0,
       }),
       {
         parse_mode: 'HTML',
@@ -73,19 +63,26 @@ async function covid(context, cache) {
     return;
   }
 
-  const url = new URL('https://api.covid19api.com/summary');
-  const { body } = await request(url.toString());
-  const data = await body.json();
+  const global = new URL('https://corona.lmao.ninja/v2/all');
+  global.searchParams.append('yesterday', false);
+  const globalResp = await request(global.toString());
+  const globalData = await globalResp.body.json();
 
-  const indonesia = data['Countries'].find((o) => o.CountryCode === 'ID');
+  const indonesia = new URL('indonesia', 'https://corona.lmao.ninja/v2/countries/');
+  indonesia.searchParams.append('strict', true);
+  indonesia.searchParams.append('yesterday', false);
+  indonesia.searchParams.append('query', '');
+  const indonesiaResp = await request(indonesia.toString());
+  const indonesiaData = await indonesiaResp.body.json();
+
   const preformatMessage = renderTemplate('global')({
-    date,
-    globalConfirmed: data['Global']['NewConfirmed'].toLocaleString('id-ID') ?? 0,
-    globalDeaths: data['Global']['NewDeaths'].toLocaleString('id-ID') ?? 0,
-    globalRecovered: data['Global']['NewRecovered'].toLocaleString('id-ID') ?? 0,
-    indonesiaConfirmed: indonesia['NewConfirmed'].toLocaleString('id-ID') ?? 0,
-    indonesiaDeaths: indonesia['NewDeaths'].toLocaleString('id-ID') ?? 0,
-    indonesiaRecovered: indonesia['NewRecovered'].toLocaleString('id-ID') ?? 0,
+    date: dayjs(globalData.updated).format('DD MMMM YYYY'),
+    globalConfirmed: globalData.todayCases.toLocaleString('id-ID') ?? 0,
+    globalDeaths: globalData.todayDeaths.toLocaleString('id-ID') ?? 0,
+    globalRecovered: globalData.todayRecovered.toLocaleString('id-ID') ?? 0,
+    indonesiaConfirmed: indonesiaData.todayCases.toLocaleString('id-ID') ?? 0,
+    indonesiaDeaths: indonesiaData.todayDeaths.toLocaleString('id-ID') ?? 0,
+    indonesiaRecovered: indonesiaData.todayRecovered.toLocaleString('id-ID') ?? 0,
   });
 
   // TODO: Total dosis vaksin dunia & total dosis vaksin Indonesia
