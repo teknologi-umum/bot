@@ -14,8 +14,6 @@ async function covid(context, cache) {
   const re = new RegExp(`^/covid@${context.me}|/covid`);
   const country = context.message?.text?.replace(re, '').trim().toLowerCase() ?? '';
 
-  const [getGlobalData] = await redis.MGET('covid:global');
-
   if (country) {
     // Build the url
     const url = new URL(country, 'https://corona.lmao.ninja/v2/countries/');
@@ -57,6 +55,8 @@ async function covid(context, cache) {
     );
     return;
   }
+
+  const [getGlobalData] = await redis.MGET('covid:global');
 
   if (getGlobalData) {
     await context.telegram.sendMessage(chatId, getGlobalData, { parse_mode: 'HTML' });
