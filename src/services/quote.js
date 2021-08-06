@@ -1,1 +1,1 @@
-export * from './quote/index.js';
+export * from './quote/quote.js';

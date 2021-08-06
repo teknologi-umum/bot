@@ -37,11 +37,11 @@ export function register(bot) {
   return [
     {
       command: 'joke',
-      description: 'Get random joke from https://jokesbapak2.herokuapp.com/v1.',
+      description: 'Get random jokes bapack2.',
     },
     {
       command: 'kktbsys',
-      description: 'Kamu kenapa tanya saya begitu?',
+      description: 'Kenapa kamu tanya begitu, siapa yang suruh?',
     },
     {
       command: 'yntkts',
