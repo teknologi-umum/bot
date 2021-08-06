@@ -1,1 +1,1 @@
-export * from './snap/index.js';
+export * from './snap/snap.js';
