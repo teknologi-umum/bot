@@ -21,9 +21,6 @@ jobs:
       - name: Installling dependencies
         run: npm ci --only=production --ignore-scripts
 
-      - name: ESlint & Prettier
-        run: npm run lint && npm run format
-
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
         with:
