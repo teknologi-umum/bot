@@ -7,6 +7,7 @@ import { generateImage } from './utils.js';
  */
 async function snap(context) {
   if (context.message.reply_to_message) {
+    const isOwner = context.message.from.id === replyMessage.from.id;
     const replyMessage = context.message.reply_to_message;
     const code = replyMessage.text;
 
@@ -18,13 +19,14 @@ async function snap(context) {
         caption: replyMessage.from.username
           ? `@${replyMessage.from.username}`
           : `${replyMessage.from.first_name} ${replyMessage.from.last_name}`,
+        reply_to_message_id: !isOwner && replyMessage.message_id,
       },
     );
 
     // Snap message
     await context.deleteMessage(context.message.message_id);
 
-    if (context.message.from.id === replyMessage.from.id) {
+    if (isOwner) {
       // Target message to snap
       await context.deleteMessage(replyMessage.message_id);
     }
