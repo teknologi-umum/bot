@@ -5,7 +5,7 @@
  */
 async function help(context) {
   await context.reply(
-    `Hi there! I can't do much right now. I only could pin and manage poll on this channel.\n\n` +
+    `Hi there! I can't do much right now. For available commands, type / and browse through the autocomplete.\n\n` +
       `For feature request please refer to the <a href="https://github.com/teknologi-umum/bot">Github repository</a>.`,
     {
       parse_mode: 'HTML',
@@ -21,4 +21,11 @@ async function help(context) {
  */
 export function register(bot) {
   bot.command('help', help);
+
+  return [
+    {
+      command: 'help',
+      description: 'Get help information.',
+    },
+  ];
 }
