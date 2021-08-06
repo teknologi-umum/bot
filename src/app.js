@@ -14,7 +14,7 @@ import * as help from './services/help.js';
 import * as quote from './services/quote.js';
 import * as covid from './services/covid.js';
 import * as snap from './services/snap.js';
-import * as blidingej from './services/bliding-ej.js'
+import * as blidingej from './services/bliding-ej.js';
 
 const envPath = resolve(dirname(fileURLToPath(import.meta.url)), '../.env');
 dotenv.config({ path: envPath });
