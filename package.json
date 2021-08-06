@@ -9,12 +9,24 @@
       "name": "Reinaldy Rafli",
       "email": "aldy505@tutanota.com",
       "url": "https://github.com/aldy505"
+    },
+    {
+      "name": "Laode Muhammad Al Fatih",
+      "url": "https://github.com/lamualfa"
+    },
+    {
+      "name": "artileda",
+      "url": "https://github.com/artileda"
+    },
+    {
+      "name": "Ronny Gunawan",
+      "url": "https://github.com/ronnygunawan"
     }
   ],
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "lint": "eslint --ignore-path .gitignore .",
+    "lint": "eslint --fix --ignore-path .gitignore .",
     "format": "prettier --write --ignore-path .gitignore --ignore-path .prettierignore .",
     "prepare": "husky install"
   },
@@ -41,6 +53,7 @@
     "prettier": "^2.3.2"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=16.4.0",
+    "npm": ">=7.1.0"
   }
 }

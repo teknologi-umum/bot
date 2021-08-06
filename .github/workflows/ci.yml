@@ -19,7 +19,17 @@ jobs:
           node-version: 16.x
 
       - name: Installling dependencies
+<<<<<<< Updated upstream
         run: npm ci --only=production
+=======
+        run: npm install
+
+      - name: ESLint check
+        run: npx eslint --ignore-path .gitignore .
+
+      - name: Prettier check
+        run: npx prettier --check .
+>>>>>>> Stashed changes
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
