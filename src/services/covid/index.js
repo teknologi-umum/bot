@@ -11,7 +11,8 @@ import redisClient from '../../utlis/redis.js';
 async function covid(context, cache) {
   const redis = redisClient(cache);
   const chatId = context.message.chat.id;
-  const country = context.message?.text?.replace('/covid', '').trim().toLowerCase() ?? '';
+  const re = new RegExp(`^/covid@${context.me}|/covid`);
+  const country = context.message?.text?.replace(re, '').trim().toLowerCase() ?? '';
 
   const date = dayjs().format('DD MMMM YYYY');
 
