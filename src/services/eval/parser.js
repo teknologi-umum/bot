@@ -1,5 +1,5 @@
 import * as esprima from 'esprima';
-import { allowedBuiltInObjects, allowedProperties } from './constants';
+import { allowedBuiltInObjects, allowedProperties } from './constants.js';
 
 function isAllowed(ast, locals = []) {
   switch (ast.type) {

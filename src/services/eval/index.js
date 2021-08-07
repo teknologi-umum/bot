@@ -1,4 +1,4 @@
-import { safeEval } from './parser';
+import { safeEval } from './parser.js';
 
 /**
  *
