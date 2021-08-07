@@ -4,8 +4,7 @@ import { Telegraf } from 'telegraf';
 import dotenv from 'dotenv';
 import redis from 'redis';
 
-// TODO: Handle global errors
-// import logger from './utlis/logger.js';
+import logger from './utlis/logger.js';
 
 import * as poll from './services/poll.js';
 import * as meme from './services/meme.js';
@@ -40,6 +39,21 @@ const commands = [
 bot.telegram.setMyCommands(commands);
 
 // TODO: Handle command not found
+
+bot.catch((error, context) => {
+  logger.captureException(error, (scope) => {
+    scope.clear();
+    scope.setTag('chat_id', context.message.chat.id);
+    scope.setTag('chat_title', context.message.chat.title);
+    scope.setTag('chat_type', context.message.chat.type);
+    scope.setTag('text', context.message.text);
+    scope.setTag('from_id', context.message.from.id);
+    scope.setTag('from_username', context.message.from.username);
+    scope.setTag('from_is_bot', context.message.from.is_bot);
+    return scope;
+  });
+  context.reply('uh oh, something went wrong. ask the devs to check their logs.');
+});
 
 bot.launch();
 

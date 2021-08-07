@@ -75,12 +75,16 @@ async function poll(context, cache) {
  */
 export function register(cache, bot) {
   bot.on('message', async (context, next) => {
-    if (context.message?.poll) {
-      return await poll(context, cache);
+    // Only works on supergroup
+    if (context.message?.poll && context.message?.chat?.type === 'supergroup') {
+      await poll(context, cache);
+      return;
     }
 
     return next();
   });
+
+  return [];
 }
 
 export default poll;
