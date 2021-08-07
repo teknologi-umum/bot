@@ -28,7 +28,8 @@
     "dev": "nodemon src/app.js",
     "lint": "eslint --fix --ignore-path .gitignore .",
     "format": "prettier --write --ignore-path .gitignore --ignore-path .prettierignore .",
-    "prepare": "node prepare.cjs"
+    "prepare": "node prepare.cjs",
+    "test": "c8 uvu tests"
   },
   "dependencies": {
     "@sentry/node": "^6.10.0",
@@ -44,12 +45,14 @@
     "undici": "^4.3.1"
   },
   "devDependencies": {
+    "c8": "^7.8.0",
     "eslint": "^7.31.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
-    "nodemon": "^2.0.12",
     "husky": "^7.0.1",
-    "prettier": "^2.3.2"
+    "nodemon": "^2.0.12",
+    "prettier": "^2.3.2",
+    "uvu": "^0.5.1"
   },
   "engines": {
     "node": ">=16.4.0",
