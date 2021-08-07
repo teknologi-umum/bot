@@ -4,8 +4,7 @@ import { Telegraf } from 'telegraf';
 import dotenv from 'dotenv';
 import redis from 'redis';
 
-// TODO: Handle global errors
-// import logger from './utlis/logger.js';
+import logger from './utlis/logger.js';
 
 import * as poll from './services/poll.js';
 import * as meme from './services/meme.js';
@@ -22,24 +21,37 @@ dotenv.config({ path: envPath });
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const cache = redis.createClient(String(process.env.REDIS_URL));
 
-const commands = [
-  meme.register(bot),
-  time.register(bot),
-  help.register(bot),
-  quote.register(bot),
-  covid.register(bot, cache),
-  poll.register(cache, bot),
-  snap.register(bot),
-  blidingej.register(bot),
-]
-  .filter((v) => Array.isArray(v))
-  .flat();
+async function main() {
+  try {
+    const commands = [
+      poll.register(cache, bot),
+      meme.register(bot),
+      time.register(bot),
+      help.register(bot),
+      quote.register(bot),
+      covid.register(bot, cache),
+      snap.register(bot),
+      blidingej.register(bot),
+    ]
+      .filter((v) => Array.isArray(v))
+      .flat();
 
-bot.telegram.setMyCommands(commands);
+    await bot.telegram.setMyCommands(commands);
+    await bot.launch();
+  } catch (error) {
+    logger.captureException(error, scope => {
+      scope.clear();
+      scope.setTag('chat_id', bot.context?.message?.chat?.id ?? '');
+      scope.setTag('chat_title', bot.context?.message?.chat?.title ?? '');
+      scope.setTag('chat_type', bot.context?.message?.chat?.type ?? '');
+      scope.setTag('chat_text', bot.context?.message?.text ?? '');
+      return scope;
+    });
+    bot.context.reply('uh oh, something went wrong. ask the devs to check their logs.')
+  }
+}
 
-// TODO: Handle command not found
-
-bot.launch();
+main();
 
 function terminate(caller) {
   cache.QUIT();

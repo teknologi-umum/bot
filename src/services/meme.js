@@ -1,12 +1,11 @@
-/**
- * Send help to user when needed.
- * @param {import('telegraf').Telegraf} bot
- * @returns {Promise<void>}
- */
-
 import { request } from 'undici';
 import { randomNumber } from 'carret';
 
+/**
+ * Send memes..
+ * @param {import('telegraf').Telegraf} bot
+ * @returns {Promise<void>}
+ */
 export function register(bot) {
   bot.command('kktbsys', async (context) => {
     await context.telegram.sendPhoto(context.message.chat.id, 'https://i.ibb.co/XtSbXBT/image.png');

@@ -4,7 +4,7 @@ import { renderTemplate } from './utils.js';
 import redisClient from '../../utlis/redis.js';
 
 /**
- * Send help to user when needed.
+ * Send covid information.
  * @param {import('telegraf').Context} context
  * @returns {Promise<void>}
  */
@@ -93,7 +93,7 @@ async function covid(context, cache) {
 }
 
 /**
- * Send current time.
+ * Send covid information.
  * @param {import('telegraf').Telegraf} bot
  * @returns {Promise<void>}
  */

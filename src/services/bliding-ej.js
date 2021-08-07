@@ -1,5 +1,5 @@
 /**
- *
+ * Defines bliding ej
  * @param {import('telegraf').Context} context
  * @returns {Promise<void>}
  */
@@ -39,7 +39,7 @@ async function define(context) {
 }
 
 /**
- *
+ * Defines bliding ej
  * @param {import('telegraf').Telegraf} bot
  * @returns {Promise<void>}
  */

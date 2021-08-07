@@ -1,9 +1,11 @@
 import { request } from 'undici';
 
-export function generateImage(code) {
+export async function generateImage(code) {
+  if (!code) return Promise.reject('code must be supplied');
+
   const lineNumbers = (code.match(/\n/g) || []).length;
 
-  return request('https://carbonara.vercel.app/api/cook', {
+  const res = await request('https://carbonara.vercel.app/api/cook', {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
@@ -16,5 +18,7 @@ export function generateImage(code) {
       lineNumbers: lineNumbers > 5,
       exportSize: '3x',
     }),
-  }).then((res) => res.body);
+  });
+
+  return res.body;
 }
