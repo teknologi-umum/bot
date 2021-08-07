@@ -9,6 +9,12 @@ async function snap(context) {
   if (context.message.reply_to_message) {
     const replyMessage = context.message.reply_to_message;
     const isOwner = context.message.from.id === replyMessage.from.id;
+
+    if (!replyMessage.text) {
+      await context.reply('`/snap` can only be used on plain texts', { parse_mode: 'MarkdownV2' });
+      return;
+    }
+
     const code = replyMessage.text;
 
     await context.replyWithPhoto(
