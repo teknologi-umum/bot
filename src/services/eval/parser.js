@@ -9,7 +9,7 @@ export function isAllowed(ast, locals = []) {
     case 'ExpressionStatement':
       return isAllowed(ast.expression, locals);
     case 'NewExpression':
-      if (ast.callee.type !== "Identifier") throw `New expression hanya boleh menggunakan symbol yang jelas`;
+      if (ast.callee.type !== 'Identifier') throw `New expression hanya boleh menggunakan symbol yang jelas`;
       if (!allowedBuiltInObjects.has(ast.callee.name)) throw `Tidak boleh new ${ast.callee.name}`;
       return true;
     case 'BinaryExpression':
@@ -20,7 +20,7 @@ export function isAllowed(ast, locals = []) {
     case 'ConditionalExpression':
       return isAllowed(ast.test, locals) && isAllowed(ast.consequent, locals) && isAllowed(ast.alternate, locals);
     case 'ObjectExpression':
-      return ast.properties.every(prop => {
+      return ast.properties.every((prop) => {
         if (prop.method) throw `Tidak boleh membuat method di dalam object`;
         if (prop.computed) throw `Tidak boleh membuat accessor di dalam object`;
         return isAllowed(prop.value);
