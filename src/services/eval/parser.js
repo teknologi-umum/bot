@@ -95,7 +95,7 @@ export function safeEval(source) {
   try {
     ast = esprima.parse(source);
   } catch (err) {
-    return `Syntax error`;
+    return `Error: ${err.description} at ${err.lineNumber}:${err.index}`;
   }
   try {
     if (isAllowed(ast)) {
