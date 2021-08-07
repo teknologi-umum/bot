@@ -11,8 +11,8 @@ async function snap(context) {
     const isOwner = context.message.from.id === replyMessage.from.id;
 
     if (!replyMessage.text) {
-      await context.reply('`/snap` can only be used on plain texts', { parse_mode: 'MarkdownV2' })
-      return
+      await context.reply('`/snap` can only be used on plain texts', { parse_mode: 'MarkdownV2' });
+      return;
     }
     const code = replyMessage.text;
 

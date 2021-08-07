@@ -88,7 +88,7 @@ export function register(cache, bot) {
     return next();
   });
 
-  return []
+  return [];
 }
 
 export default poll;

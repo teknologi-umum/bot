@@ -39,7 +39,7 @@ async function main() {
     await bot.telegram.setMyCommands(commands);
     await bot.launch();
   } catch (error) {
-    logger.captureException(error, scope => {
+    logger.captureException(error, (scope) => {
       scope.clear();
       scope.setTag('chat_id', bot.context?.message?.chat?.id ?? '');
       scope.setTag('chat_title', bot.context?.message?.chat?.title ?? '');
@@ -47,7 +47,7 @@ async function main() {
       scope.setTag('chat_text', bot.context?.message?.text ?? '');
       return scope;
     });
-    bot.context.reply('uh oh, something went wrong. ask the devs to check their logs.')
+    bot.context.reply('uh oh, something went wrong. ask the devs to check their logs.');
   }
 }
 
