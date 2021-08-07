@@ -27,6 +27,9 @@ jobs:
       - name: Prettier check
         run: npx prettier --check .
 
+      - name: Test
+        run: npm run test
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
         with:
