@@ -156,7 +156,7 @@ export const allowedProperties = new Set([
   'push',
   'random',
   'raw',
-  'repeat',
+  //'repeat',
   'replace',
   'replaceAll',
   'reverse',
