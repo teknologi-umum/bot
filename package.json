@@ -28,7 +28,7 @@
     "dev": "nodemon src/app.js",
     "lint": "eslint --fix --ignore-path .gitignore .",
     "format": "prettier --write --ignore-path .gitignore --ignore-path .prettierignore .",
-    "prepare": "[ \"$NODE_ENV\" = production ] && exit 0; husky install"
+    "prepare": "node prepare.js"
   },
   "dependencies": {
     "@sentry/node": "^6.10.0",

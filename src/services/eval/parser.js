@@ -80,7 +80,7 @@ function isAllowed(ast, locals = []) {
         } else if (locals.includes(ast.object.name)) {
           return true;
         } else {
-          throw `Tidak boleh mengakses ${ast.pbject.name}`;
+          throw `Tidak boleh mengakses ${ast.object.name}`;
         }
       } else {
         return isAllowed(ast.object, locals);
@@ -91,8 +91,8 @@ function isAllowed(ast, locals = []) {
 }
 
 export function safeEval(source) {
-  const ast = esprima.parse(source);
   try {
+    const ast = esprima.parse(source);
     if (isAllowed(ast)) {
       return JSON.stringify(eval(source));
     } else {
