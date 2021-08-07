@@ -26,13 +26,37 @@ test('should be able to map array', () => {
 });
 
 test('binary operators are allowed', () => {
-  const result = ['+', '&', '|', '^', '/', '==', '**', '>=', '>', 'in', '!=', '<<', '<=', '<', '&&', '||', '*', '%', '>>', '===', '!==', '-', '>>>'].every(op => isAllowed(`0 ${op} 0`));
+  const result = [
+    '+',
+    '&',
+    '|',
+    '^',
+    '/',
+    '==',
+    '**',
+    '>=',
+    '>',
+    'in',
+    '!=',
+    '<<',
+    '<=',
+    '<',
+    '&&',
+    '||',
+    '*',
+    '%',
+    '>>',
+    '===',
+    '!==',
+    '-',
+    '>>>',
+  ].every((op) => isAllowed(`0 ${op} 0`));
   assert.is(result, true);
 });
 
 test('should not be able to access unlisted member', () => {
   const allowed = isAllowed('[].constructor');
   assert.is(allowed, false);
-})
+});
 
 test.run();
