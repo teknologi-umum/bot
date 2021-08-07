@@ -52,7 +52,8 @@ Global recovered: <b>2000</b>
 
 Indonesia confirmed: <b>1000</b>
 Indonesia deaths: <b>50</b>
-Indonesia recovered: <b>5</b>`)
-})
+Indonesia recovered: <b>5</b>`,
+  );
+});
 
 test.run();
