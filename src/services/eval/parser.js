@@ -1,7 +1,7 @@
 import * as esprima from 'esprima';
 import { allowedBuiltInObjects, allowedProperties } from './constants.js';
 
-function isAllowed(ast, locals = []) {
+export function isAllowed(ast, locals = []) {
   switch (ast.type) {
     case 'Program':
       if (ast.sourceType !== 'script') throw `Bukan program Javascript`;
