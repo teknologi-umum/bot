@@ -91,8 +91,13 @@ function isAllowed(ast, locals = []) {
 }
 
 export function safeEval(source) {
+  let ast;
   try {
-    const ast = esprima.parse(source);
+    ast = esprima.parse(source);
+  } catch (err) {
+    return `Syntax error`;
+  }
+  try {
     if (isAllowed(ast)) {
       return JSON.stringify(eval(source));
     } else {
