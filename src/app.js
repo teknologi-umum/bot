@@ -15,6 +15,7 @@ import * as quote from './services/quote.js';
 import * as covid from './services/covid.js';
 import * as snap from './services/snap.js';
 import * as blidingej from './services/bliding-ej.js';
+import * as eval from './services/eval.js';
 
 const envPath = resolve(dirname(fileURLToPath(import.meta.url)), '../.env');
 dotenv.config({ path: envPath });
@@ -31,6 +32,7 @@ const commands = [
   poll.register(cache, bot),
   snap.register(bot),
   blidingej.register(bot),
+  eval.register(bot),
 ]
   .filter((v) => Array.isArray(v))
   .flat();
