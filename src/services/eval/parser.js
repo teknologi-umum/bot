@@ -84,7 +84,11 @@ function isAllowed(ast, locals = []) {
           throw `Tidak boleh mengakses ${ast.object.name}`;
         }
       } else {
-        return isAllowed(ast.object, locals);
+        if (allowedProperties.has(ast.property.name)) {
+          return isAllowed(ast.object, locals);
+        } else {
+          throw `Tidak boleh mengakses ${ast.property.name}`;
+        }
       }
     default:
       throw `Tidak boleh mengevaluasi ${ast.type}`;
