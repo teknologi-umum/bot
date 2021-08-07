@@ -9,6 +9,7 @@ function isAllowed(ast, locals = []) {
     case 'ExpressionStatement':
       return isAllowed(ast.expression, locals);
     case 'BinaryExpression':
+    case 'LogicalExpression':
       return isAllowed(ast.left, locals) && isAllowed(ast.right, locals);
     case 'UnaryExpression':
       return isAllowed(ast.argument, locals);
