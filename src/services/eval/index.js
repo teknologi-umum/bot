@@ -40,7 +40,7 @@ export function register(bot) {
 
   return [
     {
-      command: 'snap',
+      command: 'eval',
       description: 'Evaluate javascript expression.',
     },
   ];
