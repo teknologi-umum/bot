@@ -1,4 +1,4 @@
-import { exec } from 'child_process';
+const { exec } = require('child_process');
 
 if (process.env.NODE_ENV === 'production') {
   process.exit(0);
