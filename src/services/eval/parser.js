@@ -104,7 +104,9 @@ export function safeEval(source) {
   }
   try {
     if (isAllowed(ast)) {
-      return JSON.stringify(eval(source), (name, val) => typeof(val) === 'number' && (isNaN(val) || !isFinite(val)) ? val.toString() : val);
+      return JSON.stringify(eval(source), (name, val) =>
+        typeof val === 'number' && (isNaN(val) || !isFinite(val)) ? val.toString() : val,
+      );
     } else {
       return `Tidak bisa mengevaluasi code`;
     }
