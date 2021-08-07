@@ -21,7 +21,7 @@ function isAllowed(ast, locals = []) {
     case 'Literal':
       return true;
     case 'Identifier':
-      if (allowedBuiltInObjects.includes(ast.name) || locals.includes(ast.name)) {
+      if (allowedBuiltInObjects.has(ast.name) || locals.includes(ast.name)) {
         return true;
       } else {
         throw `Tidak boleh mengakses ${ast.name}`;
