@@ -7,9 +7,6 @@ import { safeEval } from "./parser";
 async function evalCommand(context) {
   const {
     message: {
-      chat: {
-        id: chatId
-      },
       text
     }
   } = context;
@@ -18,7 +15,7 @@ async function evalCommand(context) {
   if (text.startsWith("/eval ")) {
     source = text.substring(6);
   } else if (text.startsWith("```") && text.endsWith("```")) {
-    source = text.substring(3, text,length - 4);
+    source = text.substring(3, text.length - 4);
   } else {
     return;
   }

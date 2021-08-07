@@ -24,7 +24,7 @@ function isAllowed(ast, locals = []) {
     case "Literal":
       return true;
     case "Identifier":
-      if (allowedGlobals.includes(ast.name) ||
+      if (allowedBuiltInObjects.includes(ast.name) ||
         locals.includes(ast.name)) {
         return true;
       } else {
