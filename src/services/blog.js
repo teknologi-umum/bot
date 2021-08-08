@@ -25,7 +25,7 @@ async function getTheDevRead(kueri) {
     // }
 
     const apis = 'https://api.pulo.dev/v1/contents?page=1&media=' + jenis + '&query=';
-    const { body } = await request(`${apis}` + kueri);
+    const { body } = await request(encodeURI(`${apis}` + kueri));
     const data = shuffle((await body.json()).data);
     // if (whitelist.includes(kueri)) {
     //   await redis.SETEX('devread_' + kueri + ':' + jenis, 60 * 60 * 6, data);
