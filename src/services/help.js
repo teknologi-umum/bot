@@ -10,7 +10,6 @@ async function help(context) {
       `For feature request please refer to the <a href="https://github.com/teknologi-umum/bot">Github repository</a>.`,
     {
       parse_mode: 'HTML',
-      reply_to_message_id: context.message.chat.id,
     },
   );
 }
