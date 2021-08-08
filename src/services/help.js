@@ -4,7 +4,8 @@
  * @returns {Promise<void>}
  */
 async function help(context) {
-  await context.reply(
+  await context.telegram.sendMessage(
+    context.message.chat.id,
     `Hi there! I can't do much right now. For available commands, type / and browse through the autocomplete.\n\n` +
       `For feature request please refer to the <a href="https://github.com/teknologi-umum/bot">Github repository</a>.`,
     {

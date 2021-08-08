@@ -44,16 +44,25 @@ bot.telegram.setMyCommands(commands);
 
 bot.catch((error, context) => {
   logger.captureException(error, (scope) => {
-    scope.clear();
-    scope.setTag('chat_id', context.message.chat.id);
-    scope.setTag('chat_title', context.message.chat.title);
-    scope.setTag('chat_type', context.message.chat.type);
-    scope.setTag('text', context.message.text);
-    scope.setTag('from_id', context.message.from.id);
-    scope.setTag('from_username', context.message.from.username);
-    scope.setTag('from_is_bot', context.message.from.is_bot);
+    scope.setContext('chat', {
+      chat_id: context.message.chat.id,
+      chat_title: context.message.chat.title,
+      chat_type: context.message.chat.type,
+      text: context.message.text,
+    });
+    scope.setContext('from', {
+      from_id: context.message.from.id,
+      from_username: context.message.from.username,
+      is_bot: context.message.from.is_bot,
+    });
+    scope.setTags({
+      chat_id: context.message.chat.id,
+      from_id: context.message.from.id,
+      from_username: context.message.from.username,
+    });
     return scope;
   });
+  if (process.env.NODE_ENV !== 'production') console.error(error);
   context.reply('uh oh, something went wrong. ask the devs to check their logs.');
 });
 
