@@ -14,7 +14,7 @@ async function getTheDevRead(kueri) {
   let stack;
   let data = [];
 
-  let placehordel = (title, desc, link) => `Judul: ` + title + `\n\n` + desc + '\n\n' + link;
+  let placehordel = (title, desc, link) => `Judul: ` + title?.substring(0,64) + `\n\n` + desc?.substring(0,64) + '\n\n' + link;
 
   let requestDataByMedia = async function (jenis, kueri) {
     // const [cacheData] = await redis.MGET('devread_' + kueri + ':' + jenis);
