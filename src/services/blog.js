@@ -14,7 +14,8 @@ async function getTheDevRead(kueri) {
   let stack;
   let data = [];
 
-  let placehordel = (title, desc, link) => `Judul: ` + title + `\n\n` + desc + '\n\n' + link;
+  let placehordel = (title, desc, link) =>
+    `Judul: ` + title?.substring(0, 64) + `\n\n` + desc?.substring(0, 64) + '\n\n' + link;
 
   let requestDataByMedia = async function (jenis, kueri) {
     // const [cacheData] = await redis.MGET('devread_' + kueri + ':' + jenis);
@@ -24,7 +25,7 @@ async function getTheDevRead(kueri) {
     // }
 
     const apis = 'https://api.pulo.dev/v1/contents?page=1&media=' + jenis + '&query=';
-    const { body } = await request(`${apis}` + kueri);
+    const { body } = await request(encodeURI(`${apis}` + kueri));
     const data = shuffle((await body.json()).data);
     // if (whitelist.includes(kueri)) {
     //   await redis.SETEX('devread_' + kueri + ':' + jenis, 60 * 60 * 6, data);
