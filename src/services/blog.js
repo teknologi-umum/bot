@@ -78,10 +78,14 @@ async function devRead(context, cache) {
   } else if (text.startsWith(`/devread@${context.me} `)) {
     kueri = text.substring(10 + context.me.length);
   }
+  
+  const read = await getTheDevRead(kueri, cache);
 
-  await context.reply(await getTheDevRead(kueri, cache), {
-    reply_to_message_id: context.message.chat.id,
-  });
+  await context.sendMessage(
+    context.message.chat.id,
+    read,
+    { parse_mode: 'HTML'}
+  );
 }
 
 /**
