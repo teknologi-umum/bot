@@ -14,30 +14,29 @@ async function getTheDevRead(kueri) {
   let stack;
   let data = [];
 
-  let placehordel = (title, desc, link) =>
-    `Judul: ` + title + `\n\n` + desc + '\n\n' + link;
+  let placehordel = (title, desc, link) => `Judul: ` + title + `\n\n` + desc + '\n\n' + link;
 
-    let requestDataByMedia = async function (jenis, kueri) {
-      // const [cacheData] = await redis.MGET('devread_' + kueri + ':' + jenis);
-      // if (cacheData) {
-      //   console.log()
-      //   return shuffle(cacheData);
-      // }
+  let requestDataByMedia = async function (jenis, kueri) {
+    // const [cacheData] = await redis.MGET('devread_' + kueri + ':' + jenis);
+    // if (cacheData) {
+    //   console.log()
+    //   return shuffle(cacheData);
+    // }
 
-      const apis = 'https://api.pulo.dev/v1/contents?page=1&media=' + jenis + '&query=';
-      const { body } = await request(`${apis}` + kueri);
-      const data = shuffle((await body.json()).data);
-      // if (whitelist.includes(kueri)) {
-      //   await redis.SETEX('devread_' + kueri + ':' + jenis, 60 * 60 * 6, data);
-      // }
-      return data;
-    }
+    const apis = 'https://api.pulo.dev/v1/contents?page=1&media=' + jenis + '&query=';
+    const { body } = await request(`${apis}` + kueri);
+    const data = shuffle((await body.json()).data);
+    // if (whitelist.includes(kueri)) {
+    //   await redis.SETEX('devread_' + kueri + ':' + jenis, 60 * 60 * 6, data);
+    // }
+    return data;
+  };
 
-  try{
-  data = data.concat((await requestDataByMedia('tulisan', kueri)).slice(0, 2));
-  data = data.concat((await requestDataByMedia('web', kueri)).slice(0, 2));
-  } catch(e){
-    return "API lagi ngambek"
+  try {
+    data = data.concat((await requestDataByMedia('tulisan', kueri)).slice(0, 2));
+    data = data.concat((await requestDataByMedia('web', kueri)).slice(0, 2));
+  } catch (e) {
+    return 'API lagi ngambek';
   }
 
   if (data.length != 0) {
@@ -45,7 +44,6 @@ async function getTheDevRead(kueri) {
   } else {
     stack = 'Yha ga ketemu, cari keyword lain yuk';
   }
-
 
   return stack;
 }
