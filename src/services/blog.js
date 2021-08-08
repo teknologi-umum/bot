@@ -1,13 +1,13 @@
 import { request } from 'undici';
 import redisClient from '../utlis/redis.js';
-import { shuffle } from 'carret' 
+import { shuffle } from 'carret';
 
 let whitelist = ['javascript', 'php', 'go', 'c'];
 
 async function getTheDevRead(kueri, cache) {
   const redis = redisClient(cache);
 
-  if (!kueri){
+  if (!kueri) {
     return 'cara pakainya tulis: /devread <apa yang mau kamu cari>,\n Contoh: \n /devread ngehek ig pacar';
   }
 
@@ -35,8 +35,8 @@ async function getTheDevRead(kueri, cache) {
     }
   };
 
-  data = data.concat((await requestDataByMedia('tulisan',kueri)).slice(0, 2));
-  data = data.concat((await requestDataByMedia('web',kueri)).slice(0, 2));
+  data = data.concat((await requestDataByMedia('tulisan', kueri)).slice(0, 2));
+  data = data.concat((await requestDataByMedia('web', kueri)).slice(0, 2));
 
   if (data.length != 0) {
     stack = data.map((x) => placehordel(x.title, x.body, x.url)).join('\n\n\t --- \n\n');
@@ -64,14 +64,10 @@ async function devRead(context, cache) {
   } else if (text.startsWith(`/devread@${context.me} `)) {
     kueri = text.substring(10 + context.me.length);
   }
-  
+
   const read = await getTheDevRead(kueri, cache);
 
-  await context.telegram.sendMessage(
-    context.message.chat.id,
-    read,
-    { parse_mode: 'HTML'}
-  );
+  await context.telegram.sendMessage(context.message.chat.id, read, { parse_mode: 'HTML' });
 }
 
 /**
