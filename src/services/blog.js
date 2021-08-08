@@ -18,17 +18,10 @@ function shuffle(array) {
   return array;
 }
 
-let whitelist = [
-  "javascript",
-  "php",
-  "go",
-  "c",
-]
+let whitelist = ['javascript', 'php', 'go', 'c'];
 
-async function getTheDevRead(kueri,cache) {
-
+async function getTheDevRead(kueri, cache) {
   const redis = redisClient(cache);
-  
 
   if (kueri == '')
     return 'cara pakainya tulis: /devread <apa yang mau kamu cari>,\n Contoh: \n /devread ngehek ig pacar';
@@ -38,21 +31,21 @@ async function getTheDevRead(kueri,cache) {
   let placehordel = (title, desc, link) =>
     `Judul: ` + title?.substring(0, 64) + `\n\n` + desc?.substring(0, 64) + '\n\n' + link;
 
-  let requestDataByMedia = async function (jenis,kueri) {
-    const [cacheData] = await redis.MGET("devread_" + kueri +":"+ jenis)
-    if(cacheData){
+  let requestDataByMedia = async function (jenis, kueri) {
+    const [cacheData] = await redis.MGET('devread_' + kueri + ':' + jenis);
+    if (cacheData) {
       return shuffle(cacheData);
     }
-    try{
+    try {
       const apis = 'https://api.pulo.dev/v1/contents?page=1&media=' + jenis + '&query=';
       const { body } = await request(`${apis}` + kueri);
       const data = shuffle((await body.json()).data);
-      if(whitelist.includes(kueri)){
-        await redis.SETEX( "devread_" + kueri +":"+ jenis, 60 * 60 * 6, data)
+      if (whitelist.includes(kueri)) {
+        await redis.SETEX('devread_' + kueri + ':' + jenis, 60 * 60 * 6, data);
       }
       return data;
-    }catch (e){
-      return "Layanan DevRead sedang malas melayani coba beberapa saat lagi, jangan lupa restart modemnya kakak"
+    } catch (e) {
+      return 'Layanan DevRead sedang malas melayani coba beberapa saat lagi, jangan lupa restart modemnya kakak';
     }
   };
 
@@ -73,7 +66,7 @@ async function getTheDevRead(kueri,cache) {
  * @param {import('telegraf').Context} context
  * @returns {Promise<void>}
  */
-async function devRead(context,cache) {
+async function devRead(context, cache) {
   const {
     message: { text },
   } = context;
@@ -86,7 +79,7 @@ async function devRead(context,cache) {
     kueri = text.substring(10 + context.me.length);
   }
 
-  await context.reply(await getTheDevRead(kueri,cache), {
+  await context.reply(await getTheDevRead(kueri, cache), {
     reply_to_message_id: context.message.chat.id,
   });
 }
@@ -96,7 +89,7 @@ async function devRead(context,cache) {
  * @param {import('telegraf').Telegraf} bot
  * @returns {Promise<void>}
  */
-export function register(bot,cache) {
+export function register(bot, cache) {
   bot.command('devread', (context) => devRead(context, cache));
 
   return [
