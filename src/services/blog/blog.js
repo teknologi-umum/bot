@@ -30,8 +30,8 @@ async function devRead(context, cache) {
   if (!query) {
     await context.telegram.sendMessage(
       context.message.chat.id,
-      'Cara pakainya ketik: /devread <apa yang mau kamu cari>\n\nContoh: `/devread javascript`',
-      { parse_mode: 'MarkdownV2' },
+      'Cara pakainya ketik: /devread &lt;apa yang mau kamu cari&gt;\n\nContoh: <code>/devread javascript</code>',
+      { parse_mode: 'HTML' },
     );
     return;
   }
