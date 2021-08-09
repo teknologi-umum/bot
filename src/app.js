@@ -33,7 +33,7 @@ const commands = [
   snap.register(bot),
   blidingej.register(bot),
   evalBot.register(bot),
-  blog.register(bot),
+  blog.register(bot, cache),
 ]
   .filter((v) => Array.isArray(v))
   .flat();
