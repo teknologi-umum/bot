@@ -19,6 +19,8 @@ function renderTemplate(data) {
  * @returns {Array<any>}
  */
 function randomArray(items, length) {
+  if (items.length < length) return items;
+
   const shuffled = shuffle(items);
   const result = [];
   for (let i = 0; i < length; i++) {
