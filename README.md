@@ -6,6 +6,14 @@ Feel free to contribute and add some _bleeding edge_ features.
 
 To make it even more _bleeding edge_, we're using [fly.io](https://fly.io/) for deployment and Node v16. Oh, and we're going so much _bleeding edge_ by not doing any tests at all lmao.
 
+## How To Running this Codebase?
+
+- You need NodeJS,Telegram account,and Redis.
+- Setup credential (you can see it, [here](./.env.example)), for the Telegram Token you need acquire it by creating bot at BotFather on Telegram.
+- Go to this codebase directory and run `npm install` or `yarn install` on your terminal.
+- Finally, run `npm start` or `yarn start` to activate the bot.
+
+
 ## License
 
 ```
