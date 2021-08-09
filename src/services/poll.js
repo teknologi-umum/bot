@@ -73,7 +73,7 @@ async function poll(context, cache) {
  * @param {import('telegraf').Telegraf} bot
  * @returns {Promise<void>}
  */
-export function register(cache, bot) {
+export function register(bot, cache) {
   bot.on('message', async (context, next) => {
     // Only works on supergroup
     if (context.message?.poll && context.message?.chat?.type === 'supergroup') {

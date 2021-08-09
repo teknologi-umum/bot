@@ -7,9 +7,9 @@ import { randomNumber, shuffle } from 'carret';
  * Render tempura template into HTML string
  * @returns {any}
  */
-function renderTemplate() {
+function renderTemplate(data) {
   const file = readFileSync(join(import.meta.url, 'template.hbs'), { encoding: 'utf8' });
-  return compile(file);
+  return compile(file)(data);
 }
 
 /**

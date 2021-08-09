@@ -1,8 +1,8 @@
 import { request } from 'undici';
 
 async function getTheDevRead(query) {
-  const tulisan = await requestDataByMedia("tulisan", query);
-  const media = await requestDataByMedia("web", query);
+  const tulisan = await requestDataByMedia('tulisan', query);
+  const media = await requestDataByMedia('web', query);
 
   return [...tulisan, ...media];
 }
