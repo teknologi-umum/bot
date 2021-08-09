@@ -29,11 +29,11 @@ const commands = [
   help.register(bot),
   quote.register(bot),
   covid.register(bot, cache),
-  poll.register(cache, bot),
+  poll.register(bot, cache),
   snap.register(bot),
   blidingej.register(bot),
   evalBot.register(bot),
-  blog.register(bot),
+  blog.register(bot, cache),
 ]
   .filter((v) => Array.isArray(v))
   .flat();
