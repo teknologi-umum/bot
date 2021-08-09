@@ -3,14 +3,10 @@ import { request } from 'undici';
 async function getTheDevRead(query) {
   const data = [];
 
-  try {
-    const tulisan = await requestDataByMedia('tulisan', query);
-    const media = await requestDataByMedia('web', query);
-    data.push(...tulisan);
-    data.push(...media);
-  } catch (e) {
-    return 'API lagi ngambek';
-  }
+  const tulisan = await requestDataByMedia('tulisan', query);
+  const media = await requestDataByMedia('web', query);
+  data.push(...tulisan);
+  data.push(...media);
 
   return data;
 }
