@@ -8,11 +8,11 @@ To make it even more _bleeding edge_, we're using [fly.io](https://fly.io/) for 
 
 ## How To Running this Codebase?
 
-- You need NodeJS,Telegram account,and Redis.
-- Setup credential (you can see it, [here](./.env.example)), for the Telegram Token you need acquire it by creating bot at BotFather on Telegram.
-- Go to this codebase directory and run `npm install` or `yarn install` on your terminal.
-- Finally, run `npm start` or `yarn start` to activate the bot.
-
+- You've need NodeJS, Telegram account, and Redis.
+- Setup credential (you can see the example [here](/.env.example)).
+ - To obtain a Telegram Token, you need to create a bot at Bot Father on Telegram.
+- Go to this codebase directory and run npm install or yarn install on your terminal.
+- Finally, run npm start or yarn start to activate the bot.
 
 ## License
 
