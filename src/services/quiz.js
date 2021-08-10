@@ -42,7 +42,7 @@ async function quiz(context, mongo, cache) {
   const Poll = mongo.model('Poll', pollSchema, 'quiz');
 
   // Check if today's quiz is already posted.
-  const lastQuizDate = redis.GET(`quiz:${String(chatID)}:date`);
+  const lastQuizDate = await redis.GET(`quiz:${String(chatID)}:date`);
 
   if (lastQuizDate && dayjs(lastQuizDate).diff(currentTime, 'day') === 0) {
     context.telegram.sendMessage(
@@ -106,7 +106,7 @@ async function quiz(context, mongo, cache) {
   }
 
   await Poll.findByIdAndUpdate(pickQuiz['_id'], { posted: true }, { useFindAndModify: false });
-  await redis.MSET([`quiz:${String(chatID)}:date`, currentTime]);
+  await redis.MSET(`quiz:${String(chatID)}:date`, currentTime);
 }
 
 export function register(bot, mongo, cache) {
