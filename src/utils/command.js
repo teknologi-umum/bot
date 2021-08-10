@@ -20,5 +20,5 @@ export const getCommandArgs = (cmd, context) => {
     return text.substring(cmdLength + me.length + 3);
   }
 
-  return context.message;
+  return context.message.text;
 };
