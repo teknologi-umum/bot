@@ -1,0 +1,9 @@
+{{#expect amount, items, url}}
+
+Showing the first {{amount}} result from DuckDuckGo:
+
+{{#each items as item, idx}}
+  {{idx + 1}}. [{{item.text}}]({{{item.href}}})
+{{/each}}
+
+[Read more on DuckDuckGo]({{{url}}})
