@@ -6,14 +6,7 @@ import { getCommandArgs } from '../../utils/command.js';
  * @param {import('telegraf').Context} context
  */
 async function evalCommand(context) {
-  const {
-    message: { text },
-  } = context;
-
-  const source =
-    text.startsWith('```') && text.endsWith('```')
-      ? text.substring(3, text.length - 4)
-      : getCommandArgs('eval', context);
+  const source = getCommandArgs('eval', context);
 
   const output = safeEval(source);
 

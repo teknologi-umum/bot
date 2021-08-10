@@ -2,19 +2,22 @@
  * Helper function to get the command arguments
  *
  * @param {string} cmd - Command name
- * @param {string} message - The original message
+ * @param {import("telegraf").Context} context - The Telegraf context
  * @return {string} command argument
  */
 export const getCommandArgs = (cmd, context) => {
-  const { message, me } = context;
+  const {
+    message: { text },
+    me,
+  } = context;
   const cmdLength = cmd.length;
 
-  if (message.startsWith(`/${cmd} `)) {
-    return message.substring(cmdLength + 2);
+  if (text.startsWith(`/${cmd} `)) {
+    return text.substring(cmdLength + 2);
   }
 
-  if (message.startsWith(`/${cmd}@${me} `)) {
-    return message.substring(cmdLength + me.length + 3);
+  if (text.startsWith(`/${cmd}@${me} `)) {
+    return text.substring(cmdLength + me.length + 3);
   }
 
   return context.message;
