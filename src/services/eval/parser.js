@@ -31,6 +31,8 @@ export function isAllowed(ast, locals = []) {
       return isAllowed(ast.argument, locals);
     case 'Literal':
       return true;
+    case 'TemplateLiteral':
+      return ast.expressions.every((expression) => isAllowed(expression, locals));
     case 'Identifier':
       if (allowedBuiltInObjects.has(ast.name) || locals.includes(ast.name)) {
         return true;
