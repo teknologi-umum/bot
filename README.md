@@ -1,18 +1,20 @@
 # Bot for Teknologi Umum
 
-Basically a _bleeding edge_ telegram bot to fulfill Teknologi Umum's _bleeding edge_ needs. Teknologi Umum is an Indonesian telegram group made for people to talk about.. basically anything, tbh. You can join through [this link](https://t.me/teknologi_umum). First thing you need to do is mute the group, it's fucking noisy.
+Basically a _bleeding edge_ telegram bot to fulfill Teknologi Umum's _bleeding edge_ needs. Teknologi Umum is an Indonesian telegram group made for people to talk about.. basically anything, tbh. You can join through [this link](https://t.me/teknologi_umum). First thing you need to do is mute the group, it's effing noisy.
+
+What can this bot do? Well, _bleeding edge_ stuffs! You'll find everything when you interact with [the bot on Telegram](https://t.me/TeknologiUmumBot).
 
 Feel free to contribute and add some _bleeding edge_ features.
 
-To make it even more _bleeding edge_, we're using [fly.io](https://fly.io/) for deployment and Node v16. Oh, and we're going so much _bleeding edge_ by not doing any tests at all lmao.
+To make it even more _bleeding edge_, we're using [fly.io](https://fly.io/) for deployment on Node v16. Oh, and we're going so much _bleeding edge_ by doing as little tests as possible lmao.
 
-## How To Running this Codebase?
+## How To Run this Codebase?
 
-- You've need NodeJS, Telegram account, and Redis.
-- Setup credential (you can see the example [here](/.env.example)).
-- To obtain a Telegram Token, you need to create a bot at Bot Father on Telegram.
-- Go to this codebase directory and run npm install on your terminal.
-- Finally, run npm start to activate the bot.
+- You need NodeJS, Telegram account, and Redis on your device.
+- Setup credentials (you can see the example [here](/.env.example)).
+- To obtain a Telegram Token, you will need to create a bot at BotFather on Telegram.
+- Go to this repository directory and run `npm install` on your terminal.
+- Finally, run `npm start` to activate the bot.
 
 See [CONTRIBUTING](./CONTRIBUTING.md) for more detailed instruction.
 
