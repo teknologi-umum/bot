@@ -57,15 +57,15 @@ async function devRead(context, cache) {
   }
 
   const items = randomArray(data, 3);
-  const read = items.map(({ title, body, url }) => renderTemplate({ title, body, url })).join('\n');
+  const read = items.map((x) => renderTemplate({ title: x.title, body: x.body, url: x.url })).join('\n');
 
   await context.telegram.sendMessage(context.message.chat.id, read, { parse_mode: 'HTML' });
 
   // Cache the result in redis for 6 hours
   // First we filter it first, we don't want too much data stored in redis
   const filteredData = data.map(({ title, body, url }) => ({
-    title: title.length > 50 ? title.substr(0, 49) + '...' : title,
-    body: body.length > 300 ? body.substr(0, 299) + '...' : body,
+    title: title ? (title.length > 50 ? title.substr(0, 49) + '...' : title) : title,
+    body: body ? (body.length > 300 ? body.substr(0, 299) + '...' : body) : body,
     url,
   }));
   await redis.SETEX(`devread:${encodeURI(query.toLowerCase())}`, 60 * 60 * 6, JSON.stringify(filteredData));

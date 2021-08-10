@@ -1,7 +1,7 @@
 {{#expect title, body, url }}
 
-<b>{{ (title.length > 50) ? title.substr(0, 49) + '...' : title }}</b>\n
+<b>{{ (title == undefined ) ? title : (title.length > 50) ? title.substr(0, 49) + '...' : title }}</b>\n
 
-{{ (body.length > 300) ? body.substr(0, 299) + '...' : body }}
+{{ (body == undefined ) ? body : (body.length > 300) ? body.substr(0, 299) + '...' : body }}
 
 Baca lanjutannya: {{ url }}
