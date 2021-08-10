@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import redis from 'redis';
 
-import logger from './utlis/logger.js';
+import logger from './utils/logger.js';
 
 import * as poll from './services/poll.js';
 import * as meme from './services/meme.js';

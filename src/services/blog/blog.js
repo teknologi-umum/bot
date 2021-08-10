@@ -1,4 +1,4 @@
-import redisClient from '../../utlis/redis.js';
+import redisClient from '../../utils/redis.js';
 import { getTheDevRead } from './request.js';
 import { randomArray, renderTemplate } from './utils.js';
 

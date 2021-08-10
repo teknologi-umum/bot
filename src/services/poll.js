@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import redisClient from '../utlis/redis.js';
+import redisClient from '../utils/redis.js';
 
 /**
  * Process poll created by user to not

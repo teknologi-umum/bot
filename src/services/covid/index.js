@@ -1,7 +1,7 @@
 import { request } from 'undici';
 import dayjs from 'dayjs';
 import { renderTemplate } from './utils.js';
-import redisClient from '../../utlis/redis.js';
+import redisClient from '../../utils/redis.js';
 
 /**
  * Send covid information.

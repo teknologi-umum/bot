@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import dayjs from 'dayjs';
 import { randomNumber } from 'carret';
-import redisClient from '../utlis/redis.js';
+import redisClient from '../utils/redis.js';
 import { poll } from './poll.js';
 
 const pollSchema = new mongoose.Schema(

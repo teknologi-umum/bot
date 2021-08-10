@@ -79,7 +79,7 @@ npm run test
 ├── src
 │  ├── app.js               - App/bot entry point
 │  ├── services             - Commands logic
-│  └── utlis                - Utilities
+│  └── utils                - Utilities
 └── tests                   - Unit testing with uvu
 ```
 
