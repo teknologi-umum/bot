@@ -11,8 +11,10 @@ To make it even more _bleeding edge_, we're using [fly.io](https://fly.io/) for 
 - You've need NodeJS, Telegram account, and Redis.
 - Setup credential (you can see the example [here](/.env.example)).
 - To obtain a Telegram Token, you need to create a bot at Bot Father on Telegram.
-- Go to this codebase directory and run npm install or yarn install on your terminal.
-- Finally, run npm start or yarn start to activate the bot.
+- Go to this codebase directory and run npm install on your terminal.
+- Finally, run npm start to activate the bot.
+
+See [CONTRIBUTING](./CONTRIBUTING.md) for more detailed instruction.
 
 ## License
 
