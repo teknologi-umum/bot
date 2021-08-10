@@ -5,9 +5,11 @@ import redisClient from '../utlis/redis.js';
  * Process poll created by user to not
  * @param {import('telegraf').Context<import('telegraf/typings/core/types/typegram').Update>} context
  * @param {import('redis').RedisClient} cache
+ * @param {any} poll Telegram Poll object
+ * @param {any} pollID Telegram ID to poll
  * @returns {Promise<void>}
  */
-async function poll(context, cache) {
+export async function poll(context, cache, poll, pollID) {
   const redis = redisClient(cache);
   const currentTime = dayjs().add(7, 'hours').toISOString();
 
@@ -22,12 +24,10 @@ async function poll(context, cache) {
     lastMessageContent = { survey: [], quiz: [] };
   }
 
-  const poll = context.message.poll;
-
   if (poll.type === 'regular') {
-    lastMessageContent.survey.push({ id: context.message.message_id, text: poll.question.split(/\n/)[0] });
+    lastMessageContent.survey.push({ id: pollID, text: poll.question.split(/\n/)[0] });
   } else if (poll.type === 'quiz') {
-    lastMessageContent.quiz.push({ id: context.message.message_id, text: poll.question.split(/\n/)[0] });
+    lastMessageContent.quiz.push({ id: pollID, text: poll.question.split(/\n/)[0] });
   }
 
   const chat = await context.getChat();
@@ -77,7 +77,7 @@ export function register(bot, cache) {
   bot.on('message', async (context, next) => {
     // Only works on supergroup
     if (context.message?.poll && context.message?.chat?.type === 'supergroup') {
-      await poll(context, cache);
+      await poll(context, cache, context.message.poll, context.message.message_id);
       return;
     }
 

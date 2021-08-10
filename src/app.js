@@ -24,7 +24,10 @@ dotenv.config({ path: envPath });
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const cache = redis.createClient(String(process.env.REDIS_URL));
-const mongo = mongoose.createConnection(String(process.env.DB_URL));
+const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const commands = [
   meme.register(bot),
