@@ -2,6 +2,7 @@ import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { Telegraf } from 'telegraf';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 import redis from 'redis';
 
 import logger from './utlis/logger.js';
@@ -16,12 +17,17 @@ import * as snap from './services/snap.js';
 import * as blidingej from './services/bliding-ej.js';
 import * as evalBot from './services/eval.js';
 import * as blog from './services/blog.js';
+import * as quiz from './services/quiz.js';
 
 const envPath = resolve(dirname(fileURLToPath(import.meta.url)), '../.env');
 dotenv.config({ path: envPath });
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const cache = redis.createClient(String(process.env.REDIS_URL));
+const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const commands = [
   meme.register(bot),
@@ -34,6 +40,7 @@ const commands = [
   blidingej.register(bot),
   evalBot.register(bot),
   blog.register(bot, cache),
+  quiz.register(bot, mongo, cache),
 ]
   .filter((v) => Array.isArray(v))
   .flat();
