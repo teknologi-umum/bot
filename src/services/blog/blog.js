@@ -1,6 +1,7 @@
 import redisClient from '../../utils/redis.js';
 import { getTheDevRead } from './request.js';
 import { randomArray, renderTemplate } from './utils.js';
+import { getCommandArgs } from '../../utils/command.js';
 
 const WHITELIST = ['javascript', 'php', 'go', 'c', 'typescript', 'python'];
 
@@ -12,20 +13,10 @@ const WHITELIST = ['javascript', 'php', 'go', 'c', 'typescript', 'python'];
 async function devRead(context, cache) {
   const redis = redisClient(cache);
 
-  const {
-    message: { text },
-  } = context;
-
   /**
    * @type {String}
    */
-  let query;
-
-  if (text.startsWith('/devread ')) {
-    query = text.substring(9);
-  } else if (text.startsWith(`/devread@${context.me} `)) {
-    query = text.substring(10 + context.me.length);
-  }
+  let query = getCommandArgs('devread', context);
 
   if (!query) {
     await context.telegram.sendMessage(

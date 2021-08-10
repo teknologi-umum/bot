@@ -1,4 +1,5 @@
 import { safeEval } from './parser.js';
+import { getCommandArgs } from '../../utils/command.js';
 
 /**
  *
@@ -9,16 +10,10 @@ async function evalCommand(context) {
     message: { text },
   } = context;
 
-  let source;
-  if (text.startsWith('/eval ')) {
-    source = text.substring(6);
-  } else if (text.startsWith(`/eval@${context.me} `)) {
-    source = text.substring(7 + context.me.length);
-  } else if (text.startsWith('```') && text.endsWith('```')) {
-    source = text.substring(3, text.length - 4);
-  } else {
-    return;
-  }
+  const source =
+    text.startsWith('```') && text.endsWith('```')
+      ? text.substring(3, text.length - 4)
+      : getCommandArgs('eval', context);
 
   const output = safeEval(source);
 
