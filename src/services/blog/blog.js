@@ -13,9 +13,6 @@ const WHITELIST = ['javascript', 'php', 'go', 'c', 'typescript', 'python'];
 async function devRead(context, cache) {
   const redis = redisClient(cache);
 
-  /**
-   * @type {String}
-   */
   let query = getCommandArgs('devread', context);
 
   if (!query) {
@@ -48,7 +45,9 @@ async function devRead(context, cache) {
   }
 
   const items = randomArray(data, 3);
-  const read = items.map((x) => renderTemplate({ title: x.title, body: x.body, url: x.url })).join('\n');
+  const read = items
+    .map((x) => renderTemplate({ title: x?.title ?? '', body: x?.body ?? '', url: x?.url ?? '' }))
+    .join('\n');
 
   await context.telegram.sendMessage(context.message.chat.id, read, { parse_mode: 'HTML' });
 

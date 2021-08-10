@@ -1,8 +1,9 @@
-import { request } from 'undici';
+import got from 'got';
 import dayjs from 'dayjs';
 import { renderTemplate } from './utils.js';
 import redisClient from '../../utils/redis.js';
 import { getCommandArgs } from '../../utils/command.js';
+import { defaultHeaders } from '../../utils/http.js';
 
 /**
  * Send covid information.
@@ -15,23 +16,31 @@ async function covid(context, cache) {
   const country = getCommandArgs('covid', context);
 
   if (country) {
-    // Build the url
-    const url = new URL(country, 'https://corona.lmao.ninja/v2/countries/');
-    url.searchParams.append('strict', true);
-    url.searchParams.append('yesterday', false);
-    url.searchParams.append('query', '');
+    const { body, statusCode, request, rawBody } = await got.get(country, {
+      prefixUrl: 'https://corona.lmao.ninja/v2/countries',
+      searchParams: {
+        strict: true,
+        yesterday: false,
+        query: '',
+      },
+      responseType: 'json',
+      headers: defaultHeaders,
+      throwHttpErrors: false,
+    });
 
-    const { body, statusCode } = await request(url.toString());
+    if (statusCode !== 404 && statusCode !== 200) {
+      return Promise.reject({ request, rawBody, statusCode });
+    }
+
     if (statusCode === 404) {
       await context.telegram.sendMessage(chatId, 'That country name is not valid or does not exists.');
       return;
     }
-    const data = await body.json();
 
-    if (!data) {
+    if (!body) {
       return await context.telegram.sendMessage(
         chatId,
-        `Data for the <b>${data.country}</b> country is not yet available.`,
+        `Data for the <b>${body.country}</b> country is not yet available.`,
         {
           parse_mode: 'HTML',
         },
@@ -42,12 +51,12 @@ async function covid(context, cache) {
     await context.telegram.sendMessage(
       chatId,
       renderTemplate('country')({
-        date: dayjs(data.updated).format('DD MMMM YYYY'),
-        country: data.country,
-        confirmed: data.todayCases.toLocaleString('id-ID') ?? 0,
-        deaths: data.todayDeaths.toLocaleString('id-ID') ?? 0,
-        recovered: data.todayRecovered.toLocaleString('id-ID') ?? 0,
-        active: data.active.toLocaleString('id-ID') ?? 0,
+        date: dayjs(body.updated).format('DD MMMM YYYY'),
+        country: body.country,
+        confirmed: body.todayCases.toLocaleString('id-ID') ?? 0,
+        deaths: body.todayDeaths.toLocaleString('id-ID') ?? 0,
+        recovered: body.todayRecovered.toLocaleString('id-ID') ?? 0,
+        active: body.active.toLocaleString('id-ID') ?? 0,
       }),
       {
         parse_mode: 'HTML',
@@ -63,17 +72,28 @@ async function covid(context, cache) {
     return;
   }
 
-  const global = new URL('https://corona.lmao.ninja/v2/all');
-  global.searchParams.append('yesterday', false);
-  const globalResp = await request(global.toString());
-  const globalData = await globalResp.body.json();
+  const globalData = (
+    await got.get('https://corona.lmao.ninja/v2/all', {
+      searchParams: {
+        yesterday: 'false',
+      },
+      responseType: 'json',
+      headers: defaultHeaders,
+    })
+  ).body;
 
-  const indonesia = new URL('indonesia', 'https://corona.lmao.ninja/v2/countries/');
-  indonesia.searchParams.append('strict', true);
-  indonesia.searchParams.append('yesterday', false);
-  indonesia.searchParams.append('query', '');
-  const indonesiaResp = await request(indonesia.toString());
-  const indonesiaData = await indonesiaResp.body.json();
+  const indonesiaData = (
+    await got.get('indonesia', {
+      prefixUrl: 'https://corona.lmao.ninja/v2/countries',
+      searchParams: {
+        strict: true,
+        yesterday: true,
+        query: '',
+      },
+      responseType: 'json',
+      headers: defaultHeaders,
+    })
+  ).body;
 
   const preformatMessage = renderTemplate('global')({
     date: dayjs(globalData.updated).format('DD MMMM YYYY'),

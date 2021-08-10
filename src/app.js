@@ -1,11 +1,10 @@
-import { dirname, resolve } from 'path';
-import { fileURLToPath } from 'url';
 import { Telegraf } from 'telegraf';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import redis from 'redis';
 
 import logger from './utils/logger.js';
+import { pathTo } from './utils/path.js';
 
 import * as poll from './services/poll.js';
 import * as meme from './services/meme.js';
@@ -19,8 +18,7 @@ import * as evalBot from './services/eval.js';
 import * as blog from './services/blog.js';
 import * as quiz from './services/quiz.js';
 
-const envPath = resolve(dirname(fileURLToPath(import.meta.url)), '../.env');
-dotenv.config({ path: envPath });
+dotenv.config({ path: pathTo(import.meta.url, '../.env') });
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const cache = redis.createClient(String(process.env.REDIS_URL));
@@ -30,7 +28,7 @@ const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
 });
 
 const commands = [
-  meme.register(bot),
+  meme.register(bot, cache),
   time.register(bot),
   help.register(bot),
   quote.register(bot),

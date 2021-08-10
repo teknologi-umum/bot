@@ -1,12 +1,16 @@
-import { request } from 'undici';
+import got from 'got';
 import { randomNumber } from 'carret';
+import { defaultHeaders } from '../utils/http.js';
+import redisClient from '../utils/redis.js';
 
 /**
  * Send memes..
  * @param {import('telegraf').Telegraf} bot
  * @returns {Promise<void>}
  */
-export function register(bot) {
+export function register(bot, cache) {
+  const redis = redisClient(cache);
+
   bot.command('kktbsys', async (context) => {
     await context.telegram.sendPhoto(context.message.chat.id, 'https://i.ibb.co/XtSbXBT/image.png');
   });
@@ -23,14 +27,27 @@ export function register(bot) {
   });
 
   bot.command('joke', async (context) => {
-    // TODO: Centralize the frequently usage variable
-    const api = 'https://jokesbapak2.herokuapp.com/v1';
-    const { body } = await request(`${api}/total`);
+    let total = await redis.GET('jokes:total');
 
-    const total = parseInt((await body.json()).message);
+    if (!total) {
+      const { body } = await got.get('https://jokesbapak2.herokuapp.com/v1/total', {
+        headers: defaultHeaders,
+        responseType: 'json',
+        timeout: {
+          request: 10_000,
+        },
+        retry: {
+          limit: 3,
+        },
+      });
+
+      await redis.SETEX('jokes:total', 60 * 60 * 12, Number.parseInt(body.message));
+      total = Number.parseInt(body.message);
+    }
+
     const id = randomNumber(0, total);
 
-    await context.telegram.sendPhoto(context.message.chat.id, `${api}/id/${id}`);
+    await context.telegram.sendPhoto(context.message.chat.id, `https://jokesbapak2.herokuapp.com/v1/id/${id}`);
   });
 
   return [

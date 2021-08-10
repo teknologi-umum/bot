@@ -35,4 +35,15 @@ test('should return original message if not a valid command', () => {
   assert.equal(argument, 'some random text');
 });
 
+test('should return empty string if no params was given', () => {
+  const fakeContext = {
+    message: { text: '/foo' },
+    me: 'teknologiumumbot',
+  };
+
+  const argument = getCommandArgs('foo', fakeContext);
+
+  assert.equal(argument, '');
+});
+
 test.run();
