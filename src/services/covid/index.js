@@ -2,6 +2,7 @@ import { request } from 'undici';
 import dayjs from 'dayjs';
 import { renderTemplate } from './utils.js';
 import redisClient from '../../utils/redis.js';
+import { getCommandArgs } from '../../utils/command.js';
 
 /**
  * Send covid information.
@@ -11,8 +12,7 @@ import redisClient from '../../utils/redis.js';
 async function covid(context, cache) {
   const redis = redisClient(cache);
   const chatId = context.message.chat.id;
-  const re = new RegExp(`^/covid@${context.me}|/covid`);
-  const country = context.message?.text?.replace(re, '').trim().toLowerCase() ?? '';
+  const country = getCommandArgs('covid', context);
 
   if (country) {
     // Build the url

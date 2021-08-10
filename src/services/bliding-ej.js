@@ -1,3 +1,5 @@
+import { getCommandArgs } from '../utils/command.js';
+
 /**
  * Defines bliding ej
  * @param {import('telegraf').Context} context
@@ -5,8 +7,7 @@
  */
 async function define(context) {
   const chatId = context.message.chat.id;
-  const re = new RegExp(`^/blidingej@${context.me}|/blidingej`);
-  const argument = context.message?.text?.replace(re, '').trim().toLowerCase() ?? '';
+  const argument = getCommandArgs('blidingej', context);
 
   if (argument.match(/^indo|id/)) {
     await context.telegram.sendMessage(
