@@ -8,7 +8,7 @@ jobs:
   ci:
     name: Check
     runs-on: ubuntu-latest
-
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -21,11 +21,14 @@ jobs:
       - name: Installling dependencies
         run: npm install
 
-      - name: ESlint
-        run: npm run lint
+      - name: ESLint check
+        run: npx eslint --ignore-path .gitignore .
 
-      - name: Prettier
-        run: npx prettier --check --ignore-path .gitignore .
+      - name: Prettier check
+        run: npx prettier --check .
+
+      - name: Test
+        run: npm run test
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
