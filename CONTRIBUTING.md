@@ -12,7 +12,7 @@ Please make sure that the issue you're creating is in as much detail as possible
 
 ## Pull request
 
-**A big heads up before you're writing a breaking change code or a new feature: Please open up an [issue](https://github.com/teknologi-umum/bot/issues regarding what you're working on, or just talk in the [Telegram group](https://t.me/teknologi_umum).**
+**A big heads up before you're writing a breaking change code or a new feature: Please open up an [issue](https://github.com/teknologi-umum/bot/issues) regarding what you're working on, or just talk in the [Telegram group](https://t.me/teknologi_umum).**
 
 ### Prerequisites
 
