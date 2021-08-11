@@ -17,6 +17,7 @@ import * as blidingej from './services/bliding-ej.js';
 import * as evalBot from './services/eval.js';
 import * as blog from './services/blog.js';
 import * as quiz from './services/quiz.js';
+import * as search from './services/search.js';
 
 dotenv.config({ path: pathTo(import.meta.url, '../.env') });
 
@@ -39,6 +40,7 @@ const commands = [
   evalBot.register(bot),
   blog.register(bot, cache),
   quiz.register(bot, mongo, cache),
+  search.register(bot),
 ]
   .filter((v) => Array.isArray(v))
   .flat();

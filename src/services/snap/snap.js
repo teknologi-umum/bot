@@ -19,7 +19,7 @@ async function snap(context) {
     await context.telegram.sendPhoto(
       context.message.chat.id,
       {
-        source: await generateImage(code),
+        source: await generateImage(code, context.message.from.username),
       },
       {
         caption: replyMessage.from.username
