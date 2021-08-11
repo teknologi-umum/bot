@@ -1,14 +1,14 @@
 import { compile } from 'tempura';
 import { readFileSync } from 'fs';
-import { join } from 'desm';
 import { randomNumber, shuffle } from 'carret';
+import { pathTo } from '../../utils/path.js';
 
 /**
  * Render tempura template into HTML string
  * @returns {any}
  */
 function renderTemplate(data) {
-  const file = readFileSync(join(import.meta.url, 'template.hbs'), { encoding: 'utf8' });
+  const file = readFileSync(pathTo(import.meta.url, 'template.hbs'), { encoding: 'utf8' });
   return compile(file)(data);
 }
 

@@ -1,12 +1,13 @@
 import { readFileSync } from 'fs';
-import { join } from 'desm';
-import { request } from 'undici';
+import got from 'got';
 import { compile } from 'tempura';
 import { randomNumber } from 'carret';
 import * as cheerio from 'cheerio';
+import { pathTo } from '../../utils/path.js';
+import { defaultHeaders } from '../../utils/http.js';
 
 const renderTemplate = compile(
-  readFileSync(join(import.meta.url, 'templates/default.hbs'), {
+  readFileSync(pathTo(import.meta.url, 'templates/default.hbs'), {
     encoding: 'utf8',
   }),
 );
@@ -28,11 +29,13 @@ export function extractQuoteFromHtml(response) {
   return quote;
 }
 
-export function fetchRandomQuote() {
+export async function fetchRandomQuote() {
   // TODO: Fetch from many resources
-  return request('https://jagokata.com/kata-bijak/acak.html')
-    .then((res) => res.body.text())
-    .then(extractQuoteFromHtml);
+  const { body } = await got.get('https://jagokata.com/kata-bijak/acak.html', {
+    responseType: 'text',
+    headers: defaultHeaders,
+  });
+  return extractQuoteFromHtml(body);
 }
 
 export function formatQuote(quote) {

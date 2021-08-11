@@ -1,12 +1,12 @@
 import { compile } from 'tempura';
 import { readFileSync } from 'fs';
-import { join } from 'desm';
+import { pathTo } from '../../utils/path.js';
 
 const templates = {
-  country: readFileSync(join(import.meta.url, 'country.template.hbs'), {
+  country: readFileSync(pathTo(import.meta.url, 'country.template.hbs'), {
     encoding: 'utf8',
   }),
-  global: readFileSync(join(import.meta.url, 'global.template.hbs'), {
+  global: readFileSync(pathTo(import.meta.url, 'global.template.hbs'), {
     encoding: 'utf8',
   }),
 };

@@ -16,7 +16,8 @@ async function snap(context) {
     }
     const code = replyMessage.text;
 
-    await context.replyWithPhoto(
+    await context.telegram.sendPhoto(
+      context.message.chat.id,
       {
         source: await generateImage(code),
       },

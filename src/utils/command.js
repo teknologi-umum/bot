@@ -3,21 +3,17 @@
  *
  * @param {string} cmd - Command name
  * @param {import("telegraf").Context} context - The Telegraf context
- * @return {string} command argument
+ * @return {string} command argument, empty string if no params are supplied
  */
 export const getCommandArgs = (cmd, context) => {
   const {
     message: { text },
-    me,
   } = context;
-  const cmdLength = cmd.length;
 
-  if (text.startsWith(`/${cmd} `)) {
-    return text.substring(cmdLength + 2);
-  }
-
-  if (text.startsWith(`/${cmd}@${me} `)) {
-    return text.substring(cmdLength + me.length + 3);
+  if (text.startsWith(`/${cmd}`)) {
+    const result = text.split(' ');
+    result.shift();
+    return result.length > 0 ? result.join(' ') : '';
   }
 
   return context.message.text;

@@ -21,34 +21,36 @@
     {
       "name": "Ronny Gunawan",
       "url": "https://github.com/ronnygunawan"
+    },
+    {
+      "name": "elianiva",
+      "url": "https://github.com/elianiva"
     }
   ],
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
     "lint": "eslint --fix --ignore-path .gitignore .",
-    "format": "prettier --write --ignore-path .gitignore --ignore-path .prettierignore .",
+    "format": "prettier --write .",
     "prepare": "node prepare.cjs",
     "test": "c8 uvu tests"
   },
   "dependencies": {
-    "@cheprasov/qrcode": "^0.1.0",
-    "@sentry/node": "^6.10.0",
-    "carret": "^1.0.0",
+    "@sentry/node": "^6.11.0",
+    "carret": "^1.0.4",
     "cheerio": "^1.0.0-rc.10",
     "dayjs": "^1.10.6",
-    "desm": "^1.1.0",
     "dotenv": "^10.0.0",
-    "mongoose": "^5.13.5",
     "esprima": "^4.0.1",
+    "got": "^11.8.2",
+    "mongoose": "^5.13.6",
     "redis": "^3.1.2",
     "telegraf": "^4.4.1",
-    "tempura": "^0.3.2",
-    "undici": "^4.3.1"
+    "tempura": "^0.3.2"
   },
   "devDependencies": {
     "c8": "^7.8.0",
-    "eslint": "^7.31.0",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "husky": "^7.0.1",
