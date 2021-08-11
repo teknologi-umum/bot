@@ -10,7 +10,7 @@ const SEARCH_LIMIT = 10;
  */
 async function search(context) {
   const query = getCommandArgs('search', context);
-  if (query === '') return;
+  if (!query) return;
 
   const { body, requestUrl, statusCode } = await got.get('https://html.duckduckgo.com/html/', {
     searchParams: {
@@ -41,12 +41,14 @@ async function search(context) {
     results.push({ text, href: decodeURIComponent(href) });
   });
 
-  await context.replyWithMarkdown(
+  await context.telegram.sendMessage(
+    context.message.chat.id,
     renderTemplate({
       items: results,
       amount: SEARCH_LIMIT,
       url: decodeURIComponent(requestUrl),
     }),
+    { parse_mode: 'HTML' },
   );
 }
 

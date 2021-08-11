@@ -3,7 +3,7 @@
 Showing the first {{amount}} result from DuckDuckGo:
 
 {{#each items as item, idx}}
-  {{idx + 1}}. [{{item.text}}]({{{item.href}}})
+  {{idx + 1}}. <a href="{{{item.href}}}">{{item.text}}</a>
 {{/each}}
 
-[Read more on DuckDuckGo]({{{url}}})
+<a href="{{{url}}}">Read more on DuckDuckGo</a>
