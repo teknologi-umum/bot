@@ -1,9 +1,9 @@
 import { test } from 'uvu';
 import * as assert from 'uvu/assert';
-import { renderTemplate } from '../src/services/covid/utils.js';
+import { renderTemplate } from '../src/utils/template.js';
 
 test('should render data into country template', () => {
-  const result = renderTemplate('country')({
+  const result = renderTemplate('covid/country.template.hbs', {
     date: '21 April 2010',
     country: 'Indonesia',
     confirmed: 100,
@@ -29,7 +29,7 @@ Active: <b>1</b>`,
 });
 
 test('should render data into global template', () => {
-  const result = renderTemplate('global')({
+  const result = renderTemplate('covid/global.template.hbs', {
     date: '20 April 2020',
     globalConfirmed: 1000,
     globalDeaths: 100,

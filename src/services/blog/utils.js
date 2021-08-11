@@ -1,16 +1,4 @@
-import { compile } from 'tempura';
-import { readFileSync } from 'fs';
 import { randomNumber, shuffle } from 'carret';
-import { pathTo } from '../../utils/path.js';
-
-/**
- * Render tempura template into HTML string
- * @returns {any}
- */
-function renderTemplate(data) {
-  const file = readFileSync(pathTo(import.meta.url, 'template.hbs'), { encoding: 'utf8' });
-  return compile(file)(data);
-}
 
 /**
  * Shuffle the array with carret, then return the result.
@@ -30,4 +18,4 @@ function randomArray(items, length) {
   return result;
 }
 
-export { renderTemplate, randomArray };
+export { randomArray };
