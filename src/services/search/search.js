@@ -1,6 +1,6 @@
 import cheerio from 'cheerio';
 import got from 'got';
-import { renderTemplate } from './utils.js';
+import { renderTemplate } from '../../utils/template.js';
 import { getCommandArgs } from '../../utils/command.js';
 
 const SEARCH_LIMIT = 10;
@@ -43,7 +43,7 @@ async function search(context) {
 
   await context.telegram.sendMessage(
     context.message.chat.id,
-    renderTemplate({
+    renderTemplate('search/search.template.hbs', {
       items: results,
       amount: SEARCH_LIMIT,
       url: decodeURIComponent(requestUrl),

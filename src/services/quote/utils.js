@@ -1,16 +1,8 @@
-import { readFileSync } from 'fs';
 import got from 'got';
-import { compile } from 'tempura';
 import { randomNumber } from 'carret';
 import * as cheerio from 'cheerio';
-import { pathTo } from '../../utils/path.js';
 import { defaultHeaders } from '../../utils/http.js';
-
-const renderTemplate = compile(
-  readFileSync(pathTo(import.meta.url, 'templates/default.hbs'), {
-    encoding: 'utf8',
-  }),
-);
+import { renderTemplate } from '../../utils/template.js';
 
 export function extractQuoteFromHtml(response) {
   const quote = {};
@@ -39,7 +31,7 @@ export async function fetchRandomQuote() {
 }
 
 export function formatQuote(quote) {
-  return renderTemplate(quote);
+  return renderTemplate('quote/quote.template.hbs', quote);
 }
 
 export async function getRandomQuote() {

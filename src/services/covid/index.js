@@ -50,7 +50,7 @@ async function covid(context, cache) {
     // TODO: total dosis vaksin
     await context.telegram.sendMessage(
       chatId,
-      renderTemplate('country')({
+      renderTemplate('covid/country.template.hbs', {
         date: dayjs(body.updated).format('DD MMMM YYYY'),
         country: body.country,
         confirmed: body.todayCases.toLocaleString('id-ID') ?? 0,
@@ -95,7 +95,7 @@ async function covid(context, cache) {
     })
   ).body;
 
-  const preformatMessage = renderTemplate('global')({
+  const preformatMessage = renderTemplate('covid/global.template.hbs', {
     date: dayjs(globalData.updated).format('DD MMMM YYYY'),
     globalConfirmed: globalData.todayCases.toLocaleString('id-ID') ?? 0,
     globalDeaths: globalData.todayDeaths.toLocaleString('id-ID') ?? 0,
