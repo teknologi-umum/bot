@@ -18,6 +18,7 @@ import * as evalBot from './services/eval.js';
 import * as blog from './services/blog.js';
 import * as quiz from './services/quiz.js';
 import * as search from './services/search.js';
+import * as dukun from './services/dukun/dukun.js';
 
 dotenv.config({ path: pathTo(import.meta.url, '../.env') });
 
@@ -41,6 +42,7 @@ const commands = [
   blog.register(bot, cache),
   quiz.register(bot, mongo, cache),
   search.register(bot),
+  dukun.register(bot, mongo, cache),
 ]
   .filter((v) => Array.isArray(v))
   .flat();
