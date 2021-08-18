@@ -1,6 +1,6 @@
 import got from 'got';
 import dayjs from 'dayjs';
-import { renderTemplate } from './utils.js';
+import { renderTemplate } from '../../utils/template.js';
 import redisClient from '../../utils/redis.js';
 import { getCommandArgs } from '../../utils/command.js';
 import { defaultHeaders } from '../../utils/http.js';

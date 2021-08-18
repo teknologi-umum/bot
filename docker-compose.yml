@@ -1,18 +1,15 @@
-version: '3.9'
 services:
   redis:
-    image: 'redis:alpine'
+    image: redis:6.2.5-alpine
     network_mode: host
   mongo:
-    image: mongo:4.4.6-bionic
+    image: mongo:4.4.8-focal
     restart: always
     ports:
       - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
-    # volumes:
-    #   - ./volume/mongo:/data/db
   mongo-express:
     image: mongo-express:1.0.0-alpha.4
     restart: always

@@ -1,0 +1,11 @@
+{{#expect dukun, others}}
+
+<b>Dukun Perguruan Jason Wihardja</b>\n
+
+{{#each dukun as d}}
+● {{ [d.firstName, d.lastName].join(' ') }} ({{ d.points }} poin)
+{{/each}}
+
+{{#if others > 0 }}
+dan {{ others }} dukun lainnya..
+{{/if}}
