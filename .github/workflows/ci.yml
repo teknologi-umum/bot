@@ -8,7 +8,7 @@ jobs:
   ci:
     name: Deploy
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -54,3 +54,6 @@ jobs:
           environment: production
           set_commits: skip
           version: ${{ github.sha }}
+
+      - name: Send coverage report to Codecov
+        uses: codecov/codecov-action@v2
