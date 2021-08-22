@@ -1,3 +1,4 @@
+import { isBigGroup } from '../../utils/home.js';
 import { getRandomQuote } from './utils.js';
 
 /**
@@ -6,6 +7,9 @@ import { getRandomQuote } from './utils.js';
  * @returns {Promise<void>}
  */
 async function handleCommand(context) {
+  const bigGroup = await isBigGroup(context);
+  if (bigGroup) return;
+
   const chatId = context.message.chat.id;
   const message = await getRandomQuote();
 

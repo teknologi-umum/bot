@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { isHomeGroup } from '../utils/home.js';
 import redisClient from '../utils/redis.js';
 
 /**
@@ -77,6 +78,7 @@ export function register(bot, cache) {
   bot.on('message', async (context, next) => {
     // Only works on supergroup
     if (context.message?.poll && context.message?.chat?.type === 'supergroup') {
+      if (!isHomeGroup(context)) return;
       await poll(context, cache, context.message.poll, context.message.message_id);
       return;
     }

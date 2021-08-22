@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { randomNumber } from 'carret';
 import redisClient from '../utils/redis.js';
 import { poll } from './poll.js';
+import { isHomeGroup } from '../utils/home.js';
 
 const pollSchema = new mongoose.Schema(
   {
@@ -30,6 +31,8 @@ const pollSchema = new mongoose.Schema(
  * @returns
  */
 async function quiz(context, mongo, cache) {
+  if (!isHomeGroup(context)) return;
+
   const redis = redisClient(cache);
   const currentTime = dayjs().add(7, 'hours').toISOString();
   const chatID = context.message.chat.id;

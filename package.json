@@ -33,7 +33,7 @@
     "lint": "eslint --fix --ignore-path .gitignore .",
     "format": "prettier --write .",
     "prepare": "node prepare.cjs",
-    "test": "c8 uvu tests"
+    "test": "c8 --reporter=lcov --reporter=text uvu tests"
   },
   "dependencies": {
     "@sentry/node": "^6.11.0",
@@ -58,6 +58,7 @@
     "prettier": "^2.3.2",
     "uvu": "^0.5.1"
   },
+  "engineStrict": true,
   "engines": {
     "node": ">=16.4.0",
     "npm": ">=7.1.0"

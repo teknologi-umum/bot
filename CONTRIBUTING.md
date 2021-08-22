@@ -50,9 +50,10 @@ BOT_TOKEN=<your own token>
 REDIS_URL=redis://@localhost:6379/
 MONGO_URL=mongodb://root:password@localhost:27017/teknologiumum?useNewUrlParser=true&useUnifiedTopology=true&authSource=admin
 SENTRY_DSN=
+HOME_GROUP_ID=<your test group, if any>
 ```
 
-5. Run `npm run dev` to start runnint your bot.
+5. Run `npm run dev` to start running your bot.
 6. Happy coding!
 
 ### Testing your change
