@@ -8,7 +8,6 @@ import { pathTo } from './utils/path.js';
 
 import * as poll from './services/poll.js';
 import * as meme from './services/meme.js';
-import * as time from './services/time.js';
 import * as help from './services/help.js';
 import * as quote from './services/quote.js';
 import * as covid from './services/covid.js';
@@ -31,7 +30,6 @@ const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
 
 const commands = [
   meme.register(bot, cache),
-  time.register(bot),
   help.register(bot),
   quote.register(bot),
   covid.register(bot, cache),
@@ -48,8 +46,6 @@ const commands = [
   .flat();
 
 bot.telegram.setMyCommands(commands);
-
-// TODO: Handle command not found
 
 bot.catch((error, context) => {
   logger.captureException(error, (scope) => {

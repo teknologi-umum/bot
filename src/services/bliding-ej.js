@@ -1,4 +1,5 @@
 import { getCommandArgs } from '../utils/command.js';
+import { isHomeGroup } from '../utils/home.js';
 
 /**
  * Defines bliding ej
@@ -6,6 +7,8 @@ import { getCommandArgs } from '../utils/command.js';
  * @returns {Promise<void>}
  */
 async function define(context) {
+  if (!isHomeGroup(context)) return;
+
   const chatId = context.message.chat.id;
   const argument = getCommandArgs('blidingej', context);
 

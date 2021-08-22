@@ -2,6 +2,7 @@ import got from 'got';
 import { randomNumber } from 'carret';
 import { defaultHeaders } from '../utils/http.js';
 import redisClient from '../utils/redis.js';
+import { isBigGroup } from '../utils/home.js';
 
 /**
  * Send memes..
@@ -12,10 +13,14 @@ export function register(bot, cache) {
   const redis = redisClient(cache);
 
   bot.command('kktbsys', async (context) => {
+    const bigGroup = await isBigGroup(context);
+    if (bigGroup) return;
     await context.telegram.sendPhoto(context.message.chat.id, 'https://i.ibb.co/XtSbXBT/image.png');
   });
 
   bot.command('illuminati', async (context) => {
+    const bigGroup = await isBigGroup(context);
+    if (bigGroup) return;
     await context.telegram.sendAnimation(
       context.message.chat.id,
       'https://media.giphy.com/media/uFOW5cbNaoTaU/giphy.gif',
@@ -23,10 +28,14 @@ export function register(bot, cache) {
   });
 
   bot.command('yntkts', async (context) => {
+    const bigGroup = await isBigGroup(context);
+    if (bigGroup) return;
     await context.telegram.sendPhoto(context.message.chat.id, 'https://i.ibb.co/P1Q0650/yntkts.jpg');
   });
 
   bot.command('joke', async (context) => {
+    const bigGroup = await isBigGroup(context);
+    if (bigGroup) return;
     let total = await redis.GET('jokes:total');
 
     if (!total) {
