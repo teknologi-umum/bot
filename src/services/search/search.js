@@ -31,21 +31,21 @@ async function search(context) {
   const $ = cheerio.load(body);
 
   let results = [];
-  $('.result__title > a').each(function (idx) {
-    if (idx == SEARCH_LIMIT) {
-      return false;
-    }
-
+  $('.result__title > a').each(function () {
     const text = this.firstChild.data;
     const href = this.attribs.href.replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, '').replace(/&rut=.*$/, '');
     results.push({ text, href: decodeURIComponent(href) });
   });
 
+  results = results
+    .filter(({ href }) => !/https:\/\/duckduckgo\.com\/y\.js\?ad_provider=/.test(href))
+    .slice(0, SEARCH_LIMIT);
+
   await context.telegram.sendMessage(
     context.message.chat.id,
     renderTemplate('search/search.template.hbs', {
       items: results,
-      amount: SEARCH_LIMIT,
+      amount: results.length,
       url: decodeURIComponent(requestUrl),
     }),
     { parse_mode: 'HTML' },
