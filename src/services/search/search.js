@@ -37,7 +37,7 @@ async function search(context) {
     }
 
     const text = this.firstChild.data;
-    const href = this.attribs.href.replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, '');
+    const href = this.attribs.href.replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, '').replace(/&rut=.*$/, '');
     results.push({ text, href: decodeURIComponent(href) });
   });
 
