@@ -17,6 +17,10 @@ export function cleanFilter(search, cached) {
         clean = false;
         break;
       }
+      if ((new RegExp(`([A-Z]{3,4})+(-)+([0-9]{3,4})`)).test(currentWord)) {
+        clean = false;
+        break;
+      }
     }
 
     clean && result.push(currentSearch);
