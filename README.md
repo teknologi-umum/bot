@@ -1,20 +1,34 @@
 # Bot for Teknologi Umum
 
-Basically a _bleeding edge_ telegram bot to fulfill Teknologi Umum's _bleeding edge_ needs. Teknologi Umum is an Indonesian telegram group made for people to talk about.. basically anything, tbh. You can join through [this link](https://t.me/teknologi_umum). First thing you need to do is mute the group, it's effing noisy.
+> Click here for [README but in Indonesian language](./README_id.md)
+
+Basically a _bleeding edge_ telegram bot to fulfill Teknologi Umum's _bleeding edge_ needs. Teknologi Umum is an Indonesian telegram group made for people to talk about.. basically anything. You can join through [this link](https://t.me/teknologi_umum). First thing you need to do is mute the group, it's so noisy.
 
 What can this bot do? Well, _bleeding edge_ stuffs! You'll find everything when you interact with [the bot on Telegram](https://t.me/TeknologiUmumBot).
 
 Feel free to contribute and add some _bleeding edge_ features.
 
-To make it even more _bleeding edge_, we're using [fly.io](https://fly.io/) for deployment on Node v16. Oh, and we're going so much _bleeding edge_ by doing as little tests as possible lmao.
+## Can I invite the bot to my group?
 
-## How To Run this Codebase?
+Absolutely! Here's how:
 
-- You need NodeJS, Telegram account, and Redis on your device.
-- Setup credentials (you can see the example [here](/.env.example)).
-- To obtain a Telegram Token, you will need to create a bot at BotFather on Telegram.
-- Go to this repository directory and run `npm install` on your terminal.
-- Finally, run `npm start` to activate the bot.
+1. Start [the bot](https://t.me/TeknologiUmumBot) on Telegram via private message, there is a "Start Bot" button.
+2. Go to your group, on Telegram Desktop there is a 3 dotted menu on the top right, click it and go to "Add Members". Supposely in Telegram Mobile, it should be the same.
+3. Search for `@TeknologiUmumBot`
+4. Once he's inside, please made him an admin. If you didn't do this, the bot is pretty much useless. It can't read or send any message.
+5. Spread the good news!
+
+## I want to contribute, what can I do?
+
+You can do anything! Fix bugs, add features, or browse [issues page](https://github.com/teknologi-umum/bot/issues) to see if there's something you can solve and work on.
+
+To work on this project, at least you will need:
+
+- Node.js Current Version (as of now, it's version 16)
+- A Telegram account
+- MongoDB and Redis (or Docker, we prefer Docker actually)
+
+Do you need all the knowledge of using Redis and MongoDB? Absolutely not! If the files you're working on doesn't have MongoDB and Redis in it, why bother? Have some fun!
 
 See [CONTRIBUTING](./CONTRIBUTING.md) for more detailed instruction.
 
@@ -37,3 +51,5 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ```
+
+See full license [here](./LICENSE).
