@@ -39,7 +39,7 @@ const commands = [
   evalBot.register(bot),
   blog.register(bot, cache),
   quiz.register(bot, mongo, cache),
-  search.register(bot),
+  search.register(bot, mongo, cache),
   dukun.register(bot, mongo, cache),
 ]
   .filter((v) => Array.isArray(v))
