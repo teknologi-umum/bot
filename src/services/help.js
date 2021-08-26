@@ -6,8 +6,9 @@
 async function help(context) {
   await context.telegram.sendMessage(
     context.message.chat.id,
-    `Hi there! I can't do much right now. For available commands, type / and browse through the autocomplete.\n\n` +
-      `For feature request please refer to the <a href="https://github.com/teknologi-umum/bot">Github repository</a>.`,
+    `Hi there! For available commands, type / and browse through the autocomplete.\n\n` +
+      `I'm also an open source bot! If you want to add me into your group or have any feature request, ` +
+      `please refer to the <a href="https://github.com/teknologi-umum/bot">Github repository</a>.`,
     {
       parse_mode: 'HTML',
     },
