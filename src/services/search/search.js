@@ -14,7 +14,7 @@ const safeWordSchema = new mongoose.Schema(
     language: String,
     value: String,
   },
-  { collection: 'badstuffs' },
+  { collection: 'badstuff' },
 );
 
 /**
