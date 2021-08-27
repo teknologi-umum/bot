@@ -60,7 +60,7 @@ async function search(context, mongo, cache) {
 
   let results = [];
   $('.result__title > a').each(function () {
-    const text = this.firstChild.data;
+    const text = this.firstChild.data || 'Failed to get title';
     const href = this.attribs.href.replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, '').replace(/&rut=.*$/, '');
     results.push({ text, href: decodeURIComponent(href) });
   });
@@ -79,7 +79,7 @@ async function search(context, mongo, cache) {
       amount: results.length,
       url: decodeURIComponent(requestUrl),
     }),
-    { parse_mode: 'HTML' },
+    { parse_mode: 'HTML', disable_web_page_preview: true },
   );
 }
 
