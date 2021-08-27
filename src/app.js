@@ -28,6 +28,8 @@ const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
   useUnifiedTopology: true,
 });
 
+// TODO: Generate bad word trie here.
+
 const commands = [
   meme.register(bot, cache),
   help.register(bot),
