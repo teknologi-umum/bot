@@ -79,7 +79,7 @@ async function search(context, mongo, cache) {
       amount: results.length,
       url: decodeURIComponent(requestUrl),
     }),
-    { parse_mode: 'HTML' },
+    { parse_mode: 'HTML', disable_web_page_preview: true },
   );
 }
 
