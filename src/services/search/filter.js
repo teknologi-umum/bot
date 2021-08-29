@@ -1,3 +1,5 @@
+import { binarySearch } from '../../builder/binarySearch.js';
+
 /**
  * Only output clean array or search results
  * @param {Array<{href: string, text: string}>} search
@@ -9,17 +11,22 @@ export function cleanFilter(search, trie) {
   for (let i = 0; i < search.length; i++) {
     const { href, text } = search[i];
     const textArray = text.split(/[^A-Za-z0-9]/gi);
+    const url = new URL(href);
+    const urlArray = [url.hostname, ...url.pathname.split('/')];
+
     let clean = true;
 
-    const validate = trie.containsKeyBeginningWith(href);
-    if (validate) {
-      clean = false;
-      break;
+    for (let j = 0; j < urlArray.length; j++) {
+      const validate = binarySearch(trie, urlArray[j]);
+      if (validate >= 0) {
+        clean = false;
+        break;
+      }
     }
 
     for (let k = 0; k < textArray.length; k++) {
-      const validate = trie.containsKey(textArray[k]);
-      if (validate) {
+      const validate = binarySearch(trie, textArray[k]);
+      if (validate >= 0) {
         clean = false;
         break;
       }
@@ -39,7 +46,7 @@ export function cleanFilter(search, trie) {
  */
 export function isClean(input, trie) {
   for (let i = 0; i < input.length; i++) {
-    if (trie.containsKey(input[i])) return false;
+    if (binarySearch(trie, input) >= 0) return false;
   }
   return true;
 }

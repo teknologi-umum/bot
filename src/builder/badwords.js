@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { terminal } from '../utils/logger.js';
-import { Trie } from './trie.js';
+// import { Trie } from './trie.js';
 
 const wordSchema = new mongoose.Schema(
   {
@@ -9,23 +9,20 @@ const wordSchema = new mongoose.Schema(
   { collection: 'badstuff' },
 );
 
-const trie = new Trie();
-
 /**
  * Initialize the bad words
  * @param {import('mongoose').Connection} mongo
- * @returns {Promise<Trie>}
+ * @returns {Promise<Set>}
  */
 export async function initialize(mongo) {
-  let count = 0;
   const Words = mongo.model('Words', wordSchema, 'badstuff');
-  const wordList = await Words.find({});
+  const wordList = await Words.find({}, 'value', { sort: { value: 1 } });
 
+  const array = [];
   for (const word of wordList) {
-    trie.add(word.value, count);
-    count++;
+    array.push(word.value);
   }
 
-  terminal.success('Trie was built');
-  return trie;
+  terminal.success('Array was built');
+  return array;
 }
