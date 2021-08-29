@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { terminal } from '../utils/logger.js';
 import { Trie } from './trie.js';
 
 const wordSchema = new mongoose.Schema(
@@ -25,5 +26,6 @@ export async function initialize(mongo) {
     count++;
   }
 
+  terminal.success('Trie was built');
   return trie;
 }

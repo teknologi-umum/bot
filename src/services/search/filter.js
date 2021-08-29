@@ -8,21 +8,18 @@ export function cleanFilter(search, trie) {
   const result = [];
   for (let i = 0; i < search.length; i++) {
     const { href, text } = search[i];
-    const hrefArray = href.split(/[^A-Za-z0-9]/gi);
     const textArray = text.split(/[^A-Za-z0-9]/gi);
     let clean = true;
 
-    for (let j = 0; j < hrefArray.length; j++) {
-      const validate = trie.containsKey(hrefArray[j]);
-      if (!validate) {
-        clean = false;
-        break;
-      }
+    const validate = trie.containsKeyBeginningWith(href);
+    if (validate) {
+      clean = false;
+      break;
     }
 
     for (let k = 0; k < textArray.length; k++) {
       const validate = trie.containsKey(textArray[k]);
-      if (!validate) {
+      if (validate) {
         clean = false;
         break;
       }
