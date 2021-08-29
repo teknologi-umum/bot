@@ -33,7 +33,7 @@ export function cleanFilter(search, trie) {
 
 /**
  * Check if input is clean or not
- * @param {String} input
+ * @param {string[]} input
  * @param {import('../../builder/trie.js').Trie} trie
  * @returns {Boolean}
  */
