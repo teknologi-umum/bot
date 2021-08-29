@@ -31,7 +31,7 @@ export async function cleanFilter(search, mongo) {
   }, new Set());
 
   const matches = await Words.aggregate([{ $match: { value: { $in: Array.from(results) } } }]);
-  const dedupeMatches = Array.from(new Set(matches.map((m) => m.value)));
+  const dedupeMatches = matches.map((m) => m.value);
 
   const result = search.filter((o) => {
     for (const match of dedupeMatches) {
