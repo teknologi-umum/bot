@@ -39,12 +39,12 @@ async function search(context, mongo) {
 
   const $ = cheerio.load(body);
 
-  let results = [];
-  $('.result__title > a').each(function () {
-    const text = this.firstChild.data || 'Failed to get title';
-    const href = this.attribs.href.replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, '').replace(/&rut=.*$/, '');
-    results.push({ text, href: decodeURIComponent(href) });
-  });
+  let results = $('.result__title > a')
+    .map((_, el) => ({
+      text: el.firstChild.data || 'Failed to get title',
+      href: decodeURIComponent(el.attribs.href.replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, '').replace(/&rut=.*$/, '')),
+    }))
+    .get();
 
   // Remove ads
   results = results.filter(({ href }) => !/https:\/\/duckduckgo\.com\/y\.js\?ad_provider=/.test(href));
