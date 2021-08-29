@@ -5,6 +5,7 @@ import { getCommandArgs } from '../../utils/command.js';
 import { isClean, cleanFilter } from './filter.js';
 
 const SEARCH_LIMIT = 10;
+const BEST = 2;
 
 /**
  * @param {import('telegraf').Telegraf} context
@@ -46,19 +47,27 @@ async function search(context, mongo) {
     }))
     .get();
 
+  let snippets = $('.result__snippet')
+    .map((_, el) => el.children.map((x) => $.html(x)).join(''))
+    .slice(0, BEST)
+    .get();
+
   // Remove ads
   results = results.filter(({ href }) => !/https:\/\/duckduckgo\.com\/y\.js\?ad_provider=/.test(href));
   // Safer search
   results = await cleanFilter(results, mongo);
   // Trim to certain length
-  results = results.slice(0, SEARCH_LIMIT);
+  results = results.slice(0, SEARCH_LIMIT + BEST);
 
   await context.telegram.sendMessage(
     context.message.chat.id,
     renderTemplate('search/search.template.hbs', {
-      items: results,
-      amount: results.length,
+      query,
+      snippets,
+      items: results.slice(BEST),
+      amount: results.length - BEST,
       url: decodeURIComponent(requestUrl),
+      best: results.slice(0, BEST),
     }),
     { parse_mode: 'HTML', disable_web_page_preview: true },
   );
