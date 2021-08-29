@@ -8,15 +8,15 @@ const SEARCH_LIMIT = 10;
 
 /**
  * @param {import('telegraf').Telegraf} context
- * @param {import('../../builder/trie.js').Trie} trie
+ * @param {import('mongoose').Connection} mongo
  * @returns {Promise<void>}
  */
-async function search(context, trie) {
+async function search(context, mongo) {
   const query = getCommandArgs('search', context);
   if (!query) return;
 
-  const queryArray = query.split(/\s+/g);
-  if (!isClean(queryArray, trie)) {
+  const clean = await isClean(query, mongo);
+  if (!clean) {
     await context.reply('Keep the search clean, shall we? 😉');
     return;
   }
@@ -49,7 +49,7 @@ async function search(context, trie) {
   // Remove ads
   results = results.filter(({ href }) => !/https:\/\/duckduckgo\.com\/y\.js\?ad_provider=/.test(href));
   // Safer search
-  results = cleanFilter(results, trie);
+  results = await cleanFilter(results, mongo);
   // Trim to certain length
   results = results.slice(0, SEARCH_LIMIT);
 
@@ -67,11 +67,11 @@ async function search(context, trie) {
 /**
  * Send search result from duckduckgo.
  * @param {import('telegraf').Telegraf} bot
- * @param {import('../../builder/trie.js').Trie} trie
+ * @param {import('mongoose').Connection} mongo
  * @returns {{ command: String, description: String}[]}
  */
-export function register(bot, trie) {
-  bot.command('search', (context) => search(context, trie));
+export function register(bot, mongo) {
+  bot.command('search', (context) => search(context, mongo));
 
   return [
     {

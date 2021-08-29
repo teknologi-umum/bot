@@ -6,7 +6,6 @@ import redis from 'redis';
 
 import { sentry, terminal } from './utils/logger.js';
 import { pathTo } from './utils/path.js';
-import { initialize } from './builder/badwords.js';
 
 import * as poll from './services/poll.js';
 import * as meme from './services/meme.js';
@@ -32,9 +31,6 @@ const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
 });
 
 async function main() {
-  terminal.info('Initializing bad word trie');
-  const trie = await initialize(mongo);
-
   const commands = [
     meme.register(bot, cache),
     help.register(bot),
@@ -46,7 +42,7 @@ async function main() {
     evalBot.register(bot),
     blog.register(bot, cache),
     quiz.register(bot, mongo, cache),
-    search.register(bot, trie),
+    search.register(bot, mongo),
     dukun.register(bot, mongo, cache),
   ]
     .filter((v) => Array.isArray(v))

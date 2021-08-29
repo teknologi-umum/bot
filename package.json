@@ -29,7 +29,7 @@
   ],
   "scripts": {
     "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
+    "dev": "nodemon --max-old-space-size=220 src/app.js",
     "lint": "eslint --fix --ignore-path .gitignore .",
     "format": "prettier --write .",
     "prepare": "node prepare.cjs",
