@@ -1,41 +1,22 @@
-import mongoose from 'mongoose';
 import cheerio from 'cheerio';
 import got from 'got';
 import { renderTemplate } from '../../utils/template.js';
 import { getCommandArgs } from '../../utils/command.js';
-import redisClient from '../../utils/redis.js';
 import { isClean, cleanFilter } from './filter.js';
 
 const SEARCH_LIMIT = 10;
 
-const safeWordSchema = new mongoose.Schema(
-  {
-    type: String,
-    language: String,
-    value: String,
-  },
-  { collection: 'badstuff' },
-);
-
 /**
  * @param {import('telegraf').Telegraf} context
  * @param {import('mongoose').Connection} mongo
- * @param {import('redis').RedisClient} cache
+ * @returns {Promise<void>}
  */
-async function search(context, mongo, cache) {
+async function search(context, mongo) {
   const query = getCommandArgs('search', context);
   if (!query) return;
 
-  const redis = redisClient(cache);
-  let safeWordsList = await redis.GET('search:safewords');
-  if (!safeWordsList) {
-    const SafeWords = mongo.model('SafeWords', safeWordSchema, 'badstuff');
-    const safeWordsFromDB = await SafeWords.find({});
-    safeWordsList = JSON.stringify(safeWordsFromDB.map((o) => o.value));
-    await redis.MSET('search:safewords', safeWordsList);
-  }
-
-  if (!isClean(query, JSON.parse(safeWordsList))) {
+  const clean = await isClean(query, mongo);
+  if (!clean) {
     await context.reply('Keep the search clean, shall we? 😉');
     return;
   }
@@ -68,7 +49,7 @@ async function search(context, mongo, cache) {
   // Remove ads
   results = results.filter(({ href }) => !/https:\/\/duckduckgo\.com\/y\.js\?ad_provider=/.test(href));
   // Safer search
-  results = cleanFilter(results, JSON.parse(safeWordsList));
+  results = await cleanFilter(results, mongo);
   // Trim to certain length
   results = results.slice(0, SEARCH_LIMIT);
 
@@ -86,11 +67,11 @@ async function search(context, mongo, cache) {
 /**
  * Send search result from duckduckgo.
  * @param {import('telegraf').Telegraf} bot
- * @param {import('mongoose').}
- * @returns {Promise<void>}
+ * @param {import('mongoose').Connection} mongo
+ * @returns {{ command: String, description: String}[]}
  */
-export function register(bot, mongo, cache) {
-  bot.command('search', (context) => search(context, mongo, cache));
+export function register(bot, mongo) {
+  bot.command('search', (context) => search(context, mongo));
 
   return [
     {
