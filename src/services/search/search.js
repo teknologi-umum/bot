@@ -40,34 +40,37 @@ async function search(context, mongo) {
 
   const $ = cheerio.load(body);
 
-  let results = $('.result__title > a')
-    .map((_, el) => ({
-      text: el.firstChild.data || 'Failed to get title',
-      href: decodeURIComponent(el.attribs.href.replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, '').replace(/&rut=.*$/, '')),
-    }))
+  let items = $('.web-result')
+    .map((_, el) => {
+      const $$ = cheerio.load($.html(el));
+      const title = $$('.result__title > a').first().text() || 'Failed to get title';
+      const href = decodeURIComponent(
+        $$('.result__title > a')
+          .first()
+          .attr('href')
+          .replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, '')
+          .replace(/&rut=.*$/, ''),
+      );
+      const snippet = $$('.result__snippet')
+        .map((_, el) => el.children.map((x) => $.html(x)).join(''))
+        .get();
+
+      return { title, href, snippet };
+    })
     .get();
 
-  let snippets = $('.result__snippet')
-    .map((_, el) => el.children.map((x) => $.html(x)).join(''))
-    .get();
-
-  // Remove ads
-  results = results.filter(({ href }) => !/https:\/\/duckduckgo\.com\/y\.js\?ad_provider=/.test(href));
   // Safer search
-  results = await cleanFilter(results, mongo);
+  items = await cleanFilter(items, mongo);
   // Trim to certain length
-  results = results.slice(0, SEARCH_LIMIT + BEST);
-  snippets = snippets.slice(0, BEST);
+  items = items.slice(0, SEARCH_LIMIT + BEST);
 
   await context.telegram.sendMessage(
     context.message.chat.id,
     renderTemplate('search/search.template.hbs', {
+      items,
       query,
-      snippets,
-      items: results.slice(BEST),
-      amount: results.length - BEST,
       url: decodeURIComponent(requestUrl),
-      best: results.slice(0, BEST),
+      bestAmount: BEST,
     }),
     { parse_mode: 'HTML', disable_web_page_preview: true },
   );

@@ -9,7 +9,7 @@ const wordSchema = new mongoose.Schema(
 
 /**
  * Only output clean array or search results
- * @param {Array<{href: string, text: string}>} search
+ * @param {Array<{href: string, title: string}>} search
  * @param {import('mongoose').Connection} mongo
  * @returns {Promise<Array<{href: string, text: string}>>}
  */
@@ -18,8 +18,8 @@ export async function cleanFilter(search, mongo) {
   const tempAggregate = [];
 
   for (let i = 0; i < search.length; i++) {
-    const { href, text } = search[i];
-    const textArray = text.split(/[^A-Za-z0-9]/gi);
+    const { href, title } = search[i];
+    const textArray = title.split(/[^A-Za-z0-9]/gi);
     const url = new URL(href);
     const urlArray = [url.hostname.replace(/www[A-Za-z0-9]*\./i, ''), ...url.pathname.split('/')];
     tempAggregate.push(...textArray, ...urlArray);
@@ -35,7 +35,7 @@ export async function cleanFilter(search, mongo) {
 
   const result = search.filter((o) => {
     for (const match of dedupeMatches) {
-      if (o.href.includes(match) || o.text.includes(match)) {
+      if (o.href.includes(match) || o.title.includes(match)) {
         return false;
       }
     }
