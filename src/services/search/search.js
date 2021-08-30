@@ -49,7 +49,6 @@ async function search(context, mongo) {
 
   let snippets = $('.result__snippet')
     .map((_, el) => el.children.map((x) => $.html(x)).join(''))
-    .slice(0, BEST)
     .get();
 
   // Remove ads
@@ -58,6 +57,7 @@ async function search(context, mongo) {
   results = await cleanFilter(results, mongo);
   // Trim to certain length
   results = results.slice(0, SEARCH_LIMIT + BEST);
+  snippets = snippets.slice(0, BEST);
 
   await context.telegram.sendMessage(
     context.message.chat.id,
