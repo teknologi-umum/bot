@@ -1,9 +1,18 @@
-{{#expect amount, items, url}}
+{{#expect items, url, query, bestAmount}}
 
-Showing the first {{amount}} result from DuckDuckGo:
+{{#var best = items.slice(0, bestAmount) }}
+{{#var first = items.slice(bestAmount) }}
 
-{{#each items as item, idx}}
-  {{idx + 1}}. <a href="{{{item.href}}}">{{item.text}}</a>
+You searched for <b>{{query}}</b>\n
+
+{{#each best as _, idx}}
+<a href="{{{best[idx].href}}}">{{{best[idx].title}}}</a>\n
+{{{best[idx].snippet}}}\n
+{{/each}}
+Showing the first {{first.length}} results from DuckDuckGo:
+
+{{#each items.slice(bestAmount) as item, idx}}
+  {{idx + 1}}. <a href="{{{item.href}}}">{{{item.title}}}</a>
 {{/each}}
 
 <a href="{{{url}}}">Read more on DuckDuckGo</a>

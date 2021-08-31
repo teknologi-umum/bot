@@ -5,6 +5,7 @@ import { getCommandArgs } from '../../utils/command.js';
 import { isClean, cleanFilter } from './filter.js';
 
 const SEARCH_LIMIT = 10;
+const BEST = 2;
 
 /**
  * @param {import('telegraf').Telegraf} context
@@ -39,26 +40,37 @@ async function search(context, mongo) {
 
   const $ = cheerio.load(body);
 
-  let results = [];
-  $('.result__title > a').each(function () {
-    const text = this.firstChild.data || 'Failed to get title';
-    const href = this.attribs.href.replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, '').replace(/&rut=.*$/, '');
-    results.push({ text, href: decodeURIComponent(href) });
-  });
+  let items = $('.web-result')
+    .map((_, el) => {
+      const $$ = cheerio.load($.html(el));
+      const title = $$('.result__title > a').first().text() || 'Failed to get title';
+      const href = decodeURIComponent(
+        $$('.result__title > a')
+          .first()
+          .attr('href')
+          .replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, '')
+          .replace(/&rut=.*$/, ''),
+      );
+      const snippet = $$('.result__snippet')
+        .map((_, el) => el.children.map((x) => $.html(x)).join(''))
+        .get();
 
-  // Remove ads
-  results = results.filter(({ href }) => !/https:\/\/duckduckgo\.com\/y\.js\?ad_provider=/.test(href));
+      return { title, href, snippet };
+    })
+    .get();
+
   // Safer search
-  results = await cleanFilter(results, mongo);
+  items = await cleanFilter(items, mongo);
   // Trim to certain length
-  results = results.slice(0, SEARCH_LIMIT);
+  items = items.slice(0, SEARCH_LIMIT + BEST);
 
   await context.telegram.sendMessage(
     context.message.chat.id,
     renderTemplate('search/search.template.hbs', {
-      items: results,
-      amount: results.length,
+      items,
+      query,
       url: decodeURIComponent(requestUrl),
+      bestAmount: BEST,
     }),
     { parse_mode: 'HTML', disable_web_page_preview: true },
   );
