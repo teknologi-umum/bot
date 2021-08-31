@@ -16,12 +16,12 @@ const dukunSchema = new mongoose.Schema(
   { collection: 'dukun' },
 );
 
-const dukunMasterSchema = new mongoose.Schema(
-  {
-    userID: Number,
-  },
-  { collection: 'dukunMaster' },
-);
+// const dukunMasterSchema = new mongoose.Schema(
+//   {
+//     userID: Number,
+//   },
+//   { collection: 'dukunMaster' },
+// );
 
 /**
  *
@@ -48,8 +48,8 @@ async function dukun(context, mongo, cache) {
     }
 
     // Set dukun master
-    if (argument.startsWith('master')) {
-      const newDukunMasterUserID = replyMessage.from.id;
+    if (argument === 'master') {
+      // const newDukunMasterUserID = replyMessage.from.id;
 
       const dukunData = await redis.GET('dukun:all');
       if (!dukunData) {
@@ -63,14 +63,18 @@ async function dukun(context, mongo, cache) {
       /**
        * @type {Record<string, any>[]}
        */
-      const dukunDataParsed = JSON.parse(dukunData);
+      // const dukunDataParsed = JSON.parse(dukunData);
 
       const formerDukunMaster = null;
 
       if (formerDukunMaster) {
-        await context.reply(`Dukun master telah berubah menjadi ${replyMessage.from?.first_name} ${replyMessage.from?.last_name}. [placeholder] telah turun tahta.`);
+        await context.reply(
+          `Dukun master telah berubah menjadi ${replyMessage.from?.first_name} ${replyMessage.from?.last_name}. [placeholder] telah turun tahta.`,
+        );
       } else {
-        await context.reply(`${replyMessage.from?.first_name} ${replyMessage.from?.last_name} telah diangkat menjadi dukun master. All hail ${replyMessage.from?.first_name} ${replyMessage.from?.last_name}!`);
+        await context.reply(
+          `${replyMessage.from?.first_name} ${replyMessage.from?.last_name} telah diangkat menjadi dukun master. All hail ${replyMessage.from?.first_name} ${replyMessage.from?.last_name}!`,
+        );
       }
 
       return;
