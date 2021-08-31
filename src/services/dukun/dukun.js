@@ -68,9 +68,13 @@ async function dukun(context, mongo, cache) {
       const formerDukunMaster = null;
 
       if (formerDukunMaster) {
-        await context.reply(`Dukun master telah berubah menjadi ${replyMessage.from?.first_name} ${replyMessage.from?.last_name}. [placeholder] telah turun tahta.`);
+        await context.reply(
+          `Dukun master telah berubah menjadi ${replyMessage.from?.first_name} ${replyMessage.from?.last_name}. [placeholder] telah turun tahta.`,
+        );
       } else {
-        await context.reply(`${replyMessage.from?.first_name} ${replyMessage.from?.last_name} telah diangkat menjadi dukun master. All hail ${replyMessage.from?.first_name} ${replyMessage.from?.last_name}!`);
+        await context.reply(
+          `${replyMessage.from?.first_name} ${replyMessage.from?.last_name} telah diangkat menjadi dukun master. All hail ${replyMessage.from?.first_name} ${replyMessage.from?.last_name}!`,
+        );
       }
 
       return;
