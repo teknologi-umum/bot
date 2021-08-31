@@ -16,6 +16,13 @@ const dukunSchema = new mongoose.Schema(
   { collection: 'dukun' },
 );
 
+const dukunMasterSchema = new mongoose.Schema(
+  {
+    userID: Number,
+  },
+  { collection: 'dukunMaster' },
+);
+
 /**
  *
  * @param {import('telegraf').Context<import('telegraf/typings/core/types/typegram').Update>} context
@@ -37,6 +44,35 @@ async function dukun(context, mongo, cache) {
     const isOwner = context.message.from.id === replyMessage.from.id;
     if (isOwner) {
       await context.reply('Poin dukun hanya bisa diberikan oleh orang lain. Najis banget dah self-claimed🙄');
+      return;
+    }
+
+    // Set dukun master
+    if (argument.startsWith('master')) {
+      const newDukunMasterUserID = replyMessage.from.id;
+
+      const dukunData = await redis.GET('dukun:all');
+      if (!dukunData) {
+        await context.reply(
+          'No dukun data available. Try to ngedukun and ask someone to reply your message with /dukun +1. Jangan lupa dipasang sesajennya.',
+          { parse_mode: 'HTML' },
+        );
+        return;
+      }
+
+      /**
+       * @type {Record<string, any>[]}
+       */
+      const dukunDataParsed = JSON.parse(dukunData);
+
+      const formerDukunMaster = null;
+
+      if (formerDukunMaster) {
+        await context.reply(`Dukun master telah berubah menjadi ${replyMessage.from?.first_name} ${replyMessage.from?.last_name}. [placeholder] telah turun tahta.`);
+      } else {
+        await context.reply(`${replyMessage.from?.first_name} ${replyMessage.from?.last_name} telah diangkat menjadi dukun master. All hail ${replyMessage.from?.first_name} ${replyMessage.from?.last_name}!`);
+      }
+
       return;
     }
 
