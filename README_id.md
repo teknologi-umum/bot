@@ -4,7 +4,7 @@
 
 Sebuah bot _bleeding edge_ untuk memenuhi kebutuhan Teknologi Umum yang tidak kalah _bleeding edge_. Teknologi Umum merupakan grup telegram yang diciptakan untuk membicarakan.. apapun. Kamu bisa masuk grup melalui [link ini](https://t.me/teknologi_umum). Hal pertama yang harus kamu lakukan adalah mute grupnya, berisik banget.
 
-Bot ini bisa apa saja? Tentunya bisa melakukan hal-hal _bleeding edge_! Kamu akan tau setelah kamu berinteraksi dengan [botnya Telegram](https://t.me/TeknologiUmumBot)
+Bot ini bisa apa saja? Tentunya bisa melakukan hal-hal _bleeding edge_! Kamu akan tau setelah kamu berinteraksi dengan [botnya Telegram](https://t.me/TeknologiUmumBot) atau baca langsung ke [dokumentasi penggunaan](./docs/USAGE_id.md).
 
 Kontribusi sangat dipersilahkan, apalagi untuk menambahkan fitur _bleeding edge_.
 
@@ -53,3 +53,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ```
 
 Lihat lisensi lengkapnya [disini](./LICENSE)
+
+## Privacy Policy
+
+Lihat [PRIVACY_POLICY](./docs/PRIVACY_POLICY.md).

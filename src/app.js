@@ -56,12 +56,15 @@ async function main() {
         chat_id: context.message.chat.id,
         chat_title: context.message.chat.title,
         chat_type: context.message.chat.type,
+        chat_username: context.message.chat.username,
         text: context.message.text,
+        update_type: context.updateType,
       });
       scope.setContext('from', {
         from_id: context.message.from.id,
         from_username: context.message.from.username,
         is_bot: context.message.from.is_bot,
+        from_name: [context.message.from.first_name, context.message.from.last_name].join(' '),
       });
       scope.setTags({
         chat_id: context.message.chat.id,

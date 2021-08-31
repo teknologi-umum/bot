@@ -1,10 +1,10 @@
 # Bot for Teknologi Umum
 
-> Click here for [README but in Indonesian language](./README_id.md)
+> Klik disini untuk [README namun dalam Bahasa Indonesia](./README_id.md)
 
 Basically a _bleeding edge_ telegram bot to fulfill Teknologi Umum's _bleeding edge_ needs. Teknologi Umum is an Indonesian telegram group made for people to talk about.. basically anything. You can join through [this link](https://t.me/teknologi_umum). First thing you need to do is mute the group, it's so noisy.
 
-What can this bot do? Well, _bleeding edge_ stuffs! You'll find everything when you interact with [the bot on Telegram](https://t.me/TeknologiUmumBot).
+What can this bot do? Well, _bleeding edge_ stuffs! You'll find everything when you interact with [the bot on Telegram](https://t.me/TeknologiUmumBot) or read straight away to the [usage documentation](./docs/USAGE.md).
 
 Feel free to contribute and add some _bleeding edge_ features.
 
@@ -53,3 +53,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ```
 
 See full license [here](./LICENSE).
+
+## Privacy Policy
+
+See [PRIVACY_POLICY](./docs/PRIVACY_POLICY.md).
