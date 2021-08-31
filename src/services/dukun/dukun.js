@@ -16,12 +16,12 @@ const dukunSchema = new mongoose.Schema(
   { collection: 'dukun' },
 );
 
-const dukunMasterSchema = new mongoose.Schema(
-  {
-    userID: Number,
-  },
-  { collection: 'dukunMaster' },
-);
+// const dukunMasterSchema = new mongoose.Schema(
+//   {
+//     userID: Number,
+//   },
+//   { collection: 'dukunMaster' },
+// );
 
 /**
  *
@@ -48,8 +48,8 @@ async function dukun(context, mongo, cache) {
     }
 
     // Set dukun master
-    if (argument.startsWith('master')) {
-      const newDukunMasterUserID = replyMessage.from.id;
+    if (argument === 'master') {
+      // const newDukunMasterUserID = replyMessage.from.id;
 
       const dukunData = await redis.GET('dukun:all');
       if (!dukunData) {
@@ -63,7 +63,7 @@ async function dukun(context, mongo, cache) {
       /**
        * @type {Record<string, any>[]}
        */
-      const dukunDataParsed = JSON.parse(dukunData);
+      // const dukunDataParsed = JSON.parse(dukunData);
 
       const formerDukunMaster = null;
 
