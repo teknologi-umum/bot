@@ -85,7 +85,7 @@ Be careful of using this, it's a competitive life.
 
 ## `/eval`
 
-Evaluate javascript expression, and shows the output. Bear in mind we limit the usage of a lots of stuff.
+Evaluate javascript expression and shows the output. Bear in mind we limit the usage of a lot of stuff.
 If you want to produce more powerful things, please create it on [JSBin](https://jsbin.com/),[JSFiddle](http://jsfiddle.net/),
 [Codepen](https://codepen.io/), [Codesandbox](https://codesandbox.io/), or even [Repl.it](https://repl.it/).
 
