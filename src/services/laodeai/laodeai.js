@@ -2,26 +2,38 @@ import cheerio from 'cheerio';
 import got from 'got';
 import { getCommandArgs } from '../../utils/command.js';
 import { generateImage } from '../snap/utils.js';
+import { stackoverflow } from './stackoverflow.js';
+import { gist } from './gist.js';
+import { wikipedia } from './wikipedia.js';
 
+// list handlers
+const VALID_SOURCES = {
+  'stackoverflow.com': stackoverflow,
+  'gist.github.com': gist,
+  'wikipedia.com': wikipedia,
+};
+
+/**
+ * @param {import('telegraf').Telegraf} context
+ * @returns {Promise<void>}
+ */
 async function laodeai(context) {
   const query = getCommandArgs('laodeai', context);
   if (!query) return;
 
-  // TODO: change this to duckduckgo
-  // see https://api.stackexchange.com/docs/search
-  const { body: apiBody, statusCode: apiStatusCode } = await got.get('https://api.stackexchange.com/2.3/search', {
+  // TODO(elianiva): probably extract this logic somewhere? since we're also using it for `/search`
+  const { body: ddgBody, statusCode: ddgStatusCode } = await got.get('https://html.duckduckgo.com/html/', {
     searchParams: {
-      order: 'desc',
-      sort: 'relevance',
-      intitle: query,
-      site: 'stackoverflow',
+      kp: 1, // safe search // 1: strict | -1: moderate | 2: off
+      q: query,
     },
     headers: {
-      Accept: 'application/json',
+      Accept: 'text/html',
     },
+    responseType: 'text',
   });
 
-  if (apiStatusCode !== 200) {
+  if (ddgStatusCode !== 200) {
     await context.reply('Error getting search result.');
     return;
   }
@@ -42,40 +54,67 @@ async function laodeai(context) {
   // If it returns "error", means no answer was found.
   //
   // Hell of a work to make an AI lmao.
-  const response = JSON.parse(apiBody);
+  const $ = cheerio.load(ddgBody);
 
-  if (response.items.length < 1) {
-    await context.reply(`No result for ${query}`);
-    return;
-  }
+  // TODO(elianiva): how to handle multiple results???
+  const validSources = $('.web-result')
+    .map((_, el) => {
+      const $$ = cheerio.load($.html(el));
 
-  const answer_id = response.items[0].accepted_answer_id;
-  const { body: htmlBody, statusCode: htmlStatusCode } = await got.get(`https://stackoverflow.com/a/${answer_id}`, {
-    headers: {
-      Accept: 'text/html',
-    },
-  });
+      // TODO(elianiva): it's duplicate from `/search`, should probably extract
+      //                 this into a reusable util
+      const href = $$('.result__title > a')
+        .first()
+        .attr('href')
+        .replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, '')
+        .replace(/&rut=.*$/, '');
 
-  if (htmlStatusCode !== 200) {
+      return new URL(decodeURIComponent(href));
+    })
+    .get()
+    .filter((url) => VALID_SOURCES[url.hostname]);
+
+  if (validSources.length < 1) {
     await context.reply('Error getting search result.');
     return;
   }
 
-  const $ = cheerio.load(htmlBody);
-  console.log($('.accepted-answer').html());
-  const code = $('.accepted-answer pre').text();
+  const results = await Promise.all(
+    validSources.map(async (url) => {
+      const { body, statusCode } = await got.get(url.href, {
+        headers: {
+          Accept: 'text/html',
+        },
+        responseType: 'text',
+      });
 
-  // If there is no code given, will give the test result
-  if (!code) {
-    let textAnswer = $('.accepted-answer .answercell .s-prose').text();
-    if (textAnswer.length > 500) textAnswer = textAnswer.substring(textAnswer);
-    await context.reply(textAnswer);
+      if (statusCode !== 200) return null;
+
+      return VALID_SOURCES[url.hostname](cheerio.load(body));
+    }),
+  );
+
+  // TODO(elianiva): ideally we should send all of them instead of picking the
+  //                 first one
+  const result = results[0];
+
+  if (result.type === 'image') {
+    await context.telegram.sendPhoto(context.message.chat.id, {
+      source: await generateImage(result.content, context.message.from.username),
+    });
     return;
   }
 
-  await context.telegram.sendPhoto(context.message.chat.id, {
-    source: await generateImage(code, context.message.from.username),
-  });
+  // TODO(elianiva): limit to 500 words
+  if (result.type === 'text') {
+    await context.telegram.sendMessage(context.message.chat.id, result.content);
+  }
+
+  if (result.type === 'error') {
+    // TODO(elianiva): handle error properly.
+    //                 throw so the error handler triggers?
+    //                 sendMessage so the user knows?
+  }
 }
 
 /**
