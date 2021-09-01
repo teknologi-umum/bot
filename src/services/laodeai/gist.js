@@ -12,7 +12,7 @@ export function gist($) {
 
     return {
       type: 'text',
-      content: turndown.turndown(markdownOutput),
+      content: turndown.turndown(markdownOutput).replace(/\r/g, '\r'),
     };
   }
 
@@ -24,7 +24,7 @@ export function gist($) {
   if (codeOutput) {
     return {
       type: 'image',
-      content: codeOutput,
+      content: codeOutput.replace(/\r/g, '\r'),
     };
   }
   return {
