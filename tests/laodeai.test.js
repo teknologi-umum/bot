@@ -1,11 +1,12 @@
 import { readFileSync } from 'fs';
 import { test } from 'uvu';
 import * as assert from 'uvu/assert';
-import { stackoverflow } from '../src/services/laodeai/stackoverflow.js';
-import { gist } from '../src/services/laodeai/gist.js';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import cheerio from 'cheerio';
+import { stackoverflow } from '../src/services/laodeai/stackoverflow.js';
+import { gist } from '../src/services/laodeai/gist.js';
+import { wikipedia } from '../src/services/laodeai/wikipedia.js';
 
 test('should be able to parse a stackoverflow code output', () => {
   const file = readFileSync(
@@ -301,6 +302,21 @@ isWritableStream(…);`,
 test('should return error on empty github gist html', () => {
   const html = cheerio.load('<body></body>');
   const output = gist(html);
+  assert.equal(output, { type: 'error', content: '' });
+});
+
+test('should be able to parse wikipedia output', () => {
+  const file = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), './laodeai_fixture/wikipedia.html'));
+  const html = cheerio.load(file);
+  const output = wikipedia(html);
+  assert.equal(output.type, 'text');
+  const contents = output.content.split('\n');
+  assert.is(contents.length, 3);
+});
+
+test('should return error on empty wikipedia html', () => {
+  const html = cheerio.load('<body></body>');
+  const output = wikipedia(html);
   assert.equal(output, { type: 'error', content: '' });
 });
 

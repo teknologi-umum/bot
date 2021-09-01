@@ -20,13 +20,13 @@ export function gist($) {
     .map((i, el) => $(el).text())
     .toArray()
     .join('\n');
-
   if (codeOutput) {
     return {
       type: 'image',
       content: codeOutput.replace(/\r/g, '\r'),
     };
   }
+
   return {
     type: 'error',
     content: '',
