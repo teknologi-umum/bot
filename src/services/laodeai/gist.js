@@ -12,7 +12,7 @@ export function gist($) {
 
     return {
       type: 'text',
-      content: turndown.turndown(markdownOutput).replace(/\r/g, '\r'),
+      content: turndown.turndown(markdownOutput).replace(/\r\n/g, '\n'),
     };
   }
 
@@ -23,7 +23,7 @@ export function gist($) {
   if (codeOutput) {
     return {
       type: 'image',
-      content: codeOutput.replace(/\r/g, '\r'),
+      content: codeOutput.replace(/\r\n/g, '\n'),
     };
   }
 

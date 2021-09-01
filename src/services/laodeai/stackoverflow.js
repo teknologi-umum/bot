@@ -9,7 +9,7 @@ export function stackoverflow($) {
   if (acceptedCode) {
     return {
       type: 'image',
-      content: acceptedCode.replace(/\r/g, '\r'),
+      content: acceptedCode.replace(/\r\n/g, '\n'),
     };
   }
 
@@ -17,7 +17,7 @@ export function stackoverflow($) {
   if (acceptedText) {
     return {
       type: 'text',
-      content: acceptedText.replace(/\r/g, '\r'),
+      content: acceptedText.replace(/\r\n/g, '\n'),
     };
   }
 

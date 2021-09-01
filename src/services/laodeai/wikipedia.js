@@ -15,7 +15,7 @@ export function wikipedia($) {
       type: 'text',
       content: paragraphs
         .replace(/\[(\d+|update)\]/g, '')
-        .replace(/\r/g, '\r')
+        .replace(/\r\n/g, '\n')
         .trim(),
     };
   }
