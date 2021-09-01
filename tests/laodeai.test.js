@@ -295,7 +295,6 @@ ESM (now):
 import {isWritableStream} from 'is-stream';
 
 isWritableStream(…);
-
 `,
   );
 });
