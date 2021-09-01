@@ -17,7 +17,7 @@ Even if there is an error happened, there should be a message of:
 
 > uh oh, something went wrong. ask the devs to check their logs.
 
-On some commands, we collect just your Telegram user ID, username (if any) first name (if any), last name (if any),
+On some commands, we collect just your Telegram user ID, username (if any), first name (if any), last name (if any),
 and group chat ID to be able to process some commands like `/dukun`, `/snap`, and `/quiz`.
 
 Those data is open for public via the Telegram API. It's not exposing your password or
