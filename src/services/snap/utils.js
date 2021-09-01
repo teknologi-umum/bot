@@ -20,6 +20,11 @@ export async function generateImage(code) {
     timeout: {
       request: 30_000,
     },
+    retry: {
+      limit: 3,
+      methods: ['POST'],
+      statusCodes: [429, 500, 502, 503, 504],
+    },
   });
 
   return body;

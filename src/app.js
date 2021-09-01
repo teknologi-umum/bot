@@ -64,7 +64,7 @@ async function main() {
         from_id: context.message.from.id,
         from_username: context.message.from.username,
         is_bot: context.message.from.is_bot,
-        from_name: [context.message.from.first_name, context.message.from.last_name].join(' '),
+        from_name: `${context.message.from.first_name} ${context.message.from.last_name}`,
       });
       scope.setTags({
         chat_id: context.message.chat.id,
