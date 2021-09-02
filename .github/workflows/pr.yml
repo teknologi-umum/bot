@@ -2,7 +2,14 @@ name: CI
 
 on:
   pull_request:
-    branches: ['*']
+    branches:
+      - '*'
+  push:
+    branches:
+      - 'feat/**'
+      - 'fix/**'
+      - 'refactor/**'
+      - 'test/**'
 
 jobs:
   ci:
