@@ -2,6 +2,7 @@ import cheerio from 'cheerio';
 import got from 'got';
 import { renderTemplate } from '../../utils/template.js';
 import { getCommandArgs } from '../../utils/command.js';
+import { cleanURL, fetchDDG } from '../../utils/http.js';
 import { isClean, cleanFilter } from './filter.js';
 
 const SEARCH_LIMIT = 10;
@@ -22,17 +23,7 @@ async function search(context, mongo) {
     return;
   }
 
-  const { body, requestUrl, statusCode } = await got.get('https://html.duckduckgo.com/html/', {
-    searchParams: {
-      kp: 1, // safe search // 1: strict | -1: moderate | 2: off
-      q: query,
-    },
-    headers: {
-      Accept: 'text/html',
-    },
-    responseType: 'text',
-  });
-
+  const { body, requestUrl, statusCode } = await fetchDDG(got, query);
   if (statusCode !== 200) {
     await context.reply('Error getting search result.');
     return;
@@ -42,16 +33,9 @@ async function search(context, mongo) {
 
   let items = $('.web-result')
     .map((_, el) => {
-      const $$ = cheerio.load($.html(el));
-      const title = $$('.result__title > a').first().text() || 'Failed to get title';
-      const href = decodeURIComponent(
-        $$('.result__title > a')
-          .first()
-          .attr('href')
-          .replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, '')
-          .replace(/&rut=.*$/, ''),
-      );
-      const snippet = $$('.result__snippet')
+      const title = el('.result__title > a').first().text() || 'Failed to get title';
+      const href = decodeURIComponent(cleanURL(el('.result__title > a').first().attr('href')));
+      const snippet = el('.result__snippet')
         .map((_, el) => el.children.map((x) => $.html(x)).join(''))
         .get();
 

@@ -19,6 +19,7 @@ import * as blog from './services/blog.js';
 import * as quiz from './services/quiz.js';
 import * as search from './services/search.js';
 import * as dukun from './services/dukun/dukun.js';
+import * as laodeai from './services/laodeai/laodeai.js';
 
 dotenv.config({ path: pathTo(import.meta.url, '../.env') });
 
@@ -44,6 +45,7 @@ async function main() {
     quiz.register(bot, mongo, cache),
     search.register(bot, mongo),
     dukun.register(bot, mongo, cache),
+    laodeai.register(bot),
   ]
     .filter((v) => Array.isArray(v))
     .flat();
