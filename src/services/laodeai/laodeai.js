@@ -71,9 +71,10 @@ async function laodeai(context) {
     case 'text': {
       let content = result.content;
       if (content.length > 500) {
-        content = `${content.substring(0, 500)}...\nSee more on ${result.url}`;
+        content = `${content.substring(0, 500)}...\n\nSee more on: ${result.url}`;
       }
-      await context.telegram.sendMessage(context.message.chat.id, result.content);
+
+      await context.telegram.sendMessage(context.message.chat.id, content, { parse_mode: 'Markdown' });
       break;
     }
     case 'error': {
