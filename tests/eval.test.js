@@ -91,4 +91,104 @@ test('should not be able to evaluate require', () => {
   assert.equal(result, 'Tidak boleh mengakses require');
 });
 
+test('should be able to serialize NaN', () => {
+  const result = safeEval('parseInt("a")');
+  assert.equal(result, '"NaN"');
+});
+
+test('should be able to serialize Infinity', () => {
+  const result = safeEval('1/0');
+  assert.equal(result, '"Infinity"');
+});
+
+test('should not be able to access String.repeat', () => {
+  const result = safeEval('"a".repeat(10)');
+  assert.equal(result, 'Tidak boleh mengakses repeat');
+});
+
+test('should be able to use local in arrow function', () => {
+  const result = safeEval('["a", "b"].map(x => x.toUpperCase())');
+  assert.equal(result, '["A","B"]');
+});
+
+test('should not be able to access property of identifiers that are not whitelisted', () => {
+  const result = safeEval('foo.toString()');
+  assert.equal(result, 'Tidak boleh mengakses foo');
+});
+
+test('should not be able to access properties that are not whitelisted', () => {
+  const result = safeEval('Math.clamp(1, 2, 3)');
+  assert.equal(result, 'Tidak boleh mengakses Math.clamp');
+});
+
+test('should not be able to use functions that are not whitelisted in HOF', () => {
+  const result = safeEval('["100"].map(Math.clamp)');
+  assert.equal(result, 'Tidak boleh mengakses Math.clamp');
+});
+
+test('should not be able to use disallowed expression in string template', () => {
+  const result = safeEval('`${foo.toString()}`');
+  assert.equal(result, 'Tidak boleh mengakses foo');
+});
+
+test('should not be able to declare method in object notation', () => {
+  const result = safeEval('({foo(){}})');
+  assert.equal(result, 'Tidak boleh membuat function di dalam object');
+});
+
+test('should not be able to declare accessor in object notation', () => {
+  const result = safeEval('({get foo() { return 1; }})');
+  assert.equal(result, 'Tidak boleh mengevaluasi FunctionExpression');
+});
+
+test('should be able to evaluate ternary expression', () => {
+  const result = safeEval('true ? 1 : 0');
+  assert.equal(result, '1');
+});
+
+test('should be able to evaluate unary expression', () => {
+  const result = safeEval('+"1"');
+  assert.equal(result, '1');
+});
+
+test('should be able to create new Date', () => {
+  const result = safeEval('new Date().getFullYear()');
+  assert.equal(result, new Date().getFullYear().toString());
+});
+
+test('should not be able to use isAllowed with no argument', () => {
+  const result = isAllowed();
+  assert.equal(result, false);
+});
+
+test('should not be able to evaluate empty string', () => {
+  const result = safeEval('');
+  assert.equal(result, 'Tidak bisa mengevaluasi code');
+});
+
+test('should not be able to pass module ast into isAllowed', () => {
+  let result;
+  try {
+    result = isAllowed(esprima.parseModule(''));
+  } catch (error) {
+    result = error;
+  }
+  assert.equal(result, 'Bukan program Javascript');
+});
+
+test('should not be able to create instance using member access expression', () => {
+  const result = safeEval('new foo.bar()');
+  assert.equal(result, 'New expression hanya boleh menggunakan symbol yang jelas');
+});
+
+test('should not be able to create instance of classes that are not whitelisted', () => {
+  const result = safeEval('new Crypto()');
+  assert.equal(result, 'Tidak boleh new Crypto');
+});
+
+test('should not be able to declare property using computed expression', () => {
+  const result = safeEval('({["foo"]: "bar"})');
+  assert.equal(result, 'Tidak boleh membuat property menggunakan accessor');
+});
+
 test.run();
