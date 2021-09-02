@@ -1,6 +1,6 @@
 import redisClient from '../../utils/redis.js';
 import { getTheDevRead } from './request.js';
-import { randomArray } from './utils.js';
+import { randomArray } from '../../utils/random.js';
 import { renderTemplate } from '../../utils/template.js';
 import { getCommandArgs } from '../../utils/command.js';
 
@@ -67,7 +67,7 @@ async function devRead(context, cache) {
 /**
  * Send help to user when needed.
  * @param {import('telegraf').Telegraf} bot
- * @returns {Promise<void>}
+ * @returns {{command: String, description: String}[]}
  */
 export function register(bot, cache) {
   bot.command('devread', (context) => devRead(context, cache));
@@ -75,7 +75,7 @@ export function register(bot, cache) {
   return [
     {
       command: 'devread',
-      description: 'Bacaan untuk Developer.',
+      description: 'Articles for developers',
     },
   ];
 }

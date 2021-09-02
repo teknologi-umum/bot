@@ -65,7 +65,7 @@ async function search(context, mongo) {
  * Send search result from duckduckgo.
  * @param {import('telegraf').Telegraf} bot
  * @param {import('mongoose').Connection} mongo
- * @returns {{ command: String, description: String}[]}
+ * @returns {{command: String, description: String}[]}
  */
 export function register(bot, mongo) {
   bot.command('search', (context) => search(context, mongo));

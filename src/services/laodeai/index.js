@@ -11,7 +11,7 @@ import { wikipedia } from './wikipedia.js';
 const VALID_SOURCES = {
   'stackoverflow.com': stackoverflow,
   'gist.github.com': gist,
-  'wikipedia.com': wikipedia,
+  'en.wikipedia.com': wikipedia,
 };
 
 /**
@@ -39,7 +39,7 @@ async function laodeai(context) {
     .filter((url) => VALID_SOURCES[url.hostname]);
 
   if (validSources.length < 1) {
-    await context.reply('Error getting search result.');
+    await context.reply("Uhh, I don't have an answer for that, sorry.");
     return;
   }
 

@@ -115,7 +115,8 @@ async function covid(context, cache) {
 /**
  * Send covid information.
  * @param {import('telegraf').Telegraf} bot
- * @returns {Promise<void>}
+ * @param {import('redis').RedisClient} cache
+ * @returns {{command: String, description: String}[]}
  */
 export function register(bot, cache) {
   bot.command('covid', (context) => covid(context, cache));

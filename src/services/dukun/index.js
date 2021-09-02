@@ -28,7 +28,7 @@ const dukunSchema = new mongoose.Schema(
  * @param {import('telegraf').Context<import('telegraf/typings/core/types/typegram').Update>} context
  * @param {import('mongoose').Connection} mongo
  * @param {import('redis').RedisClient} cache
- * @returns
+ * @returns {Promise<void>}
  */
 async function dukun(context, mongo, cache) {
   // Reject private and channels
@@ -131,7 +131,7 @@ async function dukun(context, mongo, cache) {
           updatedAt: new Date(),
         },
       },
-      { upsert: true, useFindAndModify: false, new: true },
+      { upsert: true, new: true },
     );
 
     await context.telegram.sendMessage(
@@ -171,6 +171,13 @@ async function dukun(context, mongo, cache) {
   );
 }
 
+/**
+ *
+ * @param {import('telegraf').Telegraf} bot
+ * @param {import('mongoose').Connection} mongo
+ * @param {import('redis').RedisClient} cache
+ * @returns {{command: String, description: String}[]}
+ */
 export function register(bot, mongo, cache) {
   bot.command('dukun', (context) => dukun(context, mongo, cache));
 

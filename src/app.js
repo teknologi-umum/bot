@@ -7,19 +7,20 @@ import redis from 'redis';
 import { sentry, terminal } from './utils/logger.js';
 import { pathTo } from './utils/path.js';
 
-import * as poll from './services/poll.js';
-import * as meme from './services/meme.js';
-import * as help from './services/help.js';
-import * as quote from './services/quote.js';
-import * as covid from './services/covid.js';
-import * as snap from './services/snap.js';
-import * as blidingej from './services/bliding-ej.js';
-import * as evalBot from './services/eval.js';
-import * as blog from './services/blog.js';
-import * as quiz from './services/quiz.js';
-import * as search from './services/search.js';
-import * as dukun from './services/dukun/dukun.js';
-import * as laodeai from './services/laodeai/laodeai.js';
+import * as poll from './services/poll/index.js';
+import * as meme from './services/meme/index.js';
+import * as help from './services/help/index.js';
+import * as quote from './services/quote/index.js';
+import * as covid from './services/covid/index.js';
+import * as snap from './services/snap/index.js';
+import * as blidingej from './services/bliding-ej/index.js';
+import * as evalBot from './services/eval/index.js';
+import * as blog from './services/blog/index.js';
+import * as quiz from './services/quiz/index.js';
+import * as search from './services/search/index.js';
+import * as dukun from './services/dukun/index.js';
+import * as laodeai from './services/laodeai/index.js';
+import * as analytics from './services/analytics/index.js';
 
 dotenv.config({ path: pathTo(import.meta.url, '../.env') });
 
@@ -27,8 +28,6 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 const cache = redis.createClient(String(process.env.REDIS_URL));
 const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
 });
 
 async function main() {
@@ -46,6 +45,7 @@ async function main() {
     search.register(bot, mongo),
     dukun.register(bot, mongo, cache),
     laodeai.register(bot),
+    analytics.register(bot, mongo),
   ]
     .filter((v) => Array.isArray(v))
     .flat();
@@ -76,7 +76,7 @@ async function main() {
       return scope;
     });
     if (process.env.NODE_ENV !== 'production') terminal.error(error);
-    context.reply('uh oh, something went wrong. ask the devs to check their logs.');
+    context.reply('Uh oh, something went wrong. Ask the devs to check their logs.');
   });
 
   // For more information about what this is, please refer to:
