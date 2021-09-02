@@ -33,10 +33,9 @@ async function search(context, mongo) {
 
   let items = $('.web-result')
     .map((_, el) => {
-      const $$ = cheerio.load($.html(el));
-      const title = $$('.result__title > a').first().text() || 'Failed to get title';
-      const href = decodeURIComponent(cleanURL($$('.result__title > a').first().attr('href')));
-      const snippet = $$('.result__snippet')
+      const title = el('.result__title > a').first().text() || 'Failed to get title';
+      const href = decodeURIComponent(cleanURL(el('.result__title > a').first().attr('href')));
+      const snippet = el('.result__snippet')
         .map((_, el) => el.children.map((x) => $.html(x)).join(''))
         .get();
 

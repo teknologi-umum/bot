@@ -32,8 +32,7 @@ async function laodeai(context) {
   const $ = cheerio.load(ddgBody);
   const validSources = $('.web-result')
     .map((_, el) => {
-      const $$ = cheerio.load($.html(el));
-      const href = cleanURL($$('.result__title > a').first().attr('href'));
+      const href = cleanURL(el('.result__title > a').first().attr('href'));
       return new URL(decodeURIComponent(href));
     })
     .get()
