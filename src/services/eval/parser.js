@@ -116,9 +116,20 @@ export function safeEval(source) {
   }
   try {
     if (isAllowed(ast)) {
-      return JSON.stringify(eval(source), (name, val) =>
-        typeof val === 'number' && (isNaN(val) || !isFinite(val)) ? val.toString() : val,
-      );
+      return JSON.stringify(eval(source), (name, val) => {
+        switch (typeof val) {
+          case 'number':
+            if (isNaN(val) || !isFinite(val)) {
+              return val.toString();
+            } else {
+              return val;
+            }
+          case 'bigint':
+            return val.toString() + 'n';
+          default:
+            return val;
+        }
+      });
     } else {
       return `Tidak bisa mengevaluasi code`;
     }
