@@ -109,7 +109,7 @@ export function isAllowed(ast, locals = []) {
   }
 }
 
-export function safeEval(source) {
+export async function safeEval(source) {
   let ast;
   try {
     ast = esprima.parse(source);
