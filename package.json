@@ -61,9 +61,9 @@
     "kleur": "^4.1.4",
     "mongoose": "^6.0.4",
     "redis": "^3.1.2",
+    "sanitize-html": "^2.4.0",
     "telegraf": "^4.4.1",
-    "tempura": "^0.3.2",
-    "turndown": "^7.1.1"
+    "tempura": "^0.3.2"
   },
   "devDependencies": {
     "c8": "^7.8.0",
