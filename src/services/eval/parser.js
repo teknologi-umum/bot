@@ -2,9 +2,11 @@ import * as esprima from 'esprima';
 import { allowedBuiltInObjects, allowedProperties } from './constants.js';
 
 export function isAllowed(ast, locals = []) {
+  if (typeof ast !== 'object') return false;
   switch (ast.type) {
     case 'Program':
       if (ast.sourceType !== 'script') throw `Bukan program Javascript`;
+      if (ast.body.length === 0) return false;
       return ast.body.every((statement) => isAllowed(statement, locals));
     case 'ExpressionStatement':
       return isAllowed(ast.expression, locals);
@@ -21,8 +23,8 @@ export function isAllowed(ast, locals = []) {
       return isAllowed(ast.test, locals) && isAllowed(ast.consequent, locals) && isAllowed(ast.alternate, locals);
     case 'ObjectExpression':
       return ast.properties.every((prop) => {
-        if (prop.method) throw `Tidak boleh membuat method di dalam object`;
-        if (prop.computed) throw `Tidak boleh membuat accessor di dalam object`;
+        if (prop.method) throw `Tidak boleh membuat function di dalam object`;
+        if (prop.computed) throw `Tidak boleh membuat property menggunakan accessor`;
         return isAllowed(prop.value);
       });
     case 'ArrayExpression':
@@ -116,9 +118,20 @@ export function safeEval(source) {
   }
   try {
     if (isAllowed(ast)) {
-      return JSON.stringify(eval(source), (name, val) =>
-        typeof val === 'number' && (isNaN(val) || !isFinite(val)) ? val.toString() : val,
-      );
+      return JSON.stringify(eval(source), (name, val) => {
+        switch (typeof val) {
+          case 'number':
+            if (isNaN(val) || !isFinite(val)) {
+              return val.toString();
+            } else {
+              return val;
+            }
+          case 'bigint':
+            return val.toString() + 'n';
+          default:
+            return val;
+        }
+      });
     } else {
       return `Tidak bisa mengevaluasi code`;
     }
