@@ -331,12 +331,6 @@ test('should be able to parse foodnetwork output', () => {
     output.content,
     `<b>Spaghetti alla Carbonara</b>
 
-Level:    Intermediate
-Total:           25 min
-Prep:           15 min
-Cook:           10 min
-Yield:    4 to 6 servings
-
 <b>Ingredients:</b>
 1. 1 pound dry spaghetti
 2. 2 tablespoons extra-virgin olive oil
