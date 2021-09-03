@@ -32,7 +32,7 @@ async function devRead(context, cache) {
     if (queryData) {
       const items = randomArray(JSON.parse(queryData), 3);
       const read = items
-        .map(({ title, body, url }) => renderTemplate('blog/template.hbs', { title, body, url }))
+        .map(({ title, body, url }) => renderTemplate('blog/blog.template.hbs', { title, body, url }))
         .join('\n');
       await context.telegram.sendMessage(context.message.chat.id, read, { parse_mode: 'HTML' });
       return;
@@ -49,7 +49,9 @@ async function devRead(context, cache) {
 
   const items = randomArray(data, 3);
   const read = items
-    .map((x) => renderTemplate('blog/template.hbs', { title: x?.title ?? '', body: x?.body ?? '', url: x?.url ?? '' }))
+    .map((x) =>
+      renderTemplate('blog/blog.template.hbs', { title: x?.title ?? '', body: x?.body ?? '', url: x?.url ?? '' }),
+    )
     .join('\n');
 
   await context.telegram.sendMessage(context.message.chat.id, read, { parse_mode: 'HTML' });

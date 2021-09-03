@@ -81,6 +81,8 @@ npm run test
 ├── package.json            - Meta information & dependencies
 ├── prepare.cjs             - Simple script to run husky install in a cross-environment
 ├── README.md
+├── README_id.md
+├── docs                    - Documentation for users
 ├── src
 │  ├── app.js               - App/bot entry point
 │  ├── services             - Commands logic

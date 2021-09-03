@@ -7,6 +7,7 @@ import { isBigGroup } from '../../utils/home.js';
 /**
  * Send memes..
  * @param {import('telegraf').Telegraf} bot
+ * @param {import('redis').RedisClient} cache
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, cache) {
