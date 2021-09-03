@@ -1,5 +1,6 @@
 import { safeEval } from './parser.js';
 import { getCommandArgs } from '../../utils/command.js';
+import { resolveStocks } from './superpowers.js';
 
 /**
  *
@@ -9,7 +10,7 @@ import { getCommandArgs } from '../../utils/command.js';
 async function evalCommand(context) {
   const source = getCommandArgs('eval', context);
 
-  const output = safeEval(source);
+  const output = safeEval(source, [resolveStocks]);
 
   await context.replyWithMarkdown(`
 Code:

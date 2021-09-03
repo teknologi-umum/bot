@@ -109,7 +109,10 @@ export function isAllowed(ast, locals = []) {
   }
 }
 
-export function safeEval(source) {
+export async function safeEval(source, superpowers = []) {
+  for (const superpower of superpowers) {
+    source = await superpower(source);
+  }
   let ast;
   try {
     ast = esprima.parse(source);
