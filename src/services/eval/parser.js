@@ -110,8 +110,12 @@ export function isAllowed(ast, locals = []) {
 }
 
 export async function safeEval(source, superpowers = []) {
-  for (const superpower of superpowers) {
-    source = await superpower(source);
+  try {
+    for (const superpower of superpowers) {
+      source = await superpower(source);
+    }
+  } catch (err) {
+    return err;
   }
   let ast;
   try {

@@ -2,7 +2,7 @@ import { fetchStock } from './stock.js';
 
 export async function resolveStocks(source) {
   // query: $AALI-R.high
-  const queries = source.match(/\$[A-Z]{4}(-*[A-Z][A-Z0-9]{0,2})?(\.[a-z]+)?\b/g);
+  const queries = source.match(/\$[A-Z]{4}(-[A-Z][A-Z0-9]{0,2})?(\.[a-z]+)?\b/g);
   if (queries === null || queries.length === 0) return source;
 
   // cashtag: $AALI-R
