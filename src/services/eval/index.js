@@ -10,7 +10,7 @@ import { resolveStocks } from './superpowers.js';
 async function evalCommand(context) {
   const source = getCommandArgs('eval', context);
 
-  const output = safeEval(source, [resolveStocks]);
+  const output = await safeEval(source, [resolveStocks]);
 
   await context.replyWithMarkdown(`
 Code:
