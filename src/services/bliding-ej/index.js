@@ -1,5 +1,5 @@
-import { getCommandArgs } from '../utils/command.js';
-import { isHomeGroup } from '../utils/home.js';
+import { getCommandArgs } from '../../utils/command.js';
+import { isHomeGroup } from '../../utils/home.js';
 
 /**
  * Defines bliding ej
@@ -45,7 +45,7 @@ async function define(context) {
 /**
  * Defines bliding ej
  * @param {import('telegraf').Telegraf} bot
- * @returns {Promise<void>}
+ * @returns {{command: String, description: String}[]}
  */
 export function register(bot) {
   bot.command('blidingej', define);

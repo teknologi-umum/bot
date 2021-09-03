@@ -56,6 +56,10 @@ HOME_GROUP_ID=<your test group, if any>
 5. Run `npm run dev` to start running your bot.
 6. Happy coding!
 
+You are encouraged to use [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0-beta.2/) for your commit message. But it's not really compulsory.
+
+Creating a branch name with the name consisting `feat/**`, `fix/**`, `refactor/**`, and `perf/**` will get CI benefits from Github Actions.
+
 ### Testing your change
 
 It's really up to you to have an unit test or not. But if you do, just create one on the `tests` directory, and run the test with:
@@ -77,6 +81,8 @@ npm run test
 ├── package.json            - Meta information & dependencies
 ├── prepare.cjs             - Simple script to run husky install in a cross-environment
 ├── README.md
+├── README_id.md
+├── docs                    - Documentation for users
 ├── src
 │  ├── app.js               - App/bot entry point
 │  ├── services             - Commands logic

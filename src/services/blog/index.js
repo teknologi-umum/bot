@@ -1,6 +1,6 @@
 import redisClient from '../../utils/redis.js';
 import { getTheDevRead } from './request.js';
-import { randomArray } from './utils.js';
+import { randomArray } from '../../utils/random.js';
 import { renderTemplate } from '../../utils/template.js';
 import { getCommandArgs } from '../../utils/command.js';
 
@@ -32,7 +32,7 @@ async function devRead(context, cache) {
     if (queryData) {
       const items = randomArray(JSON.parse(queryData), 3);
       const read = items
-        .map(({ title, body, url }) => renderTemplate('blog/template.hbs', { title, body, url }))
+        .map(({ title, body, url }) => renderTemplate('blog/blog.template.hbs', { title, body, url }))
         .join('\n');
       await context.telegram.sendMessage(context.message.chat.id, read, { parse_mode: 'HTML' });
       return;
@@ -49,7 +49,9 @@ async function devRead(context, cache) {
 
   const items = randomArray(data, 3);
   const read = items
-    .map((x) => renderTemplate('blog/template.hbs', { title: x?.title ?? '', body: x?.body ?? '', url: x?.url ?? '' }))
+    .map((x) =>
+      renderTemplate('blog/blog.template.hbs', { title: x?.title ?? '', body: x?.body ?? '', url: x?.url ?? '' }),
+    )
     .join('\n');
 
   await context.telegram.sendMessage(context.message.chat.id, read, { parse_mode: 'HTML' });
@@ -67,7 +69,7 @@ async function devRead(context, cache) {
 /**
  * Send help to user when needed.
  * @param {import('telegraf').Telegraf} bot
- * @returns {Promise<void>}
+ * @returns {{command: String, description: String}[]}
  */
 export function register(bot, cache) {
   bot.command('devread', (context) => devRead(context, cache));
@@ -75,7 +77,7 @@ export function register(bot, cache) {
   return [
     {
       command: 'devread',
-      description: 'Bacaan untuk Developer.',
+      description: 'Articles for developers',
     },
   ];
 }

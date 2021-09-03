@@ -20,7 +20,7 @@ async function help(context) {
 /**
  * Send help to user when needed.
  * @param {import('telegraf').Telegraf} bot
- * @returns {Promise<void>}
+ * @returns {{command: String, description: String}[]}
  */
 export function register(bot) {
   bot.command('help', help);

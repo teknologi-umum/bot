@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
-import { isHomeGroup } from '../utils/home.js';
-import redisClient from '../utils/redis.js';
+import { isHomeGroup } from '../../utils/home.js';
+import redisClient from '../../utils/redis.js';
 
 /**
  * Process poll created by user to not
@@ -48,31 +48,33 @@ export async function poll(context, cache, poll, pollID) {
       disable_web_page_preview: true,
     });
     await redis.MSET(`poll:${String(context.message.chat.id)}:message:content`, JSON.stringify(lastMessageContent));
-  } else {
-    // create new message
-    const response = await context.telegram.sendMessage(context.message.chat.id, preformatMessage, {
-      parse_mode: 'HTML',
-      disable_web_page_preview: true,
-    });
-
-    await redis.MSET(
-      `poll:${String(context.message.chat.id)}:message:id`,
-      String(response.message_id),
-      `poll:${String(context.message.chat.id)}:message:content`,
-      JSON.stringify(lastMessageContent),
-      `poll:${String(context.message.chat.id)}:date`,
-      currentTime,
-    );
-    await context.telegram.pinChatMessage(context.message.chat.id, response.message_id, {
-      disable_notification: false,
-    });
+    return;
   }
+
+  // create new message
+  const response = await context.telegram.sendMessage(context.message.chat.id, preformatMessage, {
+    parse_mode: 'HTML',
+    disable_web_page_preview: true,
+  });
+
+  await redis.MSET(
+    `poll:${String(context.message.chat.id)}:message:id`,
+    String(response.message_id),
+    `poll:${String(context.message.chat.id)}:message:content`,
+    JSON.stringify(lastMessageContent),
+    `poll:${String(context.message.chat.id)}:date`,
+    currentTime,
+  );
+  await context.telegram.pinChatMessage(context.message.chat.id, response.message_id, {
+    disable_notification: false,
+  });
 }
 
 /**
  * Send help to user when needed.
  * @param {import('telegraf').Telegraf} bot
- * @returns {Promise<void>}
+ * @param {import('redis').RedisClient} cache
+ * @returns {{command: String, description: String}[]}
  */
 export function register(bot, cache) {
   bot.on('message', async (context, next) => {

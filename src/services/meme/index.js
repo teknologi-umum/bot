@@ -1,13 +1,14 @@
 import got from 'got';
 import { randomNumber } from 'carret';
-import { defaultHeaders } from '../utils/http.js';
-import redisClient from '../utils/redis.js';
-import { isBigGroup } from '../utils/home.js';
+import { defaultHeaders } from '../../utils/http.js';
+import redisClient from '../../utils/redis.js';
+import { isBigGroup } from '../../utils/home.js';
 
 /**
  * Send memes..
  * @param {import('telegraf').Telegraf} bot
- * @returns {Promise<void>}
+ * @param {import('redis').RedisClient} cache
+ * @returns {{command: String, description: String}[]}
  */
 export function register(bot, cache) {
   const redis = redisClient(cache);

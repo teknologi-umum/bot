@@ -1,7 +1,7 @@
 import got from 'got';
 import { defaultHeaders } from '../../utils/http.js';
 
-async function getTheDevRead(query) {
+export async function getTheDevRead(query) {
   const tulisan = await requestDataByMedia('tulisan', query);
   const media = await requestDataByMedia('web', query);
 
@@ -26,5 +26,3 @@ async function requestDataByMedia(mediaType, query) {
   });
   return body.data;
 }
-
-export { getTheDevRead };
