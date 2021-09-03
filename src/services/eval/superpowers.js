@@ -44,6 +44,8 @@ export async function resolveStocks(source) {
     } else if (stock[property] === undefined) {
       // invalid property
       throw `Saham tidak memiliki property ${property}`;
+    } else if (typeof stock[property] === 'string') {
+      source = source.replace(query, `("${stock[property].replaceAll(`"`, `\\"`)}")`);
     } else {
       source = source.replace(query, `(${stock[property]})`);
     }
