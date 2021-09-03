@@ -221,14 +221,24 @@ test('should not be able to evaluate more than 3 cashtags', async () => {
   assert.equal(result, 'Terlalu banyak kode saham');
 });
 
-test('should be able to evaluate $ASPI-W', async () => {
-  let result;
-  try {
-    result = await safeEval('$ASPI-W', [resolveStocks]);
-  } catch (error) {
-    result = error;
-  }
-  assert.equal(isNaN(parseInt(result)), false);
-});
+// test('should be able to evaluate $ASPI-W', async () => {
+//   let result;
+//   try {
+//     result = await safeEval('$ASPI-W', [resolveStocks]);
+//   } catch (error) {
+//     result = error;
+//   }
+//   assert.equal(isNaN(parseInt(result)), false);
+// });
+
+// test('should be able to evaluate $BBCA.name', async () => {
+//   let result;
+//   try {
+//     result = await safeEval('$BBCA.name.length', [resolveStocks]);
+//   } catch (error) {
+//     result = error;
+//   }
+//   assert.equal(result, '29');
+// });
 
 test.run();
