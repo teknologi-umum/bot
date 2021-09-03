@@ -5,6 +5,7 @@ import * as assert from 'uvu/assert';
 // bahkan kalo import index, nggak bisa /src/services/eval
 // tapi harus /src/services/eval/index.js
 import { isAllowed, safeEval } from '../src/services/eval/parser.js';
+import { resolveStocks } from '../src/services/eval/superpowers.js';
 
 test('should do something', async () => {
   const result = await safeEval('1+1');
@@ -189,6 +190,45 @@ test('should not be able to create instance of classes that are not whitelisted'
 test('should not be able to declare property using computed expression', async () => {
   const result = await safeEval('({["foo"]: "bar"})');
   assert.equal(result, 'Tidak boleh membuat property menggunakan accessor');
+});
+
+test('should execute superpowers before eval', async () => {
+  const result = await safeEval('1', [
+    async function (source) {
+      return source + '+1';
+    },
+  ]);
+  assert.equal(result, '2');
+});
+
+test('should not be able to evaluate ASII without dollar sign', async () => {
+  let result;
+  try {
+    result = await safeEval('ASII', [resolveStocks]);
+  } catch (error) {
+    result = error;
+  }
+  assert.equal(result, 'Tidak boleh mengakses ASII');
+});
+
+test('should not be able to evaluate more than 3 cashtags', async () => {
+  let result;
+  try {
+    result = await safeEval('$ASII + $BBCA + $GGRM + $TLKM', [resolveStocks]);
+  } catch (error) {
+    result = error;
+  }
+  assert.equal(result, 'Terlalu banyak kode saham');
+});
+
+test('should be able to evaluate $ASPI-W', async () => {
+  let result;
+  try {
+    result = await safeEval('$ASPI-W', [resolveStocks]);
+  } catch (error) {
+    result = error;
+  }
+  assert.equal(isNaN(parseInt(result)), false);
 });
 
 test.run();

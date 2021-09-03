@@ -3,11 +3,9 @@ import cheerio from 'cheerio';
 
 export async function fetchStock(stockCode) {
   if (typeof stockCode !== 'string') throw 'Kode saham harus berupa string';
-  if (/\b[A-Z]+(\-*[A-Z][A-Z0-9]*)?\b/.test(stockCode)) throw 'Kode saham tidak valid';
-  if (stockCode.length < 4) throw 'Kode saham minimal 4 karakter';
-  if (stockCode.length > 8) throw 'Kode saham tidak valid';
+  if (!/^[A-Z]{4}(-*[A-Z][A-Z0-9]{0,2})?$/.test(stockCode)) throw `Kode saham ${stockCode} tidak valid`;
 
-  const { statusCode, body } = await got.get(`https://www.duniainvestasi.com/bei/summaries/${code}`, {
+  const { statusCode, body } = await got.get(`https://www.duniainvestasi.com/bei/summaries/${stockCode}`, {
     responseType: 'text',
   });
 
@@ -23,32 +21,32 @@ export async function fetchStock(stockCode) {
   return {
     name: name,
     close: parseInt(
-      $('#CONTENT>:first-child>:nth-child(4)>:first-child>:nth-child(2)>:first-child>:last-child>div')
+      $('#CONTENT>:first-child>:nth-last-child(2)>:first-child>:nth-child(2)>:first-child>:last-child>div')
         .text()
         .replaceAll(',', ''),
     ),
     previous: parseInt(
-      $('#CONTENT>:first-child>:nth-child(4)>:first-child>:nth-child(2)>:nth-child(2)>:last-child>div')
+      $('#CONTENT>:first-child>:nth-last-child(2)>:first-child>:nth-child(2)>:nth-child(2)>:last-child>div')
         .text()
         .replaceAll(',', ''),
     ),
     high: parseInt(
-      $('#CONTENT>:first-child>:nth-child(4)>:first-child>:nth-child(2)>:nth-child(5)>:last-child>div')
+      $('#CONTENT>:first-child>:nth-last-child(2)>:first-child>:nth-child(2)>:nth-child(5)>:last-child>div')
         .text()
         .replaceAll(',', ''),
     ),
     low: parseInt(
-      $('#CONTENT>:first-child>:nth-child(4)>:first-child>:nth-child(2)>:nth-child(6)>:last-child>div')
+      $('#CONTENT>:first-child>:nth-last-child(2)>:first-child>:nth-child(2)>:nth-child(6)>:last-child>div')
         .text()
         .replaceAll(',', ''),
     ),
     volume: parseInt(
-      $('#CONTENT>:first-child>:nth-child(4)>:first-child>:nth-child(3)>:first-child>:last-child>div')
+      $('#CONTENT>:first-child>:nth-last-child(2)>:first-child>:nth-child(3)>:first-child>:last-child>div')
         .text()
         .replaceAll(',', ''),
     ),
     value: parseInt(
-      $('#CONTENT>:first-child>:nth-child(4)>:first-child>:nth-child(3)>:nth-child(3)>:last-child>div')
+      $('#CONTENT>:first-child>:nth-last-child(2)>:first-child>:nth-child(3)>:nth-child(3)>:last-child>div')
         .text()
         .replaceAll(',', ''),
     ),
