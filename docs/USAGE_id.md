@@ -20,6 +20,7 @@ Pada dokumen ini, kamu akan menemukan cara menggunakan Teknologi Umum Bot. Comma
 - 🛩📬 [`/joke`](#-joke)
 - 🛩📬 [`/quote`](#-quote)
 - 🛩📬 [`/yntkts`](#-yntkts)
+- 🚧🌏📬 [`/laodeai`](#-laodeai)
 
 Legends:
 
@@ -155,3 +156,13 @@ Mengirimkan meme Jokowi, "Yo ndak tahu kok tanya saya".
 Hanya tersedia di grup kurang dari 500 orang dan pesan privat.
 
 - `/yntkts`
+
+## `/laodeai`
+
+🚧 FITUR INI EKSPERIMENTAL
+
+Mengirimkan jawaban dari masalahmu.
+
+- `/laodeai <query>`
+
+<img src="../.github/images/laodeai.jpg" width="300px" />

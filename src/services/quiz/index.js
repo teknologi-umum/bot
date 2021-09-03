@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import dayjs from 'dayjs';
 import { randomNumber } from 'carret';
-import redisClient from '../utils/redis.js';
-import { poll } from './poll.js';
-import { isHomeGroup } from '../utils/home.js';
+import redisClient from '../../utils/redis.js';
+import { poll } from '../poll/index.js';
+import { isHomeGroup } from '../../utils/home.js';
 
 const pollSchema = new mongoose.Schema(
   {
@@ -28,7 +28,7 @@ const pollSchema = new mongoose.Schema(
  * @param {import('telegraf').Context<import('telegraf/typings/core/types/typegram').Update>} context
  * @param {import('mongoose').Connection} mongo
  * @param {import('redis').RedisClient} cache
- * @returns
+ * @returns {Promise<void>}
  */
 async function quiz(context, mongo, cache) {
   if (!isHomeGroup(context)) return;
@@ -108,10 +108,17 @@ async function quiz(context, mongo, cache) {
     }
   }
 
-  await Poll.findByIdAndUpdate(pickQuiz['_id'], { posted: true }, { useFindAndModify: false });
+  await Poll.findByIdAndUpdate(pickQuiz['_id'], { posted: true });
   await redis.MSET(`quiz:${String(chatID)}:date`, currentTime);
 }
 
+/**
+ *
+ * @param {import('telegraf').Telegraf} bot
+ * @param {import('mongoose').Connection} mongo
+ * @param {import('redis').RedisClient} cache
+ * @returns {{command: String, description: String}[]}
+ */
 export function register(bot, mongo, cache) {
   bot.command('quiz', (context) => quiz(context, mongo, cache));
 

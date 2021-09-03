@@ -1,4 +1,4 @@
-import Turndown from 'turndown';
+import { sanitize } from '../../utils/sanitize.js';
 
 /**
  * Process Github Gist from Cheerio readout
@@ -8,11 +8,9 @@ import Turndown from 'turndown';
 export function gist($) {
   const markdownOutput = $('.gist-content .file-box .markdown-body').html();
   if (markdownOutput) {
-    const turndown = new Turndown({ hr: '---', emDelimiter: '__' });
-
     return {
       type: 'text',
-      content: turndown.turndown(markdownOutput).replace(/\r\n/g, '\n'),
+      content: sanitize(markdownOutput).replace(/\r\n/g, '\n'),
     };
   }
 

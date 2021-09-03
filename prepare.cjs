@@ -5,7 +5,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   exec('husky install', (error, stdout, stderr) => {
     if (error) throw error;
-    console.log(stdout);
-    console.log(stderr);
+    stdout && console.log(stdout);
+    stderr && console.log(stderr);
   });
 }

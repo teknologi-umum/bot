@@ -6,7 +6,7 @@ import { randomNumber, shuffle } from 'carret';
  * @param {Number} length
  * @returns {Array<any>}
  */
-function randomArray(items, length) {
+export function randomArray(items, length) {
   if (items.length < length) return items;
 
   const shuffled = shuffle(items);
@@ -17,5 +17,3 @@ function randomArray(items, length) {
   }
   return result;
 }
-
-export { randomArray };
