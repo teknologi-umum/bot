@@ -5,7 +5,7 @@ import * as assert from 'uvu/assert';
 // bahkan kalo import index, nggak bisa /src/services/eval
 // tapi harus /src/services/eval/index.js
 import { isAllowed, safeEval } from '../src/services/eval/parser.js';
-import { resolveStocks } from '../src/services/eval/superpowers.js';
+import { resolveCryptoCurrencies, resolveCurrencyRates, resolveStocks } from '../src/services/eval/superpowers.js';
 
 test('should do something', async () => {
   const result = await safeEval('1+1');
@@ -239,6 +239,30 @@ test('should not be able to evaluate more than 3 cashtags', async () => {
 //     result = error;
 //   }
 //   assert.equal(result, '29');
+// });
+
+// test('should be able to evaluate $BTCIDR', async () => {
+//   let result;
+//   try {
+//     result = await safeEval('$BTCIDR', [resolveCryptoCurrencies]);
+//   } catch (error) {
+//     result = error;
+//   }
+//   assert.equal(typeof result, 'string');
+//   const price = parseFloat(result);
+//   assert.equal(isNaN(price), false);
+// });
+
+// test('should be able to evaluate $USDIDR', async () => {
+//   let result;
+//   try {
+//     result = await safeEval('$USDIDR', [resolveCurrencyRates]);
+//   } catch (error) {
+//     result = error;
+//   }
+//   assert.equal(typeof result, 'string');
+//   const rate = parseFloat(result);
+//   assert.equal(isNaN(rate), false);
 // });
 
 test.run();
