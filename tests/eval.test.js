@@ -5,7 +5,7 @@ import * as assert from 'uvu/assert';
 // bahkan kalo import index, nggak bisa /src/services/eval
 // tapi harus /src/services/eval/index.js
 import { isAllowed, safeEval } from '../src/services/eval/parser.js';
-import { resolveCryptoCurrencies, resolveCurrencyRates, resolveStocks } from '../src/services/eval/superpowers.js';
+import { resolveStocks } from '../src/services/eval/superpowers.js';
 
 test('should do something', async () => {
   const result = await safeEval('1+1');
