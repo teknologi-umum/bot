@@ -7,6 +7,9 @@ import cheerio from 'cheerio';
 import { stackoverflow } from '../src/services/laodeai/stackoverflow.js';
 import { gist } from '../src/services/laodeai/gist.js';
 import { wikipedia } from '../src/services/laodeai/wikipedia.js';
+import { wikihow } from '../src/services/laodeai/wikihow.js';
+import { stackexchange } from '../src/services/laodeai/stackexchange.js';
+import { foodnetwork } from '../src/services/laodeai/foodnetwork.js';
 
 test('should be able to parse a stackoverflow code output', () => {
   const file = readFileSync(
@@ -252,6 +255,103 @@ test('should be able to parse wikipedia output', () => {
 test('should return error on empty wikipedia html', () => {
   const html = cheerio.load('<body></body>');
   const output = wikipedia(html);
+  assert.equal(output, { type: 'error', content: '' });
+});
+
+test('should be able to parse wikihow output', () => {
+  const file = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), './laodeai_fixture/wikihow.html'));
+  const html = cheerio.load(file);
+  const output = wikihow(html);
+  assert.equal(output.type, 'text');
+  assert.equal(
+    output.content,
+    `<b>Method 1 of 3:  Treating Momentary Ringing in the Ears</b>
+1. Try the skull-thumping trick.
+2. Try waiting it out.
+3. Avoid loud noises and protect your ears when you are exposed to noise.
+
+<b>Method 2 of 3:  Treating Chronic Ringing in the Ears</b>
+1. See your doctor about treating underlying conditions.
+2. Look into biofeedback therapy for your tinnitus.
+3. Treat tinnitus with noise-suppression tactics.
+4. Take medications to relieve some of the tinnitus symptoms.
+5. Try ginkgo extract.
+
+<b>Method 3 of 3:  Preventing Tinnitus</b>
+1. Avoid situations in which damage to the cochlea could cause tinnitus.
+2. Find an outlet for your stress.
+3. Consume less alcohol and nicotine.
+`,
+  );
+});
+
+test('should return error on empty wikihow html', () => {
+  const html = cheerio.load('<body></body>');
+  const output = wikihow(html);
+  assert.equal(output, { type: 'error', content: '' });
+});
+
+test('should be able to parse stackexchange output', () => {
+  const file = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), './laodeai_fixture/stackexchange.html'));
+  const html = cheerio.load(file);
+  const output = stackexchange(html);
+  assert.equal(output.type, 'text');
+  assert.equal(
+    output.content,
+    `Dear <a href="https://twitter.com/colmmacuait">@colmmacuait</a>, I think that if you type "man" at 0001 hours it should print "gimme gimme gimme". <a href="https://twitter.com/hashtag/abba?src=hash">#abba</a> 
+ <a href="https://twitter.com/marnanel/status/132280557190119424"><strong>@marnanel</strong> - 3 November 2011</a> 
+
+
+er, that was my fault, I suggested it. Sorry.
+
+Pretty much the whole story is in the commit. The maintainer of man is a good friend of mine, and one day six years ago I jokingly said to him that if you invoke man after midnight it should print "<em>gimme gimme gimme</em>", because of the Abba song called "<em>Gimme gimme gimme a man after midnight</em>":
+
+Well, he did actually <a href="https://git.savannah.nongnu.org/cgit/man-db.git/commit/src/man.c?id=002a6339b1fe8f83f4808022a17e1aa379756d99">put it</a> <a href="https://git.savannah.nongnu.org/cgit/man-db.git/commit/src/man.c?id=91c495389105a4cb6214fe176f703f498e4f0d91">in</a>. A few people were amused to discover it, and we mostly forgot about it until today.
+
+<a href="https://unix.stackexchange.com/questions/405783/why-does-man-print-gimme-gimme-gimme-at-0030/405874#comment726280_405874">I can't speak for Col</a>, obviously, but I didn't expect this to ever cause any problems: what sort of test would break on parsing the output of man with no page specified? I suppose I shouldn't be surprised that one turned up eventually, but it did take six years.
+
+(The <a href="https://git.savannah.nongnu.org/cgit/man-db.git/commit/src/man.c?id=002a6339b1fe8f83f4808022a17e1aa379756d99">commit message</a> calls me Thomas, which is my legal first name though I don't use it online much.) 
+
+<strong>This issue has been fixed with commit <a href="https://git.savannah.gnu.org/cgit/man-db.git/commit/?id=84bde8d8a9a357bd372793d25746ac6b49480525">84bde8</a>:</strong> Running man with <code>man -w</code> will no longer trigger this easter egg.`,
+  );
+});
+
+test('should return error on empty stackexchange html', () => {
+  const html = cheerio.load('<body></body>');
+  const output = stackexchange(html);
+  assert.equal(output, { type: 'error', content: '' });
+});
+
+test('should be able to parse foodnetwork output', () => {
+  const file = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), './laodeai_fixture/foodnetwork.html'));
+  const html = cheerio.load(file);
+  const output = foodnetwork(html);
+  assert.equal(output.type, 'text');
+  assert.equal(
+    output.content,
+    `<b>Spaghetti alla Carbonara</b>
+
+<b>Ingredients:</b>
+1. 1 pound dry spaghetti
+2. 2 tablespoons extra-virgin olive oil
+3. 4 ounces pancetta or slab bacon, cubed or sliced into small strips
+4. 4 garlic cloves, finely chopped
+5. 2 large eggs
+6. 1 cup freshly grated Parmigiano-Reggiano, plus more for serving
+7. Freshly ground black pepper
+8. 1 handful fresh flat-leaf parsley, chopped
+
+<b>Directions</b>:
+1. Prepare the sauce while the pasta is cooking to ensure that the spaghetti will be hot and ready when the sauce is finished; it is very important that the pasta is hot when adding the egg mixture, so that the heat of the pasta cooks the raw eggs in the sauce.
+2. Bring a large pot of salted water to a boil, add the pasta and cook for 8 to 10 minutes or until tender yet firm (as they say in Italian "al dente.") Drain the pasta well, reserving 1/2 cup of the starchy cooking water to use in the sauce if you wish.
+3. Meanwhile, heat the olive oil in a deep skillet over medium flame. Add the pancetta and saute for about 3 minutes, until the bacon is crisp and the fat is rendered. Toss the garlic into the fat and saute for less than 1 minute to soften.
+4. Add the hot, drained spaghetti to the pan and toss for 2 minutes to coat the strands in the bacon fat. Beat the eggs and Parmesan together in a mixing bowl, stirring well to prevent lumps. Remove the pan from the heat and pour the egg/cheese mixture into the pasta, whisking quickly until the eggs thicken, but do not scramble (this is done off the heat to ensure this does not happen.) Thin out the sauce with a bit of the reserved pasta water, until it reaches desired consistency. Season the carbonara with several turns of freshly ground black pepper and taste for salt. Mound the spaghetti carbonara into warm serving bowls and garnish with chopped parsley. Pass more cheese around the table.`,
+  );
+});
+
+test('should return error on empty foodnetwork html', () => {
+  const html = cheerio.load('<body></body>');
+  const output = foodnetwork(html);
   assert.equal(output, { type: 'error', content: '' });
 });
 

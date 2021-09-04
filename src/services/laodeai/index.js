@@ -6,12 +6,44 @@ import { generateImage } from '../snap/utils.js';
 import { stackoverflow } from './stackoverflow.js';
 import { gist } from './gist.js';
 import { wikipedia } from './wikipedia.js';
+import { wikihow } from './wikihow.js';
+import { stackexchange } from './stackexchange.js';
+import { sanitize } from '../../utils/sanitize.js';
+import { foodnetwork } from './foodnetwork.js';
 
 // list of handlers, also used to filter valid sites
 const VALID_SOURCES = {
   'stackoverflow.com': stackoverflow,
   'gist.github.com': gist,
   'en.wikipedia.org': wikipedia,
+  'wikihow.com': wikihow,
+  'foodnetwork.com': foodnetwork,
+  'serverfault.com': stackexchange,
+  'superuser.com': stackexchange,
+  'askubuntu.com': stackexchange,
+  // I know this is kind of dumb, so..
+  // FIXME: Use regexp! Or not, I don't know which is better
+  'gamedev.stackexchange.com': stackexchange,
+  'gaming.stackexchange.com': stackexchange,
+  'webapps.stackexchange.com': stackexchange,
+  'photo.stackexchange.com': stackexchange,
+  'stats.stackexchange.com': stackexchange,
+  // For weebs out there
+  'anime.stackexchange.com': stackexchange,
+  'japanese.stackexchange.com': stackexchange,
+  // Ok lets get back to normal people
+  'cooking.stackexchange.com': stackexchange,
+  'webmasters.stackexchange.com': stackexchange,
+  'english.stackexchange.com': stackexchange,
+  'math.stackexchange.com': stackexchange,
+  'apple.stackexchange.com': stackexchange,
+  'diy.stackexchange.com': stackexchange,
+  'ux.stackexchange.com': stackexchange,
+  'cstheory.stackexchange.com': stackexchange,
+  'money.stackexchange.com': stackexchange,
+  'softwareengineering.stackexchange.com': stackexchange,
+  'scifi.stackexchange.com': stackexchange,
+  'workplace.stackexchange.com': stackexchange,
 };
 
 /**
@@ -36,7 +68,7 @@ async function laodeai(context) {
       return new URL(decodeURIComponent(href));
     })
     .get()
-    .filter((url) => VALID_SOURCES[url.hostname]);
+    .filter((url) => VALID_SOURCES[url.hostname.replace('www.', '')]);
 
   if (validSources.length < 1) {
     await context.reply("Uhh, I don't have an answer for that, sorry.");
@@ -53,7 +85,7 @@ async function laodeai(context) {
       });
       if (statusCode !== 200) return null;
 
-      return { url: url.href, ...VALID_SOURCES[url.hostname](cheerio.load(body)) };
+      return { url: url.href, ...VALID_SOURCES[url.hostname.replace('www.', '')](cheerio.load(body)) };
     }),
   );
 
@@ -71,7 +103,7 @@ async function laodeai(context) {
     case 'text': {
       let content = result.content;
       if (content.length > 500) {
-        content = `${content.substring(0, 500)}...\n\nSee more on: ${result.url}`;
+        content = `${sanitize(content.substring(0, 500))}...\n\nSee more on: ${result.url}`;
       }
 
       await context.telegram.sendMessage(context.message.chat.id, content, { parse_mode: 'HTML' });

@@ -37,7 +37,7 @@ const analyticsSchema = new mongoose.Schema(
 export function register(bot, mongo) {
   bot.on('my_chat_member', async (context) => {
     const Analytics = mongo.model('Analytics', analyticsSchema, 'analytics');
-    const { chat, from, date, new_chat_member } = context.myChatMember;
+    const { chat, from, new_chat_member } = context.myChatMember;
     if (chat.type === 'private') return;
 
     const chatMembers = await context.getChatMembersCount(chat.id);
@@ -46,7 +46,7 @@ export function register(bot, mongo) {
       { groupID: chat.id },
       {
         $set: {
-          updatedAt: new Date(date),
+          updatedAt: new Date(),
           title: chat.title,
           username: chat.username ?? '',
           type: chat.type,
@@ -67,6 +67,7 @@ export function register(bot, mongo) {
         },
         $setOnInsert: {
           groupID: String(chat.id),
+          joinedAt: new Date(),
         },
       },
       { upsert: true, new: true },
