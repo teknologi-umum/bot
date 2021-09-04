@@ -110,15 +110,9 @@ export async function resolveCryptoCurrencies(source) {
   return source;
 }
 
-// cache TTL: 1 day
-const currencyPairRegexCacheTtl = 24 * 60 * 60 * 1000;
-
-// currency regex cache
-const currencyPairRegexCache = new SingleValueCache(currencyPairRegexCacheTtl);
-
 export async function resolveCurrencyRates(source) {
   // cashtag: $USDIDR
-  const regex = await currencyPairRegexCache.getOrCreate(getCurrencyQueriesRegex);
+  const regex = await getCurrencyQueriesRegex();
   const cashtags = source.match(regex);
   if (cashtags === null || cashtags.length === 0) return source;
 
