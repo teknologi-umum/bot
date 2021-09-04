@@ -1,4 +1,3 @@
-import { SingleValueCache } from '../../utils/cache.js';
 import { fetchCryptoCurrency } from './crypto.js';
 import { fetchCurrencyRate, getCurrencyQueriesRegex } from './currency.js';
 import { fetchStock } from './stock.js';
