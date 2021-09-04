@@ -241,4 +241,28 @@ test('should not be able to evaluate more than 3 cashtags', async () => {
 //   assert.equal(result, '29');
 // });
 
+// test('should be able to evaluate $BTCIDR', async () => {
+//   let result;
+//   try {
+//     result = await safeEval('$BTCIDR', [resolveCryptoCurrencies]);
+//   } catch (error) {
+//     result = error;
+//   }
+//   assert.equal(typeof result, 'string');
+//   const price = parseFloat(result);
+//   assert.equal(isNaN(price), false);
+// });
+
+// test('should be able to evaluate $USDIDR', async () => {
+//   let result;
+//   try {
+//     result = await safeEval('$USDIDR', [resolveCurrencyRates]);
+//   } catch (error) {
+//     result = error;
+//   }
+//   assert.equal(typeof result, 'string');
+//   const rate = parseFloat(result);
+//   assert.equal(isNaN(rate), false);
+// });
+
 test.run();

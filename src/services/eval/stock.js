@@ -7,6 +7,7 @@ export async function fetchStock(stockCode) {
 
   const { statusCode, body } = await got.get(`https://www.duniainvestasi.com/bei/summaries/${stockCode}`, {
     responseType: 'text',
+    throwHttpErrors: false,
   });
 
   if (statusCode !== 200) {
