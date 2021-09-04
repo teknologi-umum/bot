@@ -8,10 +8,16 @@ Then we send that to Sentry. Nothing dangerous and concerning about that.
 
 ## What information do we collect?
 
-We collect your Telegram user ID, username (if any), first name (if any), and last name (if any).
-We also collect the group chat ID, group chat name, group chat username, group chat type
-(supergroup, channel, group, or private), and your message on the group.
-All of that is collected ONLY IF there is any error happened.
+Upon joining a group, we collect information about the group, such as group ID, group title, group username, group chat type
+(supergroup, channel, group), group administrators (along with their user ID, name, and username), and numbers group members.
+This data is also updated when you change the status of the bot (make him an administrator, remove his administrator priviledge,
+or kick him from the group).
+
+When there is an error on our side, we collect your Telegram user ID, username (if any), first name (if any), and last name (if any).
+We also collect the group chat ID, group chat name, group chat username, group chat type (supergroup, channel, group, or private),
+and your message on the group.
+
+Bear in mind: we are not collecting all of the chat's messages.
 
 Even if there is an error happened, there should be a message of:
 
@@ -25,7 +31,10 @@ any credentials-related information. Even your phone number!
 
 ## What do we use your information for?
 
-Bug fix, pin pointing where the error came from.
+For joining data, it's for our analytics, we still want to keep track which group the bot is in.
+Only one person in the Teknologi Umum Bot has the access to this data.
+
+For errors data, it's only for bug fix, and pin pointing where the error came from.
 `/dukun` command needs your ID and name to indicate who's who.
 That's it.
 
