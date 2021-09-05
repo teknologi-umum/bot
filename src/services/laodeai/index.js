@@ -10,6 +10,7 @@ import { wikihow } from './wikihow.js';
 import { stackexchange } from './stackexchange.js';
 import { sanitize } from '../../utils/sanitize.js';
 import { foodnetwork } from './foodnetwork.js';
+import { makeRequest } from '../pastebin/index.js';
 
 // list of handlers, also used to filter valid sites
 const VALID_SOURCES = {
@@ -93,11 +94,19 @@ async function laodeai(context) {
   //                 first one
   const result = results[0];
 
+  // TODO(aldy505): LaodeAI handler error kalo result.url nya https://stackoverflow.com/questions/tagged/python-requests
   switch (result.type) {
     case 'image': {
-      await context.telegram.sendPhoto(context.message.chat.id, {
-        source: await generateImage(result.content, context.message.from.username),
-      });
+      const tooLong = result.content.length > 5000;
+      await context.telegram.sendPhoto(
+        context.message.chat.id,
+        {
+          source: await generateImage(result.content.substring(0, 5000), context.message.from.username),
+        },
+        {
+          caption: !!tooLong && `Read more on: ${await makeRequest(result.content)}`,
+        },
+      );
       break;
     }
     case 'text': {
