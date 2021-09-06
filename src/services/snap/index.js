@@ -1,3 +1,4 @@
+import { makeRequest, PASTEBIN_FILE_TOO_BIG } from '../pastebin/index.js';
 import { generateImage } from './utils.js';
 
 /**
@@ -17,17 +18,29 @@ async function snap(context) {
     return;
   }
 
+  /**
+   * @type {String}
+   */
   const code = replyMessage.text;
+  const tooLong = code.length > 3000 || code.split('\n').length > 190;
+  const mentionUser = replyMessage.from.username
+    ? `@${replyMessage.from.username}`
+    : `${replyMessage.from.first_name} ${replyMessage.from.last_name}`;
+  const fullCode = tooLong ? await makeRequest(code) : false;
 
   await context.telegram.sendPhoto(
     context.message.chat.id,
     {
-      source: await generateImage(code, context.message.from.username),
+      source: await generateImage(code.substring(0, 3000), context.message.from.username),
     },
     {
-      caption: replyMessage.from.username
-        ? `@${replyMessage.from.username}`
-        : `${replyMessage.from.first_name} ${replyMessage.from.last_name}`,
+      caption: `${mentionUser + ' '}${
+        fullCode === PASTEBIN_FILE_TOO_BIG
+          ? 'Code is bigger than 512 KB, please upload the complete code yourself.'
+          : fullCode
+          ? `Full code on: ${fullCode}`
+          : ''
+      }`,
       reply_to_message_id: !isOwner && replyMessage.message_id,
     },
   );

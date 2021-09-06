@@ -14,7 +14,7 @@ const WHITELIST = ['javascript', 'php', 'go', 'c', 'typescript', 'python'];
 async function devRead(context, cache) {
   const redis = redisClient(cache);
 
-  let query = getCommandArgs('devread', context);
+  const query = getCommandArgs('devread', context);
 
   if (!query) {
     await context.telegram.sendMessage(

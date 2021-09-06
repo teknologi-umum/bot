@@ -10,6 +10,7 @@ import { wikihow } from './wikihow.js';
 import { stackexchange } from './stackexchange.js';
 import { sanitize } from '../../utils/sanitize.js';
 import { foodnetwork } from './foodnetwork.js';
+import { makeRequest } from '../pastebin/index.js';
 
 // list of handlers, also used to filter valid sites
 const VALID_SOURCES = {
@@ -75,29 +76,21 @@ async function laodeai(context) {
     return;
   }
 
-  const results = await Promise.all(
-    validSources.map(async (url) => {
-      const { body, statusCode } = await got.get(url.href, {
-        headers: {
-          Accept: 'text/html',
-        },
-        responseType: 'text',
-      });
-      if (statusCode !== 200) return null;
-
-      return { url: url.href, ...VALID_SOURCES[url.hostname.replace('www.', '')](cheerio.load(body)) };
-    }),
-  );
-
-  // TODO(elianiva): ideally we should send all of them instead of picking the
-  //                 first one
-  const result = results[0];
+  const result = await goThroughURLs(validSources);
 
   switch (result.type) {
     case 'image': {
-      await context.telegram.sendPhoto(context.message.chat.id, {
-        source: await generateImage(result.content, context.message.from.username),
-      });
+      const tooLong = result.content.length > 3000 || result.content.split('\n').length > 190;
+      const fullCode = tooLong ? await makeRequest(result.content) : false;
+      await context.telegram.sendPhoto(
+        context.message.chat.id,
+        {
+          source: await generateImage(result.content.substring(0, 3000), context.message.from.username),
+        },
+        {
+          caption: tooLong ? `Read more on: ${fullCode || result.url}` : '',
+        },
+      );
       break;
     }
     case 'text': {
@@ -110,7 +103,45 @@ async function laodeai(context) {
       break;
     }
     case 'error': {
-      throw new Error('LaodeAI handler error');
+      await context.telegram.sendMessage(context.message.chat.id, "I can't find the proper answer for that, sorry.", {
+        parse_mode: 'HTML',
+      });
+      break;
+    }
+  }
+}
+
+/**
+ * Literally will go through URLs
+ * @param {URL[]} validSources
+ * @returns {Promise<{ url: string, type: 'image' | 'text', content: string } | { type: 'error' }>}
+ */
+async function goThroughURLs(validSources) {
+  for (let i = 0; i < validSources.length; i++) {
+    const url = validSources[i];
+    console.log(url);
+    const { body, statusCode } = await got.get(url.href, {
+      headers: {
+        Accept: 'text/html',
+      },
+      responseType: 'text',
+      throwHttpErrors: false,
+    });
+
+    if (statusCode !== 200) {
+      continue;
+    }
+
+    const urlResult = { url: url.href, ...VALID_SOURCES[url.hostname.replace('www.', '')](cheerio.load(body)) };
+
+    if (urlResult.type === 'error') {
+      if (i === validSources.length - 1) {
+        // Just give up man
+        return { type: 'error' };
+      }
+      continue;
+    } else {
+      return urlResult;
     }
   }
 }
