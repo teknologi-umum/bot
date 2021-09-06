@@ -49,7 +49,9 @@ async function pastebin(context) {
     `${
       isOwner
         ? ''
-        : `<a href="tg://user?id=${context.message.from.id}">${context.message.from.first_name} ${context.message.from.last_name}</a> `
+        : `<a href="tg://user?id=${context.message.from.id}">${context.message.from.first_name ?? ''} ${
+            context.message.from?.last_name ?? ''
+          }</a> `
     }${pasteURL === PASTEBIN_FILE_TOO_BIG ? pasteURL : `Your paste link: ${pasteURL}`}`,
     {
       reply_to_message_id: !isOwner && replyMessage.message_id,
@@ -77,10 +79,5 @@ async function pastebin(context) {
 export function register(bot) {
   bot.command('pastebin', pastebin);
 
-  return [
-    {
-      command: 'pastebin',
-      description: 'Send your code to Pastebin!',
-    },
-  ];
+  return [];
 }

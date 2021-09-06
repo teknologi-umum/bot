@@ -25,7 +25,7 @@ async function snap(context) {
   const tooLong = code.length > 3000 || code.split('\n').length > 190;
   const mentionUser = replyMessage.from.username
     ? `@${replyMessage.from.username}`
-    : `${replyMessage.from.first_name} ${replyMessage.from.last_name}`;
+    : `${replyMessage.from.first_name} ${replyMessage.from?.last_name ?? ''}`;
   const fullCode = tooLong ? await makeRequest(code) : false;
 
   await context.telegram.sendPhoto(
@@ -34,7 +34,7 @@ async function snap(context) {
       source: await generateImage(code.substring(0, 3000), context.message.from.username),
     },
     {
-      caption: `${mentionUser + ' '}${
+      caption: `${isOwner ? '' : mentionUser + ' '}${
         fullCode === PASTEBIN_FILE_TOO_BIG
           ? 'Code is bigger than 512 KB, please upload the complete code yourself.'
           : fullCode
