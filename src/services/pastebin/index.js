@@ -2,6 +2,8 @@ import got from 'got';
 import { defaultHeaders } from '../../utils/http.js';
 import { sizeInBytes } from '../../utils/size.js';
 
+export const PASTEBIN_FILE_TOO_BIG = "Can't create pastebin. Text is bigger than 512 KB";
+
 /**
  *
  * @param {String} text
@@ -9,7 +11,7 @@ import { sizeInBytes } from '../../utils/size.js';
  */
 export async function makeRequest(text) {
   if (sizeInBytes(text) >= 512) {
-    return "Can't create pastebin. Text is bigger than 512 KB";
+    return PASTEBIN_FILE_TOO_BIG;
   }
 
   const { body } = await got.post('http://hastebin.com/documents', {
@@ -41,13 +43,14 @@ async function pastebin(context) {
     return;
   }
 
+  const pasteURL = await makeRequest(replyMessage.text);
   await context.telegram.sendMessage(
     context.message.chat.id,
     `${
       isOwner
         ? ''
         : `<a href="tg://user?id=${context.message.from.id}">${context.message.from.first_name} ${context.message.from.last_name}</a> `
-    }Your paste link: ${await makeRequest(replyMessage.text)}`,
+    }${pasteURL === PASTEBIN_FILE_TOO_BIG ? pasteURL : `Your paste link: ${pasteURL}`}`,
     {
       reply_to_message_id: !isOwner && replyMessage.message_id,
       disable_web_page_preview: true,

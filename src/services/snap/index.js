@@ -1,4 +1,4 @@
-import { makeRequest } from '../pastebin/index.js';
+import { makeRequest, PASTEBIN_FILE_TOO_BIG } from '../pastebin/index.js';
 import { generateImage } from './utils.js';
 
 /**
@@ -35,7 +35,7 @@ async function snap(context) {
     },
     {
       caption: `${mentionUser + ' '}${
-        fullCode === "Can't create pastebin. Text is bigger than 512 KB"
+        fullCode === PASTEBIN_FILE_TOO_BIG
           ? 'Code is bigger than 512 KB, please upload the complete code yourself.'
           : fullCode
           ? `Full code on: ${fullCode}`
