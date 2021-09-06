@@ -21,6 +21,7 @@ import * as search from './services/search/index.js';
 import * as dukun from './services/dukun/index.js';
 import * as laodeai from './services/laodeai/index.js';
 import * as analytics from './services/analytics/index.js';
+import * as pastebin from './services/pastebin/index.js';
 
 dotenv.config({ path: pathTo(import.meta.url, '../.env') });
 
@@ -46,6 +47,7 @@ async function main() {
     dukun.register(bot, mongo, cache),
     laodeai.register(bot),
     analytics.register(bot, mongo),
+    pastebin.register(bot),
   ]
     .filter((v) => Array.isArray(v))
     .flat();

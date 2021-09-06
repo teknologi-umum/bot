@@ -76,25 +76,8 @@ async function laodeai(context) {
     return;
   }
 
-  const results = await Promise.all(
-    validSources.map(async (url) => {
-      const { body, statusCode } = await got.get(url.href, {
-        headers: {
-          Accept: 'text/html',
-        },
-        responseType: 'text',
-      });
-      if (statusCode !== 200) return null;
+  const result = await goThroughURLs(validSources);
 
-      return { url: url.href, ...VALID_SOURCES[url.hostname.replace('www.', '')](cheerio.load(body)) };
-    }),
-  );
-
-  // TODO(elianiva): ideally we should send all of them instead of picking the
-  //                 first one
-  const result = results[0];
-
-  // TODO(aldy505): LaodeAI handler error kalo result.url nya https://stackoverflow.com/questions/tagged/python-requests
   switch (result.type) {
     case 'image': {
       const tooLong = result.content.length > 5000;
@@ -104,7 +87,7 @@ async function laodeai(context) {
           source: await generateImage(result.content.substring(0, 5000), context.message.from.username),
         },
         {
-          caption: !!tooLong && `Read more on: ${await makeRequest(result.content)}`,
+          caption: tooLong ? `Read more on: ${await makeRequest(result.content)}` : '',
         },
       );
       break;
@@ -119,7 +102,45 @@ async function laodeai(context) {
       break;
     }
     case 'error': {
-      throw new Error('LaodeAI handler error');
+      await context.telegram.sendMessage(context.message.chat.id, "I can't find the proper answer for that, sorry.", {
+        parse_mode: 'HTML',
+      });
+      break;
+    }
+  }
+}
+
+/**
+ * Literally will go through URLs
+ * @param {URL[]} validSources
+ * @returns {Promise<{ url: string, type: 'image' | 'text', content: string } | { type: 'error' }>}
+ */
+async function goThroughURLs(validSources) {
+  for (let i = 0; i < validSources.length; i++) {
+    const url = validSources[i];
+    console.log(url);
+    const { body, statusCode } = await got.get(url.href, {
+      headers: {
+        Accept: 'text/html',
+      },
+      responseType: 'text',
+      throwHttpErrors: false,
+    });
+
+    if (statusCode !== 200) {
+      continue;
+    }
+
+    const urlResult = { url: url.href, ...VALID_SOURCES[url.hostname.replace('www.', '')](cheerio.load(body)) };
+
+    if (urlResult.type === 'error') {
+      if (i === validSources.length - 1) {
+        // Just give up man
+        return { type: 'error' };
+      }
+      continue;
+    } else {
+      return urlResult;
     }
   }
 }

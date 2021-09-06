@@ -1,5 +1,5 @@
 export function Semaphore() {
-  let queue = [];
+  const queue = [];
 
   this.wait = async function () {
     const promiseQueue = queue.map((entry) => entry.promise);

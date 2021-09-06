@@ -9,7 +9,7 @@ import { sizeInBytes } from '../../utils/size.js';
  */
 export async function makeRequest(text) {
   if (sizeInBytes(text) >= 512) {
-    throw Error('text is bigger than 512 KB');
+    return "Can't create pastebin. Text is bigger than 512 KB";
   }
 
   const { body } = await got.post('http://hastebin.com/documents', {
@@ -44,8 +44,9 @@ async function pastebin(context) {
   await context.telegram.sendMessage(
     context.message.chat.id,
     `${
-      !isOwner &&
-      `<a href="tg://user?id=${context.message.from.id}">${context.message.from.first_name} ${context.message.from.last_name}</a> `
+      isOwner
+        ? ''
+        : `<a href="tg://user?id=${context.message.from.id}">${context.message.from.first_name} ${context.message.from.last_name}</a> `
     }Your paste link: ${await makeRequest(replyMessage.text)}`,
     {
       reply_to_message_id: !isOwner && replyMessage.message_id,
@@ -76,7 +77,7 @@ export function register(bot) {
   return [
     {
       command: 'pastebin',
-      description: '',
+      description: 'Send your code to Pastebin!',
     },
   ];
 }
