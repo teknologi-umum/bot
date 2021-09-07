@@ -1,9 +1,9 @@
 import got from 'got';
-import dayjs from 'dayjs';
 import { renderTemplate } from '../../utils/template.js';
 import redisClient from '../../utils/redis.js';
 import { getCommandArgs } from '../../utils/command.js';
 import { defaultHeaders } from '../../utils/http.js';
+import { Temporal } from '../../utils/temporal.js';
 
 /**
  * Send covid information.
@@ -51,7 +51,7 @@ async function covid(context, cache) {
     await context.telegram.sendMessage(
       chatId,
       renderTemplate('covid/country.template.hbs', {
-        date: dayjs(body.updated).format('DD MMMM YYYY'),
+        date: new Temporal(body.updated).formatDate('id-ID', 'Asia/Jakarta'),
         country: body.country,
         confirmed: body.todayCases.toLocaleString('id-ID') ?? 0,
         deaths: body.todayDeaths.toLocaleString('id-ID') ?? 0,
@@ -96,7 +96,7 @@ async function covid(context, cache) {
   ).body;
 
   const preformatMessage = renderTemplate('covid/global.template.hbs', {
-    date: dayjs(globalData.updated).format('DD MMMM YYYY'),
+    date: new Temporal(globalData.updated).formatDate('id-ID', 'Asia/Jakarta'),
     globalConfirmed: globalData.todayCases.toLocaleString('id-ID') ?? 0,
     globalDeaths: globalData.todayDeaths.toLocaleString('id-ID') ?? 0,
     globalRecovered: globalData.todayRecovered.toLocaleString('id-ID') ?? 0,

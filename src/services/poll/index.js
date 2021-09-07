@@ -1,6 +1,6 @@
-import dayjs from 'dayjs';
 import { isHomeGroup } from '../../utils/home.js';
 import redisClient from '../../utils/redis.js';
+import { Temporal } from '../../utils/temporal.js';
 
 /**
  * Process poll created by user to not
@@ -12,7 +12,7 @@ import redisClient from '../../utils/redis.js';
  */
 export async function poll(context, cache, poll, pollID) {
   const redis = redisClient(cache);
-  const currentTime = dayjs().add(7, 'hours').toISOString();
+  const currentTime = new Temporal(new Date());
 
   const [getLastMessageContent, lastPinnedMessage, lastPollDate] = await redis.MGET(
     `poll:${String(context.message.chat.id)}:message:content`,
@@ -21,7 +21,7 @@ export async function poll(context, cache, poll, pollID) {
   );
   let lastMessageContent = JSON.parse(getLastMessageContent);
 
-  if (!lastMessageContent || dayjs(lastPollDate).diff(currentTime, 'day') !== 0) {
+  if (!lastMessageContent || !currentTime.compare(new Date(lastPollDate), 'day')) {
     lastMessageContent = { survey: [], quiz: [] };
   }
 
@@ -35,13 +35,13 @@ export async function poll(context, cache, poll, pollID) {
   const chatLink = `https://t.me/${chat.username}`;
 
   const preformatMessage =
-    `<strong>${dayjs().add(7, 'hours').format('DD MMMM YYYY')}</strong>\n\n` +
+    `<strong>${currentTime.formatDate('id-ID', 'Asia/Jakarta', false, false)}</strong>\n\n` +
     `Quiz\n` +
     `${lastMessageContent.quiz.map((i) => `<a href="${chatLink}/${i.id}">${i.text}</a>`).join('\n')}\n\n` +
     `Survey\n` +
     `${lastMessageContent.survey.map((i) => `<a href="${chatLink}/${i.id}">${i.text}</a>`).join('\n')}\n`;
 
-  if (lastPollDate && dayjs(lastPollDate).diff(currentTime, 'day') === 0) {
+  if (lastPollDate && currentTime.compare(new Date(), 'day')) {
     // append to existing message
     await context.telegram.editMessageText(context.message.chat.id, Number(lastPinnedMessage), '', preformatMessage, {
       parse_mode: 'HTML',
@@ -63,7 +63,7 @@ export async function poll(context, cache, poll, pollID) {
     `poll:${String(context.message.chat.id)}:message:content`,
     JSON.stringify(lastMessageContent),
     `poll:${String(context.message.chat.id)}:date`,
-    currentTime,
+    currentTime.date.toISOString(),
   );
   await context.telegram.pinChatMessage(context.message.chat.id, response.message_id, {
     disable_notification: false,
