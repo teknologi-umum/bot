@@ -2,7 +2,7 @@ import { test } from 'uvu';
 import * as assert from 'uvu/assert';
 import { Temporal } from '../src/utils/temporal.js';
 
-const DATE = new Date('December 17, 1995 03:24:00');
+const DATE = new Date('1995-12-17T03:24:00.000Z');
 
 test('should be able to compare dates', () => {
   assert.is(new Temporal(DATE).compare(DATE, 'month'), true);
@@ -19,10 +19,10 @@ test('should throw error on comparing dates', () => {
 });
 
 test('should be able to format date', () => {
-  assert.is(new Temporal(DATE).formatDate(), 'December 16, 1995');
-  assert.is(new Temporal(DATE).formatDate('en-US', 'UTC', true, false), 'December 16, 1995 at 8:24:00 PM UTC');
-  assert.is(new Temporal(DATE).formatDate('en-US', 'UTC', true, true), 'Saturday, December 16, 1995 at 8:24:00 PM UTC');
-  assert.is(new Temporal(DATE).formatDate('en-US', 'UTC', false, true), 'Saturday, December 16, 1995');
+  assert.is(new Temporal(DATE).formatDate(), 'December 17, 1995');
+  assert.is(new Temporal(DATE).formatDate('en-US', 'UTC', true, false), 'December 17, 1995 at 3:24:00 AM UTC');
+  assert.is(new Temporal(DATE).formatDate('en-US', 'UTC', true, true), 'Sunday, December 17, 1995 at 3:24:00 AM UTC');
+  assert.is(new Temporal(DATE).formatDate('en-US', 'UTC', false, true), 'Sunday, December 17, 1995');
 });
 
 test('should throw error on format date', () => {
@@ -35,8 +35,8 @@ test('should throw error on format date', () => {
 test('should be able to add duration', () => {
   assert.is(new Temporal(DATE).add(1, 'second').getUTCSeconds(), 1);
   assert.is(new Temporal(DATE).add(1, 'minute').getUTCMinutes(), 25);
-  assert.is(new Temporal(DATE).add(1, 'hour').getUTCHours(), 21);
-  assert.is(new Temporal(DATE).add(1, 'day').getUTCDate(), 17);
+  assert.is(new Temporal(DATE).add(1, 'hour').getUTCHours(), 4);
+  assert.is(new Temporal(DATE).add(1, 'day').getUTCDate(), 18);
   assert.is(new Temporal(DATE).add(1, 'month').getUTCMonth(), 0);
 });
 

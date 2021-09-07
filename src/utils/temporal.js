@@ -54,7 +54,7 @@ export class Temporal {
    * @param {String} locale Defaults to en-US. See https://www.science.co.il/language/Locale-codes.php
    * @param {String} timezone Defaults to UTC. See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
    * @param {Boolean} withTime Defaults to false. Whether or not you want to print time
-   * @param {Boolean} withDate Defaults to false. Whether or not you want to print day
+   * @param {Boolean} withDay Defaults to false. Whether or not you want to print day
    * @returns {String}
    */
   formatDate(locale = 'en-US', timezone = 'UTC', withTime = false, withDay = false) {
