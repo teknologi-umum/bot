@@ -29,7 +29,10 @@ export class SingleValueCache {
   async getOrCreate(valueFactory) {
     await this.semaphore.wait();
     try {
-      if (this.ttl !== null && Date.now() - this.lastUpdated >= this.ttl) {
+      if (
+        (this.ttl !== null && Date.now() - this.lastUpdated >= this.ttl) ||
+        (this.ttl === null && this.lastUpdated === 0)
+      ) {
         this.value = await valueFactory();
         this.lastUpdated = Date.now();
       }

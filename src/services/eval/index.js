@@ -10,14 +10,13 @@ import { resolveCryptoCurrencies, resolveCurrencyRates, resolveStocks } from './
 async function evalCommand(context) {
   const source = getCommandArgs('eval', context);
 
-  const output = await safeEval(source, [resolveStocks, resolveCurrencyRates, resolveCryptoCurrencies]);
+  const output = await safeEval(source, [resolveCurrencyRates, resolveStocks, resolveCryptoCurrencies]);
 
   await context.replyWithMarkdown(`
 Code:
 \`\`\`
 ${source}
 \`\`\`
-
 Output:
 \`\`\`
 ${output}
