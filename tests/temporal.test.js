@@ -37,6 +37,7 @@ test('should be able to add duration', () => {
   assert.is(new Temporal(DATE).add(1, 'minute').getUTCMinutes(), 25);
   assert.is(new Temporal(DATE).add(1, 'hour').getUTCHours(), 4);
   assert.is(new Temporal(DATE).add(1, 'day').getUTCDate(), 18);
+  assert.is(new Temporal(DATE).add(1, 'week').getUTCDate(), 17 + 7);
   assert.is(new Temporal(DATE).add(1, 'month').getUTCMonth(), 0);
 });
 

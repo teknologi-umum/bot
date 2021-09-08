@@ -81,7 +81,7 @@ export class Temporal {
    *
    * NOTE: This does not mutate the date object from the constructor
    * @param {Number} duration
-   * @param {'month' | 'day' | 'hour' | 'minute' | 'second'} unit
+   * @param {'month' | 'week' | 'day' | 'hour' | 'minute' | 'second'} unit
    * @returns {Date}
    */
   add(duration, unit) {
@@ -93,6 +93,11 @@ export class Temporal {
       case 'month': {
         const tempDate = new Date(this.date);
         tempDate.setMonth(this.date.getMonth() + duration);
+        return tempDate;
+      }
+      case 'week': {
+        const tempDate = new Date(this.date);
+        tempDate.setDate(this.date.getDate() + 7 * duration);
         return tempDate;
       }
       case 'day': {
@@ -132,6 +137,6 @@ function getWeek(date) {
     throw new Error('*face palms*');
   }
 
-  const onejan = new Date(new Date().getFullYear(), 0, 1);
-  return Math.ceil(((date - onejan) / 86400000 + onejan.getDay() + 1) / 7);
+  const firstJanuary = new Date(new Date().getFullYear(), 0, 1);
+  return Math.ceil(((date - firstJanuary) / 86400000 + firstJanuary.getDay() + 1) / 7);
 }
