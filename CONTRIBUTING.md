@@ -18,7 +18,7 @@ Please make sure that the issue you're creating is in as much detail as possible
 
 You will need a few things to get things working:
 
-1. Node.js current version (as of now, we're using v16.6.1 as defined in the `.nvmrc` file). You can install it through the [official Node.js download page](https://nodejs.org/en/download/), but we recommend using [nvm](https://github.com/nvm-sh/nvm) or [fnm](https://github.com/Schniz/fnm). Here's a simple installation/setup guide, but you should really refer directly to the corresponding repository's README.
+1. Node.js current version (as of now, we're using v16.6.2 as defined in the `.nvmrc` file). You can install it through the [official Node.js download page](https://nodejs.org/en/download/), but we recommend using [nvm](https://github.com/nvm-sh/nvm) or [fnm](https://github.com/Schniz/fnm). Here's a simple installation/setup guide, but you should really refer directly to the corresponding repository's README.
 
 ```sh
 # If you want to install fnm
@@ -33,7 +33,7 @@ $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bas
 $ nvm use
 ```
 
-2. [Docker](https://docker.com/) and [Docker Compose](https://docs.docker.com/compose/install/) if you don't have Redis and MongoDB installed on your machine.
+2. [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) if you don't have Redis and MongoDB installed on your machine.
 
 3. Telegram Bot Token. You must create one in order to take the bot into development. Telegram has [a guide about it](https://core.telegram.org/bots#6-botfather).
 
@@ -41,7 +41,7 @@ $ nvm use
 
 1. [Fork](https://help.github.com/articles/fork-a-repo/) this repository to your own Github account and [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device.
 2. Run `npm install` to install the dependencies needed.
-3. Get the database up and running. You can use `docker-compose up` for this.
+3. Get the database up and running. You can use `docker-compose up -d` for this. To stop the container, use `docker-compose stop`. To remove the container, use `docker-compose down`. Bear in mind that the data stored in the Redis and MongoDB of the Docker container is not persistent. Once it's stopped, the data will be erased.
 4. Rename `.env.example` to `.env` and fill the config key=value needed. The one's necessary is `BOT_TOKEN`, `MONGO_URL` and `REDIS_URL`, you may leave everything else blank. If you're using the Docker Compose file to spin up the database, your `.env` should be:
 
 ```ini

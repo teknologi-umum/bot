@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
-import dayjs from 'dayjs';
 import { randomNumber } from 'carret';
 import redisClient from '../../utils/redis.js';
 import { poll } from '../poll/index.js';
 import { isHomeGroup } from '../../utils/home.js';
+import { Temporal } from '../../utils/temporal.js';
 
 const pollSchema = new mongoose.Schema(
   {
@@ -34,7 +34,7 @@ async function quiz(context, mongo, cache) {
   if (!isHomeGroup(context)) return;
 
   const redis = redisClient(cache);
-  const currentTime = dayjs().add(7, 'hours').toISOString();
+  const currentTime = new Temporal(new Date());
   const chatID = context.message.chat.id;
 
   if (context.message.chat.type === 'private') {
@@ -47,7 +47,7 @@ async function quiz(context, mongo, cache) {
   // Check if today's quiz is already posted.
   const lastQuizDate = await redis.GET(`quiz:${String(chatID)}:date`);
 
-  if (lastQuizDate && dayjs(lastQuizDate).diff(currentTime, 'day') === 0) {
+  if (lastQuizDate && currentTime.compare(new Date(lastQuizDate), 'day')) {
     context.telegram.sendMessage(
       chatID,
       `You can't request another new quiz for today. Wait for tomorrow, then ask a new one &#x1F61A`,
@@ -109,7 +109,7 @@ async function quiz(context, mongo, cache) {
   }
 
   await Poll.findByIdAndUpdate(pickQuiz['_id'], { posted: true });
-  await redis.MSET(`quiz:${String(chatID)}:date`, currentTime);
+  await redis.MSET(`quiz:${String(chatID)}:date`, currentTime.date.toISOString());
 }
 
 /**
