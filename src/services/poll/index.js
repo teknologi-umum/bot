@@ -41,7 +41,7 @@ export async function poll(context, cache, poll, pollID) {
     `Survey\n` +
     `${lastMessageContent.survey.map((i) => `<a href="${chatLink}/${i.id}">${i.text}</a>`).join('\n')}\n`;
 
-  if (lastPollDate && currentTime.compare(new Date(), 'day')) {
+  if (lastPollDate && currentTime.compare(new Date(lastPollDate), 'day')) {
     // append to existing message
     await context.telegram.editMessageText(context.message.chat.id, Number(lastPinnedMessage), '', preformatMessage, {
       parse_mode: 'HTML',
