@@ -128,6 +128,9 @@ async function goThroughURLs(validSources) {
       },
       responseType: 'text',
       throwHttpErrors: false,
+      timeout: {
+        request: 15_000,
+      },
     });
 
     if (statusCode !== 200) {
