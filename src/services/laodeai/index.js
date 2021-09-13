@@ -12,6 +12,7 @@ import { wikihow } from './handlers/wikihow.js';
 import { stackexchange } from './handlers/stackexchange.js';
 import { foodnetwork } from './handlers/foodnetwork.js';
 import { knowyourmeme } from './handlers/knowyourmeme.js';
+import { urbandictionary } from './handlers/urbandictionary.js';
 
 // list of handlers, also used to filter valid sites
 const VALID_SOURCES = {
@@ -61,6 +62,7 @@ const VALID_SOURCES = {
   'islam.stackexchange.com': stackexchange,
   'dba.stackexchange.com': stackexchange,
   'knowyourmeme.com': knowyourmeme,
+  'urbandictionary.com': urbandictionary,
 };
 
 /**
