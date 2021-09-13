@@ -11,6 +11,7 @@ import { wikihow } from '../src/services/laodeai/handlers/wikihow.js';
 import { stackexchange } from '../src/services/laodeai/handlers/stackexchange.js';
 import { foodnetwork } from '../src/services/laodeai/handlers/foodnetwork.js';
 import { knowyourmeme } from '../src/services/laodeai/handlers/knowyourmeme.js';
+import { urbandictionary } from '../src/services/laodeai/handlers/urbandictionary.js';
 
 test('should be able to parse a stackoverflow code output', () => {
   const file = readFileSync(
@@ -391,6 +392,23 @@ Since the first episode of the series, it was known that Omni-Man was the antago
 test('should return error on empty knowyourmeme html', () => {
   const html = cheerio.load('<body></body>');
   const output = knowyourmeme(html);
+  assert.equal(output, { type: 'error', content: '' });
+});
+
+test('should be able to parse urban dictionary output', () => {
+  const file = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), './laodeai_fixture/urbandictionary.html'));
+  const html = cheerio.load(file);
+  const output = urbandictionary(html);
+  assert.equal(output.type, 'text');
+  assert.equal(
+    output.content,
+    `<b>get rekt</b> is Another way of saying <a href="/define.php?term=get%20wrecked">get wrecked</a>\nUsually used by either kids or trolls on <a href="/define.php?term=online%20games">online games</a> in order to annoy or <a href="/define.php?term=provoke">provoke</a> other players.`,
+  );
+});
+
+test('should return error on empty urban dictionary html', () => {
+  const html = cheerio.load('<body></body>');
+  const output = urbandictionary(html);
   assert.equal(output, { type: 'error', content: '' });
 });
 
