@@ -15,7 +15,7 @@ export function gist($) {
   }
 
   const codeOutput = $('.gist-content .file-box .highlight .blob-code')
-    .map((i, el) => $(el).text())
+    .map((_, el) => $(el).text())
     .toArray()
     .join('\n');
   if (codeOutput) {
