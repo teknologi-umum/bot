@@ -1,4 +1,4 @@
-import { sanitize } from '../../utils/sanitize.js';
+import { sanitize } from '#utils/sanitize.js';
 
 /**
  * Process Github Gist from Cheerio readout
@@ -15,7 +15,7 @@ export function gist($) {
   }
 
   const codeOutput = $('.gist-content .file-box .highlight .blob-code')
-    .map((i, el) => $(el).text())
+    .map((_, el) => $(el).text())
     .toArray()
     .join('\n');
   if (codeOutput) {

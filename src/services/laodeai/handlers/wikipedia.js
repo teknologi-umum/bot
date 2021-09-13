@@ -1,4 +1,4 @@
-import { sanitize } from '../../utils/sanitize.js';
+import { sanitize } from '#utils/sanitize.js';
 
 /**
  * Process Wikipedia from Cheerio readout
@@ -7,7 +7,7 @@ import { sanitize } from '../../utils/sanitize.js';
  */
 export function wikipedia($) {
   const paragraphs = $('#bodyContent .mw-body-content .mw-parser-output p', '.mw-body')
-    .map((i, el) => $(el).html())
+    .map((_, el) => $(el).html())
     .toArray()
     .slice(0, 3)
     .join('\n');

@@ -1,16 +1,17 @@
 import cheerio from 'cheerio';
 import got from 'got';
-import { getCommandArgs } from '../../utils/command.js';
-import { cleanURL, fetchDDG } from '../../utils/http.js';
+import { getCommandArgs } from '#utils/command.js';
+import { cleanURL, fetchDDG } from '#utils/http.js';
+import { sanitize } from '#utils/sanitize.js';
 import { generateImage } from '../snap/utils.js';
-import { stackoverflow } from './stackoverflow.js';
-import { gist } from './gist.js';
-import { wikipedia } from './wikipedia.js';
-import { wikihow } from './wikihow.js';
-import { stackexchange } from './stackexchange.js';
-import { sanitize } from '../../utils/sanitize.js';
-import { foodnetwork } from './foodnetwork.js';
 import { makeRequest } from '../pastebin/index.js';
+import { stackoverflow } from './handlers/stackoverflow.js';
+import { gist } from './handlers/gist.js';
+import { wikipedia } from './handlers/wikipedia.js';
+import { wikihow } from './handlers/wikihow.js';
+import { stackexchange } from './handlers/stackexchange.js';
+import { foodnetwork } from './handlers/foodnetwork.js';
+import { knowyourmeme } from './handlers/knowyourmeme.js';
 
 // list of handlers, also used to filter valid sites
 const VALID_SOURCES = {
@@ -22,6 +23,7 @@ const VALID_SOURCES = {
   'serverfault.com': stackexchange,
   'superuser.com': stackexchange,
   'askubuntu.com': stackexchange,
+  'mathoverflow.net': stackexchange,
   // I know this is kind of dumb, so..
   // FIXME: Use regexp! Or not, I don't know which is better
   'gamedev.stackexchange.com': stackexchange,
@@ -45,6 +47,20 @@ const VALID_SOURCES = {
   'softwareengineering.stackexchange.com': stackexchange,
   'scifi.stackexchange.com': stackexchange,
   'workplace.stackexchange.com': stackexchange,
+  'security.stackexchange.com': stackexchange,
+  'worldbuilding.stackexchange.com': stackexchange,
+  'literature.stackexchange.com': stackexchange,
+  'rpg.stackexchange.com': stackexchange,
+  'academia.stackexchange.com': stackexchange,
+  'electronics.stackexchange.com': stackexchange,
+  'retrocomputing.stackexchange.com': stackexchange,
+  'puzzling.stackexchange.com': stackexchange,
+  'travel.stackexchange.com': stackexchange,
+  'graphicdesign.stackexchange.com': stackexchange,
+  'networkengineering.stackexchange.com': stackexchange,
+  'islam.stackexchange.com': stackexchange,
+  'dba.stackexchange.com': stackexchange,
+  'knowyourmeme.com': knowyourmeme,
 };
 
 /**
@@ -119,13 +135,15 @@ async function laodeai(context) {
 async function goThroughURLs(validSources) {
   for (let i = 0; i < validSources.length; i++) {
     const url = validSources[i];
-    console.log(url);
     const { body, statusCode } = await got.get(url.href, {
       headers: {
         Accept: 'text/html',
       },
       responseType: 'text',
       throwHttpErrors: false,
+      timeout: {
+        request: 15_000,
+      },
     });
 
     if (statusCode !== 200) {

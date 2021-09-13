@@ -1,4 +1,4 @@
-import { sanitize } from '../../utils/sanitize.js';
+import { sanitize } from '#utils/sanitize.js';
 
 /**
  * Process Stackoverflow from Cheerio readout
@@ -8,7 +8,7 @@ import { sanitize } from '../../utils/sanitize.js';
 export function stackoverflow($) {
   const acceptedCode = $('.answer .post-layout .answercell .s-prose pre', '#answers').first().text();
 
-  if (acceptedCode && acceptedCode.length > 30) {
+  if (acceptedCode && acceptedCode.split('\n').length > 1) {
     return {
       type: 'image',
       content: acceptedCode.replace(/\r\n/g, '\n'),

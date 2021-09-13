@@ -34,6 +34,12 @@ export function register(bot, cache) {
     await context.telegram.sendPhoto(context.message.chat.id, 'https://i.ibb.co/P1Q0650/yntkts.jpg');
   });
 
+  bot.command('homework', async (context) => {
+    const bigGroup = await isBigGroup(context);
+    if (bigGroup) return;
+    await context.telegram.sendPhoto(context.message.chat.id, 'https://i.ibb.co/541knqp/photo-2021-08-21-02-54-24.jpg');
+  });
+
   bot.command('joke', async (context) => {
     const bigGroup = await isBigGroup(context);
     if (bigGroup) return;
@@ -72,6 +78,10 @@ export function register(bot, cache) {
     {
       command: 'yntkts',
       description: 'Yo ndak tahu! Kok tanya saya.',
+    },
+    {
+      command: 'homework',
+      description: 'Ini PR ya ngab?',
     },
     {
       command: 'illuminati',
