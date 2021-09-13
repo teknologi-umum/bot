@@ -1,4 +1,4 @@
-import { sanitize } from '../../../utils/sanitize.js';
+import { sanitize } from '#utils/sanitize.js';
 
 /**
  * Process Github Gist from Cheerio readout

@@ -1,8 +1,8 @@
 import cheerio from 'cheerio';
 import got from 'got';
-import { getCommandArgs } from '../../utils/command.js';
-import { cleanURL, fetchDDG } from '../../utils/http.js';
-import { sanitize } from '../../utils/sanitize.js';
+import { getCommandArgs } from '#utils/command.js';
+import { cleanURL, fetchDDG } from '#utils/http.js';
+import { sanitize } from '#utils/sanitize.js';
 import { generateImage } from '../snap/utils.js';
 import { makeRequest } from '../pastebin/index.js';
 import { stackoverflow } from './handlers/stackoverflow.js';
@@ -23,6 +23,7 @@ const VALID_SOURCES = {
   'serverfault.com': stackexchange,
   'superuser.com': stackexchange,
   'askubuntu.com': stackexchange,
+  'mathoverflow.net': stackexchange,
   // I know this is kind of dumb, so..
   // FIXME: Use regexp! Or not, I don't know which is better
   'gamedev.stackexchange.com': stackexchange,
@@ -46,6 +47,19 @@ const VALID_SOURCES = {
   'softwareengineering.stackexchange.com': stackexchange,
   'scifi.stackexchange.com': stackexchange,
   'workplace.stackexchange.com': stackexchange,
+  'security.stackexchange.com': stackexchange,
+  'worldbuilding.stackexchange.com': stackexchange,
+  'literature.stackexchange.com': stackexchange,
+  'rpg.stackexchange.com': stackexchange,
+  'academia.stackexchange.com': stackexchange,
+  'electronics.stackexchange.com': stackexchange,
+  'retrocomputing.stackexchange.com': stackexchange,
+  'puzzling.stackexchange.com': stackexchange,
+  'travel.stackexchange.com': stackexchange,
+  'graphicdesign.stackexchange.com': stackexchange,
+  'networkengineering.stackexchange.com': stackexchange,
+  'islam.stackexchange.com': stackexchange,
+  'dba.stackexchange.com': stackexchange,
   'knowyourmeme.com': knowyourmeme,
 };
 
@@ -119,7 +133,6 @@ async function laodeai(context) {
  * @returns {Promise<{ url: string, type: 'image' | 'text', content: string } | { type: 'error' }>}
  */
 async function goThroughURLs(validSources) {
-  console.log(validSources);
   for (let i = 0; i < validSources.length; i++) {
     const url = validSources[i];
     const { body, statusCode } = await got.get(url.href, {
