@@ -36,9 +36,7 @@ async function dukun(context, mongo, cache) {
 
   const Dukun = mongo.model('Dukun', dukunSchema, 'dukun');
   const dukunData = await redis.GET('dukun:all');
-  /**
-   * @type {Record<string, any>[]}
-   */
+  /**  @type {Record<string, any>[]} */
   const dukunDataParsed = JSON.parse(dukunData);
 
   if (context.message.reply_to_message) {
@@ -57,9 +55,7 @@ async function dukun(context, mongo, cache) {
       dukunMasterPoints = dukunMaster.points;
     }
 
-    /**
-     * @type {Number} point
-     */
+    /** @type {Number} point */
     let point;
     if (argument.startsWith('+')) {
       point = Math.abs(Number.parseInt(argument.replace('-', '')));
@@ -91,7 +87,7 @@ async function dukun(context, mongo, cache) {
     }
 
     // Check if submitted dukun's a dukun master
-    if (dukunMasterID === replyMessage.from.id) {
+    if (dukunMasterID === String(replyMessage.from.id)) {
       // Allow insertion
       const updatedData = await Dukun.findOneAndUpdate(
         { userID: replyMessage.from.id },
