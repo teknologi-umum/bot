@@ -109,7 +109,7 @@ async function dukun(context, mongo, cache) {
         context.chat.id,
         `Dukun master <a href="tg://user?id=${replyMessage.from.id}">${replyMessage.from.first_name} ${
           replyMessage.from?.last_name ?? ''
-        }</a>points: ${updatedData.points}`,
+        }</a> points: ${updatedData.points}`,
         { parse_mode: 'HTML' },
       );
 
