@@ -167,6 +167,11 @@ test('should not be able to evaluate empty string', async () => {
   assert.equal(result, 'Tidak bisa mengevaluasi code');
 });
 
+test('should be able to evaluate sequence expression', async () => {
+  const result = await safeEval('(1, 2, 3)');
+  assert.equal(result, '3');
+});
+
 test('should not be able to pass module ast into isAllowed', () => {
   let result;
   try {
