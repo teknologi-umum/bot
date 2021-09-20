@@ -1,6 +1,6 @@
 import { getCommandArgs } from '#utils/command.js';
 import { makeRequest, PASTEBIN_FILE_TOO_BIG } from '../pastebin/index.js';
-import { generateImage } from './utils.js';
+import { ERR_INVALID_LANGUAGE, generateImage } from './utils.js';
 
 /**
  * Snap a text code to a carbon image.
@@ -19,9 +19,7 @@ async function snap(context) {
     return;
   }
 
-  /**
-   * @type {String}
-   */
+  /** @type {String} code */
   const code = replyMessage.text;
   const tooLong = code.length > 3000 || code.split('\n').length > 190;
   const mentionUser = replyMessage.from.username
@@ -57,7 +55,12 @@ async function snap(context) {
       }
     }
   } catch (err) {
-    await context.telegram.sendMessage(context.message.chat.id, err, { parse_mode: 'MarkdownV2' });
+    // Handle specific error message
+    if (err === ERR_INVALID_LANGUAGE) {
+      await context.telegram.sendMessage(context.message.chat.id, err, { parse_mode: 'MarkdownV2' });
+      return;
+    }
+    return Promise.reject(err);
   }
 }
 

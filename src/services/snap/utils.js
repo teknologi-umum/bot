@@ -154,12 +154,13 @@ const VALID_LANGUAGES = {
   yaml: true,
 };
 
+export const ERR_INVALID_LANGUAGE =
+  'Invalid language\\! [See here](https://github.com/teknologi-umum/bot/blob/f7e145bcf419206b82e8ccd4528b19701bd6ea42/src/services/snap/utils.js#L5-L155) for a valid list of languages\\.';
+
 export async function generateImage(code, lang) {
   if (!code) return Promise.reject('Code must be supplied\\!');
   if (lang && !VALID_LANGUAGES[lang]) {
-    return Promise.reject(
-      'Invalid language\\! [See here](https://github.com/teknologi-umum/bot/blob/f7e145bcf419206b82e8ccd4528b19701bd6ea42/src/services/snap/utils.js#L5-L155) for a valid list of languages\\.',
-    );
+    return Promise.reject(ERR_INVALID_LANGUAGE);
   }
 
   const { body } = await got.post('https://teknologi-umum-graphene.fly.dev/api', {
