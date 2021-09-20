@@ -1,3 +1,4 @@
+import { getCommandArgs } from '#utils/command.js';
 import { makeRequest, PASTEBIN_FILE_TOO_BIG } from '../pastebin/index.js';
 import { generateImage } from './utils.js';
 
@@ -28,10 +29,11 @@ async function snap(context) {
     : `${replyMessage.from.first_name} ${replyMessage.from?.last_name ?? ''}`;
   const fullCode = tooLong ? await makeRequest(code) : false;
 
+  const args = getCommandArgs('snap', context);
   await context.telegram.sendPhoto(
     context.message.chat.id,
     {
-      source: await generateImage(code.substring(0, 3000), context.message.from.username),
+      source: await generateImage(code.substring(0, 3000), args[0]),
     },
     {
       caption: `${isOwner ? '' : mentionUser + ' '}${
