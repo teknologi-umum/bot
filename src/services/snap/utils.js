@@ -162,6 +162,7 @@ export async function generateImage(code, lang) {
     headers: defaultHeaders,
     json: {
       code,
+      lang,
       theme: 'github-dark',
       upscale: 3,
     },
