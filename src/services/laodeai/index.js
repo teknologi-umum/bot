@@ -100,14 +100,11 @@ async function laodeai(context) {
     case 'image': {
       const tooLong = result.content.length > 3000 || result.content.split('\n').length > 190;
       const fullCode = tooLong ? await makeRequest(result.content) : false;
+      const image = await generateImage(result.content.substring(0, 3000), '');
       await context.telegram.sendPhoto(
         context.message.chat.id,
-        {
-          source: await generateImage(result.content.substring(0, 3000), context.message.from.username),
-        },
-        {
-          caption: tooLong ? `Read more on: ${fullCode || result.url}` : '',
-        },
+        { source: image },
+        { caption: tooLong ? `Read more on: ${fullCode || result.url}` : '' },
       );
       break;
     }
