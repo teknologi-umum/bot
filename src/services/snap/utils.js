@@ -156,7 +156,7 @@ const VALID_LANGUAGES = {
 
 export async function generateImage(code, lang) {
   if (!code) return Promise.reject('code must be supplied');
-  if (!VALID_LANGUAGES[lang]) return Promise.reject('invalid language!');
+  if (lang && !VALID_LANGUAGES[lang]) return Promise.reject('invalid language!');
 
   const { body } = await got.post('https://teknologi-umum-graphene.fly.dev/api', {
     headers: defaultHeaders,
