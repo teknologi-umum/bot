@@ -29,32 +29,35 @@ async function snap(context) {
     : `${replyMessage.from.first_name} ${replyMessage.from?.last_name ?? ''}`;
   const fullCode = tooLong ? await makeRequest(code) : false;
 
-  const args = getCommandArgs('snap', context);
-  await context.telegram.sendPhoto(
-    context.message.chat.id,
-    {
-      source: await generateImage(code.substring(0, 3000), args[0]),
-    },
-    {
-      caption: `${isOwner ? '' : mentionUser + ' '}${
-        fullCode === PASTEBIN_FILE_TOO_BIG
-          ? 'Code is bigger than 512 KB, please upload the complete code yourself.'
-          : fullCode
-          ? `Full code on: ${fullCode}`
-          : ''
-      }`,
-      reply_to_message_id: !isOwner && replyMessage.message_id,
-    },
-  );
+  const lang = getCommandArgs('snap', context);
+  try {
+    const image = await generateImage(code.substring(0, 3000), lang.split(' ')[0]);
+    await context.telegram.sendPhoto(
+      context.message.chat.id,
+      { source: image },
+      {
+        caption: `${isOwner ? '' : mentionUser + ' '}${
+          fullCode === PASTEBIN_FILE_TOO_BIG
+            ? 'Code is bigger than 512 KB, please upload the complete code yourself.'
+            : fullCode
+            ? `Full code on: ${fullCode}`
+            : ''
+        }`,
+        reply_to_message_id: !isOwner && replyMessage.message_id,
+      },
+    );
 
-  if (!isPrivateChat) {
-    // Snap message
-    await context.deleteMessage(context.message.message_id);
+    if (!isPrivateChat) {
+      // Snap message
+      await context.deleteMessage(context.message.message_id);
 
-    if (isOwner) {
-      // Target message to snap
-      await context.deleteMessage(replyMessage.message_id);
+      if (isOwner) {
+        // Target message to snap
+        await context.deleteMessage(replyMessage.message_id);
+      }
     }
+  } catch (err) {
+    await context.telegram.sendMessage(context.message.chat.id, err, { parse_mode: 'MarkdownV2' });
   }
 }
 
