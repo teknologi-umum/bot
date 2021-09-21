@@ -48,6 +48,34 @@ If <code>fish</code> is an instance variable, this code will throw NullPointerEx
   );
 });
 
+test('should be able to output stackoverflow text if code is deemed too short', () => {
+  const file = readFileSync(
+    resolve(dirname(fileURLToPath(import.meta.url)), './laodeai_fixture/stackoverflow_next.html'),
+  );
+  const html = cheerio.load(file);
+  const output = stackoverflow(html);
+
+  assert.equal(output.type, 'text');
+  assert.fixture(
+    output.content,
+    `
+In 5.7 the sqlmode is set by default to:
+
+<pre><code> ONLY_FULL_GROUP_BY,NO_AUTO_CREATE_USER,STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION
+</code></pre>
+
+To remove the clause ONLY_FULL_GROUP_BY you can do this:
+
+<pre><code>SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+</code></pre>
+
+This supposed you need to make that GROUP BY with non aggregated columns.
+
+Regards
+`,
+  );
+});
+
 test('should return error on empty stackoverflow html', () => {
   const html = cheerio.load('<body></body>');
   const output = stackoverflow(html);
@@ -126,6 +154,7 @@ The package linked to from here is now pure <a href="https://developer.mozilla.o
 This means you have the following choices:
 
 Use ESM yourself. <strong>(preferred)</strong>
+
   Use <code>import foo from 'foo'</code> instead of <code>const foo = require('foo')</code> to import the package. Follow the below guide.
 If the package is used in an async context, you could use <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#dynamic_imports"><code>await import(…)</code></a> from CommonJS instead of <code>require(…)</code>.
 Stay on the existing version of the package until you can move to ESM.
@@ -301,6 +330,7 @@ test('should be able to parse stackexchange output', () => {
   assert.equal(
     output.content,
     `Dear <a href="https://twitter.com/colmmacuait">@colmmacuait</a>, I think that if you type "man" at 0001 hours it should print "gimme gimme gimme". <a href="https://twitter.com/hashtag/abba?src=hash">#abba</a> 
+
  <a href="https://twitter.com/marnanel/status/132280557190119424"><strong>@marnanel</strong> - 3 November 2011</a> 
 
 
@@ -367,25 +397,37 @@ test('should be able to parse knowyourmeme output', () => {
     `<em><strong>Editor's Note:</strong> This entry contains spoilers for <em>Invincible</em>; read at your own caution.</em><strong>Think, Mark</strong> is a phrase said during a climactic moment of the <a href="/memes/sites/amazon">Amazon</a> Prime show <a href="/memes/subcultures/invincible-series"><em>Invincible</em></a> that began airing in 2021. Used as an <a href="/memes/exploitables">exploitable</a> <a href="/memes/image-macros">image macro</a>, the main focus of the meme is on the one saying the phrase, which is Omni-Man, a main character and secret antagonist. The brutal way in which the character, voiced by JK Simmons, yells in this scene has inspired many <a href="/memes/memes">memes</a> to be made of it, as well as various <a href="/memes/redraw">redraws</a>.
 
 
-The phrase comes from the eighth and final episode of the first season of <em>Invincible</em>, which premiered on April 30th, 2021. Shortly after the beginning of the season finale, Omni-Man and Invincible start fighting, with Omni-Man having a very clear advantage over his son. Using the fight as a way to teach him a lesson, Omni-Man continues to lecture Invincible about the world while beating him with more ferocity as the scene progresses. At the conclusion of the scene, Omni-Man lets loose a fury of blows into Invincible, while compelling him to use his head and think about the big picture and situation at large (shown below).Why did you make me do this? You're fighting so you can watch everyone around you die. Think, Mark!This yelling scene and dialogue were then picked up by meme creators for use as a <a href="/memes/snowclone">snowclone</a>, with the first words being "Think Mark" and the latter half being the point that is trying to be made, but with the inflected tone of a parent yelling at their child for being wrong. This is seen in the tweet by <a href="/memes/sites/twitter">Twitter</a><a href="#fn1">[1]</a> user @Void_Dot_Ex on May 1st, 2021, which received 22,600 likes and 3,400 retweets (shown below).
+The phrase comes from the eighth and final episode of the first season of <em>Invincible</em>, which premiered on April 30th, 2021. Shortly after the beginning of the season finale, Omni-Man and Invincible start fighting, with Omni-Man having a very clear advantage over his son. Using the fight as a way to teach him a lesson, Omni-Man continues to lecture Invincible about the world while beating him with more ferocity as the scene progresses. At the conclusion of the scene, Omni-Man lets loose a fury of blows into Invincible, while compelling him to use his head and think about the big picture and situation at large (shown below).
+
+Why did you make me do this? You're fighting so you can watch everyone around you die. Think, Mark!This yelling scene and dialogue were then picked up by meme creators for use as a <a href="/memes/snowclone">snowclone</a>, with the first words being "Think Mark" and the latter half being the point that is trying to be made, but with the inflected tone of a parent yelling at their child for being wrong. This is seen in the tweet by <a href="/memes/sites/twitter">Twitter</a><a href="#fn1">[1]</a> user @Void_Dot_Ex on May 1st, 2021, which received 22,600 likes and 3,400 retweets (shown below).
 
 
-<a href="/photos/2089824" target="_blank"></a> 
+
+<a href="/photos/2089824"></a> 
 
 
-Since the first episode of the series, it was known that Omni-Man was the antagonist of the story and that eventually, the truth would come out. This months-long build-up finally came to a head with the final episode of the season, and it made a lasting impression that later turned the scene into various memes.After the initial post using the scene as a snowclone, other independent artists began using it as a source for redraws, with the image of Omni-Man looking over the beaten body of Invincible serving as the base for <a href="/memes/sites/photoshop">photoshopping</a> it to look like other characters from different pop culture references. This is evident in the tweet by Twitter<a href="#fn2">[2]</a> user @Googleygareth on May 2nd, 2021, that received 6,700 likes and 1,100 retweets that shows <a href="/memes/g-man">G-Man</a> from <a href="/memes/subcultures/half-life"><em>Half-Life</em></a> standing over the beaten body of <a href="/memes/gordon-freeman">Gordon Freeman</a> (shown below).<a href="/photos/2089968" target="_blank"></a> 
+
+Since the first episode of the series, it was known that Omni-Man was the antagonist of the story and that eventually, the truth would come out. This months-long build-up finally came to a head with the final episode of the season, and it made a lasting impression that later turned the scene into various memes.After the initial post using the scene as a snowclone, other independent artists began using it as a source for redraws, with the image of Omni-Man looking over the beaten body of Invincible serving as the base for <a href="/memes/sites/photoshop">photoshopping</a> it to look like other characters from different pop culture references. This is evident in the tweet by Twitter<a href="#fn2">[2]</a> user @Googleygareth on May 2nd, 2021, that received 6,700 likes and 1,100 retweets that shows <a href="/memes/g-man">G-Man</a> from <a href="/memes/subcultures/half-life"><em>Half-Life</em></a> standing over the beaten body of <a href="/memes/gordon-freeman">Gordon Freeman</a> (shown below).
+<a href="/photos/2089968"></a> 
 
 
-  <a href="/photos/2090347" target="_blank"></a>  <a href="/photos/2090343" target="_blank"></a>  <a href="/photos/2089924" target="_blank"></a>  <a href="/photos/2090346" target="_blank"></a>  <a href="/photos/2089928" target="_blank"></a>  <a href="/photos/2090173" target="_blank"></a>   
 
 
-<a href="/photos/2090663" target="_blank"></a> <a href="/photos/2089857" target="_blank"></a>  <a href="/photos/2089858" target="_blank"></a>  <a href="/photos/2089859" target="_blank"></a> 
+  <a href="/photos/2090347"></a>  <a href="/photos/2090343"></a>  <a href="/photos/2089924"></a>  <a href="/photos/2090346"></a>  <a href="/photos/2089928"></a>  <a href="/photos/2090173"></a>   
+
+
+
+
+<a href="/photos/2090663"></a> 
+
+<a href="/photos/2089857"></a>  <a href="/photos/2089858"></a>  <a href="/photos/2089859"></a> 
+
 
 
  
 
 
-<a href="#fnr1">[1]</a> YouTube – <a href="https://www.youtube.com/watch?v=jTW_M_K5nEM" target="_blank">YouTube</a><a href="#fnr2">[2]</a> Twitter – <a href="https://twitter.com/Void_Dot_Exe/status/1388366906114011138" target="_blank">Twitter</a><a href="#fnr3">[3]</a> Tweet – <a href="https://twitter.com/Googleygareth/status/1388977278953086976" target="_blank">Twitter</a>`,
+<a href="#fnr1">[1]</a> YouTube – <a href="https://www.youtube.com/watch?v=jTW_M_K5nEM">YouTube</a><a href="#fnr2">[2]</a> Twitter – <a href="https://twitter.com/Void_Dot_Exe/status/1388366906114011138">Twitter</a><a href="#fnr3">[3]</a> Tweet – <a href="https://twitter.com/Googleygareth/status/1388977278953086976">Twitter</a>`,
   );
 });
 
@@ -402,7 +444,9 @@ test('should be able to parse urban dictionary output', () => {
   assert.equal(output.type, 'text');
   assert.equal(
     output.content,
-    `<b>get rekt</b> is Another way of saying <a href="/define.php?term=get%20wrecked">get wrecked</a>\nUsually used by either kids or trolls on <a href="/define.php?term=online%20games">online games</a> in order to annoy or <a href="/define.php?term=provoke">provoke</a> other players.`,
+    `<b>get rekt</b> is Another way of saying <a href="/define.php?term=get%20wrecked">get wrecked</a>
+
+Usually used by either kids or trolls on <a href="/define.php?term=online%20games">online games</a> in order to annoy or <a href="/define.php?term=provoke">provoke</a> other players.`,
   );
 });
 
