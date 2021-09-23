@@ -81,18 +81,18 @@ async function laodeai(context) {
   }
 
   const $ = cheerio.load(ddgBody);
-  const validSources = $('.web-result')
-    .map((_, el) => {
-      const href = cleanURL($(el).find('.result__title > a').first().attr('href'));
-      return new URL(decodeURIComponent(href));
-    })
-    .get()
-    .filter((url) => VALID_SOURCES[url.hostname.replace('www.', '')]);
-
-  if (validSources.length < 1) {
+  const sources = $('.web-result').get();
+  if (sources.length <= 1 && $(sources[0]).find('.no-results').get()) {
     await context.reply("Uhh, I don't have an answer for that, sorry.");
     return;
   }
+
+  const validSources = sources
+    .map((el) => {
+      const href = cleanURL($(el).find('.result__title > a').first().attr('href'));
+      return new URL(decodeURIComponent(href));
+    })
+    .filter((url) => VALID_SOURCES[url.hostname.replace('www.', '')]);
 
   const result = await goThroughURLs(validSources);
 
