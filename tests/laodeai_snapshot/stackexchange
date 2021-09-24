@@ -1,0 +1,16 @@
+Dear <a href="https://twitter.com/colmmacuait">@colmmacuait</a>, I think that if you type "man" at 0001 hours it should print "gimme gimme gimme". <a href="https://twitter.com/hashtag/abba?src=hash">#abba</a> 
+
+ <a href="https://twitter.com/marnanel/status/132280557190119424"><strong>@marnanel</strong> - 3 November 2011</a> 
+
+
+er, that was my fault, I suggested it. Sorry.
+
+Pretty much the whole story is in the commit. The maintainer of man is a good friend of mine, and one day six years ago I jokingly said to him that if you invoke man after midnight it should print "<em>gimme gimme gimme</em>", because of the Abba song called "<em>Gimme gimme gimme a man after midnight</em>":
+
+Well, he did actually <a href="https://git.savannah.nongnu.org/cgit/man-db.git/commit/src/man.c?id=002a6339b1fe8f83f4808022a17e1aa379756d99">put it</a> <a href="https://git.savannah.nongnu.org/cgit/man-db.git/commit/src/man.c?id=91c495389105a4cb6214fe176f703f498e4f0d91">in</a>. A few people were amused to discover it, and we mostly forgot about it until today.
+
+<a href="https://unix.stackexchange.com/questions/405783/why-does-man-print-gimme-gimme-gimme-at-0030/405874#comment726280_405874">I can't speak for Col</a>, obviously, but I didn't expect this to ever cause any problems: what sort of test would break on parsing the output of man with no page specified? I suppose I shouldn't be surprised that one turned up eventually, but it did take six years.
+
+(The <a href="https://git.savannah.nongnu.org/cgit/man-db.git/commit/src/man.c?id=002a6339b1fe8f83f4808022a17e1aa379756d99">commit message</a> calls me Thomas, which is my legal first name though I don't use it online much.) 
+
+<strong>This issue has been fixed with commit <a href="https://git.savannah.gnu.org/cgit/man-db.git/commit/?id=84bde8d8a9a357bd372793d25746ac6b49480525">84bde8</a>:</strong> Running man with <code>man -w</code> will no longer trigger this easter egg.

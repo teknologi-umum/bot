@@ -1,0 +1,14 @@
+
+In 5.7 the sqlmode is set by default to:
+
+<pre><code> ONLY_FULL_GROUP_BY,NO_AUTO_CREATE_USER,STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION
+</code></pre>
+
+To remove the clause ONLY_FULL_GROUP_BY you can do this:
+
+<pre><code>SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+</code></pre>
+
+This supposed you need to make that GROUP BY with non aggregated columns.
+
+Regards
