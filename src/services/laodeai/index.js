@@ -93,6 +93,10 @@ async function laodeai(context) {
       return new URL(decodeURIComponent(href));
     })
     .filter((url) => VALID_SOURCES[url.hostname.replace('www.', '')]);
+  if (validSources.length < 1) {
+    await context.reply("Uhh, I don't have an answer for that, sorry.");
+    return;
+  }
 
   const result = await goThroughURLs(validSources);
 
