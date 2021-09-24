@@ -35,7 +35,7 @@ export function foodnetwork($) {
           `<b>${o.title}</b>\n\n<b>Ingredients:</b>\n${o.ingredients
             .filter((v) => v.toLowerCase() !== 'deselect all')
             .map((v, i) => `${i + 1}. ${v}`)
-            .join('\n')}\n\n<b>Directions</b>:\n${o.directions.map((v, i) => `${i + 1}. ${v.trim()}`).join('\n')}`,
+            .join('\n')}\n\n<b>Directions:</b>\n${o.directions.map((v, i) => `${i + 1}. ${v.trim()}`).join('\n')}`,
       )
       .join('');
     return {

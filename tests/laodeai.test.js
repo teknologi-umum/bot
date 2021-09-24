@@ -12,6 +12,8 @@ import { stackexchange } from '../src/services/laodeai/handlers/stackexchange.js
 import { foodnetwork } from '../src/services/laodeai/handlers/foodnetwork.js';
 import { knowyourmeme } from '../src/services/laodeai/handlers/knowyourmeme.js';
 import { urbandictionary } from '../src/services/laodeai/handlers/urbandictionary.js';
+import { bonappetit } from '#services/laodeai/handlers/bonappetit.js';
+import { cookingNytimes } from '#services/laodeai/handlers/cooking_nytimes.js';
 
 const readFile = (path) => readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), path), { encoding: 'utf-8' });
 
@@ -69,6 +71,7 @@ test('should be able to parse github gist markdown output', () => {
 test('should return error on empty github gist html', () => {
   const html = cheerio.load('<body></body>');
   const output = gist(html);
+
   assert.equal(output, { type: 'error', content: '' });
 });
 
@@ -76,14 +79,15 @@ test('should be able to parse wikipedia output', () => {
   const file = readFile('./laodeai_fixture/wikipedia.html');
   const html = cheerio.load(file);
   const output = wikipedia(html);
+
   assert.equal(output.type, 'text');
-  const contents = output.content.split('\n');
-  assert.is(contents.length, 3);
+  assert.fixture(output.content, readFile('./laodeai_snapshot/wikipedia'));
 });
 
 test('should return error on empty wikipedia html', () => {
   const html = cheerio.load('<body></body>');
   const output = wikipedia(html);
+
   assert.equal(output, { type: 'error', content: '' });
 });
 
@@ -91,6 +95,7 @@ test('should be able to parse wikihow output', () => {
   const file = readFile('./laodeai_fixture/wikihow.html');
   const html = cheerio.load(file);
   const output = wikihow(html);
+
   assert.equal(output.type, 'text');
   assert.fixture(output.content, readFile('./laodeai_snapshot/wikihow'));
 });
@@ -98,6 +103,7 @@ test('should be able to parse wikihow output', () => {
 test('should return error on empty wikihow html', () => {
   const html = cheerio.load('<body></body>');
   const output = wikihow(html);
+
   assert.equal(output, { type: 'error', content: '' });
 });
 
@@ -105,6 +111,7 @@ test('should be able to parse stackexchange output', () => {
   const file = readFile('./laodeai_fixture/stackexchange.html');
   const html = cheerio.load(file);
   const output = stackexchange(html);
+
   assert.equal(output.type, 'text');
   assert.fixture(output.content, readFile('./laodeai_snapshot/stackexchange'));
 });
@@ -112,6 +119,7 @@ test('should be able to parse stackexchange output', () => {
 test('should return error on empty stackexchange html', () => {
   const html = cheerio.load('<body></body>');
   const output = stackexchange(html);
+
   assert.equal(output, { type: 'error', content: '' });
 });
 
@@ -119,6 +127,7 @@ test('should be able to parse foodnetwork output', () => {
   const file = readFile('./laodeai_fixture/foodnetwork.html');
   const html = cheerio.load(file);
   const output = foodnetwork(html);
+
   assert.equal(output.type, 'text');
   assert.fixture(output.content, readFile('./laodeai_snapshot/foodnetwork'));
 });
@@ -126,6 +135,7 @@ test('should be able to parse foodnetwork output', () => {
 test('should return error on empty foodnetwork html', () => {
   const html = cheerio.load('<body></body>');
   const output = foodnetwork(html);
+
   assert.equal(output, { type: 'error', content: '' });
 });
 
@@ -133,6 +143,7 @@ test('should be able to parse knowyourmeme output', () => {
   const file = readFile('./laodeai_fixture/knowyourmeme.html');
   const html = cheerio.load(file);
   const output = knowyourmeme(html);
+
   assert.equal(output.type, 'text');
   assert.fixture(output.content, readFile('./laodeai_snapshot/knowyourmeme'));
 });
@@ -147,6 +158,7 @@ test('should be able to parse urban dictionary output', () => {
   const file = readFile('./laodeai_fixture/urbandictionary.html');
   const html = cheerio.load(file);
   const output = urbandictionary(html);
+
   assert.equal(output.type, 'text');
   assert.fixture(output.content, readFile('./laodeai_snapshot/urbandictionary'));
 });
@@ -154,6 +166,39 @@ test('should be able to parse urban dictionary output', () => {
 test('should return error on empty urban dictionary html', () => {
   const html = cheerio.load('<body></body>');
   const output = urbandictionary(html);
+
+  assert.equal(output, { type: 'error', content: '' });
+});
+
+test('should be able to parse bonappetit output', () => {
+  const file = readFile('./laodeai_fixture/bonappetit.html');
+  const html = cheerio.load(file);
+  const output = bonappetit(html);
+
+  assert.equal(output.type, 'text');
+  assert.fixture(output.content, readFile('./laodeai_snapshot/bonappetit'));
+});
+
+test('should return error on empty bonappetit html', () => {
+  const html = cheerio.load('<body></body>');
+  const output = bonappetit(html);
+
+  assert.equal(output, { type: 'error', content: '' });
+});
+
+test('should be able to parse cooking nytimes output', () => {
+  const file = readFile('./laodeai_fixture/cooking_nytimes.html');
+  const html = cheerio.load(file);
+  const output = cookingNytimes(html);
+
+  assert.equal(output.type, 'text');
+  assert.fixture(output.content, readFile('./laodeai_snapshot/cooking_nytimes'));
+});
+
+test('should return error on empty cooking nytimes html', () => {
+  const html = cheerio.load('<body></body>');
+  const output = cookingNytimes(html);
+
   assert.equal(output, { type: 'error', content: '' });
 });
 

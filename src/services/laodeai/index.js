@@ -13,6 +13,8 @@ import { stackexchange } from './handlers/stackexchange.js';
 import { foodnetwork } from './handlers/foodnetwork.js';
 import { knowyourmeme } from './handlers/knowyourmeme.js';
 import { urbandictionary } from './handlers/urbandictionary.js';
+import { bonappetit } from './handlers/bonappetit.js';
+import { cookingNytimes } from './handlers/cooking_nytimes.js';
 
 // list of handlers, also used to filter valid sites
 const VALID_SOURCES = {
@@ -63,6 +65,8 @@ const VALID_SOURCES = {
   'dba.stackexchange.com': stackexchange,
   'knowyourmeme.com': knowyourmeme,
   'urbandictionary.com': urbandictionary,
+  'bonappetit.com': bonappetit,
+  'cooking.nytimes.com': cookingNytimes,
 };
 
 /**
