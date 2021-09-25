@@ -203,7 +203,7 @@ test('should return error on empty cooking nytimes html', () => {
   assert.equal(output, { type: 'error', content: '' });
 });
 
-test.only('should be able to parse zeroclick output', () => {
+test('should be able to parse zeroclick output', () => {
   const file = readFile('./laodeai_fixture/zeroclick.html');
   const html = cheerio.load(file);
   const output = zeroclick(html);
