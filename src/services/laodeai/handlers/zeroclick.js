@@ -9,7 +9,7 @@ export function zeroclick($) {
   return zeroclick
     ? {
         type: 'text',
-        content: zeroclick.trim().replace(/^\s+/gm, ''),
+        content: zeroclick.trim().replace(/^\s+/gm, '').replace(/\r\n/g, '\n'),
       }
     : { type: 'error', content: '' };
 }
