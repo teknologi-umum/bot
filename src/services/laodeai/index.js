@@ -109,7 +109,6 @@ async function laodeai(context) {
 
   // prioritise zero click result
   const zcResult = zeroclick($);
-  console.log(zcResult);
   if (zcResult) {
     await sendText(zcResult, context, false);
     return;
