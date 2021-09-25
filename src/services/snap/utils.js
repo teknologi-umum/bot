@@ -163,6 +163,7 @@ export async function generateImage(code, lang) {
     return Promise.reject(ERR_INVALID_LANGUAGE);
   }
 
+  const linenr = code.split('\n').length;
   const { body } = await got.post('https://teknologi-umum-graphene.fly.dev/api', {
     headers: defaultHeaders,
     json: {
@@ -170,6 +171,10 @@ export async function generateImage(code, lang) {
       lang,
       theme: 'github-dark',
       upscale: 3,
+      lineNumber: linenr > 10,
+      border: {
+        thickness: 40,
+      },
     },
     responseType: 'buffer',
     timeout: {
