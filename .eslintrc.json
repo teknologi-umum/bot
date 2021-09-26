@@ -9,6 +9,7 @@
   },
   "extends": ["eslint:recommended", "prettier"],
   "rules": {
+    "no-console": "warn",
     "no-empty-function": "error",
     "no-implicit-coercion": "error",
     "no-var": "error",

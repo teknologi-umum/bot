@@ -124,13 +124,10 @@ export async function resolveCurrencyRates(source) {
   // resolve rates
   const pairsWithRate = await Promise.all(
     [...pairs].map(async (pair) => {
-      console.log(pair);
       const rate = await fetchCurrencyRate(pair);
-      console.log(rate);
       return [pair, rate];
     }),
   );
-  console.log(pairsWithRate);
   for (const [pair, rate] of pairsWithRate) {
     source = source.replaceAll('$' + pair, `(${rate})`);
   }
