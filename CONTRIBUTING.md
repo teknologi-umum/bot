@@ -4,6 +4,8 @@ Hello! We'd love to see your contribution on this repository soon, even if it's 
 
 Contributing means anything from reporting bugs, ideas, suggestion, code fix, even new feature.
 
+Bear in mind to keep your contributions under the [Code of Conduct](./github/CODE_OF_CONDUCT.md) for the community.
+
 ## Bug report, ideas, and suggestion
 
 The [issues](https://github.com/teknologi-umum/bot/issues) page is a great way to communicate to us. Other than that, we have a [Telegram group](https://t.me/teknologi_umum) that you can discuss your ideas into. If you're not an Indonesian speaker, it's 100% fine to talk in English there.
@@ -50,6 +52,7 @@ BOT_TOKEN=<your own token>
 REDIS_URL=redis://@localhost:6379/
 MONGO_URL=mongodb://root:password@localhost:27017/teknologiumum?useNewUrlParser=true&useUnifiedTopology=true&authSource=admin
 SENTRY_DSN=
+LOGTAIL_TOKEN=
 HOME_GROUP_ID=<your test group, if any>
 ```
 
