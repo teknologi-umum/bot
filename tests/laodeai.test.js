@@ -14,6 +14,7 @@ import { knowyourmeme } from '../src/services/laodeai/handlers/knowyourmeme.js';
 import { urbandictionary } from '../src/services/laodeai/handlers/urbandictionary.js';
 import { bonappetit } from '#services/laodeai/handlers/bonappetit.js';
 import { cookingNytimes } from '#services/laodeai/handlers/cooking_nytimes.js';
+import { zeroclick } from '#services/laodeai/handlers/zeroclick.js';
 
 const readFile = (path) => readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), path), { encoding: 'utf-8' });
 
@@ -198,6 +199,22 @@ test('should be able to parse cooking nytimes output', () => {
 test('should return error on empty cooking nytimes html', () => {
   const html = cheerio.load('<body></body>');
   const output = cookingNytimes(html);
+
+  assert.equal(output, { type: 'error', content: '' });
+});
+
+test('should be able to parse zeroclick output', () => {
+  const file = readFile('./laodeai_fixture/zeroclick.html');
+  const html = cheerio.load(file);
+  const output = zeroclick(html);
+
+  assert.equal(output.type, 'text');
+  assert.fixture(output.content, readFile('./laodeai_snapshot/zeroclick'));
+});
+
+test('should return error on empty zeroclick html', () => {
+  const html = cheerio.load('<body></body>');
+  const output = zeroclick(html);
 
   assert.equal(output, { type: 'error', content: '' });
 });

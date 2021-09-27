@@ -3,6 +3,7 @@ import got from 'got';
 import { getCommandArgs } from '#utils/command.js';
 import { cleanURL, fetchDDG } from '#utils/http.js';
 import { sanitize } from '#utils/sanitize.js';
+import { logger } from '#utils/logtail.js';
 import { generateImage } from '../snap/utils.js';
 import { makeRequest } from '../pastebin/index.js';
 import { stackoverflow } from './handlers/stackoverflow.js';
@@ -15,7 +16,7 @@ import { knowyourmeme } from './handlers/knowyourmeme.js';
 import { urbandictionary } from './handlers/urbandictionary.js';
 import { bonappetit } from './handlers/bonappetit.js';
 import { cookingNytimes } from './handlers/cooking_nytimes.js';
-import { logger } from '#utils/logtail.js';
+import { zeroclick } from './handlers/zeroclick.js';
 
 // list of handlers, also used to filter valid sites
 const VALID_SOURCES = {
@@ -70,6 +71,26 @@ const VALID_SOURCES = {
   'cooking.nytimes.com': cookingNytimes,
 };
 
+async function sendImage(result, context) {
+  const tooLong = result.content.length > 3000 || result.content.split('\n').length > 190;
+  const fullCode = tooLong ? await makeRequest(result.content) : false;
+  const image = await generateImage(result.content.substring(0, 3000), '');
+  await context.telegram.sendPhoto(
+    context.message.chat.id,
+    { source: image },
+    { caption: tooLong ? `Read more on: ${fullCode || result.url}` : '' },
+  );
+}
+
+async function sendText(result, context, trim) {
+  let content = sanitize(result.content);
+  if (trim && content.length > 500) {
+    content = `${content.substring(0, 500)}...\n\nSee more on: ${result.url}`;
+  }
+
+  await context.telegram.sendMessage(context.message.chat.id, content, { parse_mode: 'HTML' });
+}
+
 /**
  * @param {import('telegraf').Telegraf} context
  * @returns {Promise<void>}
@@ -87,6 +108,14 @@ async function laodeai(context) {
   }
 
   const $ = cheerio.load(ddgBody);
+
+  // prioritise zero click result
+  const zcResult = zeroclick($);
+  if (zcResult.content) {
+    await sendText(zcResult, context, false);
+    return;
+  }
+
   const sources = $('.web-result').get();
   if (sources.length <= 1 && $(sources[0]).find('.no-results').get()) {
     await context.reply("Uhh, I don't have an answer for that, sorry.");
@@ -110,27 +139,11 @@ async function laodeai(context) {
 
   switch (result.type) {
     case 'image': {
-      const tooLong = result.content.length > 3000 || result.content.split('\n').length > 190;
-      const fullCode = tooLong ? await makeRequest(result.content) : false;
-      const image = await generateImage(result.content.substring(0, 3000), '');
-      await context.telegram.sendPhoto(
-        context.message.chat.id,
-        { source: image },
-        { caption: tooLong ? `Read more on: ${fullCode || result.url}` : '' },
-      );
-      await logger.fromContext(context, 'laodeai', { sendText: result.url });
-
+      await sendImage(result, context);
       break;
     }
     case 'text': {
-      let content = result.content;
-      if (content.length > 500) {
-        content = `${sanitize(content.substring(0, 500))}...\n\nSee more on: ${result.url}`;
-      }
-
-      await context.telegram.sendMessage(context.message.chat.id, content, { parse_mode: 'HTML' });
-      await logger.fromContext(context, 'laodeai', { sendText: content });
-
+      await sendText(result, context, true);
       break;
     }
     case 'error': {

@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import { inspect } from 'util';
 import * as sentry from '@sentry/node';
 import kleur from 'kleur';
