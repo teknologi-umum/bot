@@ -1,4 +1,5 @@
 import { getCommandArgs } from '#utils/command.js';
+import { logger } from '#utils/logtail.js';
 import { makeRequest, PASTEBIN_FILE_TOO_BIG } from '../pastebin/index.js';
 import { ERR_INVALID_LANGUAGE, generateImage } from './utils.js';
 
@@ -16,6 +17,7 @@ async function snap(context) {
 
   if (!replyMessage.text) {
     await context.reply('`/snap` can only be used on plain texts', { parse_mode: 'MarkdownV2' });
+    await logger.fromContext(context, 'snap', { sendText: '`/snap` can only be used on plain texts' });
     return;
   }
 
@@ -44,20 +46,23 @@ async function snap(context) {
         reply_to_message_id: !isOwner && replyMessage.message_id,
       },
     );
+    await logger.fromContext(context, 'snap', { sendText: code, actions: 'Sent a photo' });
 
     if (!isPrivateChat) {
       // Snap message
       await context.deleteMessage(context.message.message_id);
-
+      await logger.fromContext(context, 'snap', { actions: `Deleted a message with id ${context.message.message_id}` });
       if (isOwner) {
         // Target message to snap
         await context.deleteMessage(replyMessage.message_id);
+        await logger.fromContext(context, 'snap', { actions: `Deleted a message with id ${replyMessage.message_id}` });
       }
     }
   } catch (err) {
     // Handle specific error message
     if (err === ERR_INVALID_LANGUAGE) {
       await context.telegram.sendMessage(context.message.chat.id, err, { parse_mode: 'MarkdownV2' });
+      await logger.fromContext(context, 'snap', { sendText: err });
       return;
     }
     return Promise.reject(err);

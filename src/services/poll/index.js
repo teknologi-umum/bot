@@ -1,3 +1,4 @@
+import { logger } from '#utils/logtail.js';
 import { isHomeGroup } from '../../utils/home.js';
 import redisClient from '../../utils/redis.js';
 import { Temporal } from '../../utils/temporal.js';
@@ -48,6 +49,10 @@ export async function poll(context, cache, poll, pollID) {
       disable_web_page_preview: true,
     });
     await redis.MSET(`poll:${String(context.message.chat.id)}:message:content`, JSON.stringify(lastMessageContent));
+    await logger.fromContext(context, 'poll', {
+      actions: `Edited a message: ${Number(lastPinnedMessage)}`,
+      sendText: preformatMessage,
+    });
     return;
   }
 
@@ -55,6 +60,10 @@ export async function poll(context, cache, poll, pollID) {
   const response = await context.telegram.sendMessage(context.message.chat.id, preformatMessage, {
     parse_mode: 'HTML',
     disable_web_page_preview: true,
+  });
+  await logger.fromContext(context, 'poll', {
+    actions: `Message sent: ${response.message_id}`,
+    sendText: preformatMessage,
   });
 
   await redis.MSET(
@@ -68,6 +77,7 @@ export async function poll(context, cache, poll, pollID) {
   await context.telegram.pinChatMessage(context.message.chat.id, response.message_id, {
     disable_notification: false,
   });
+  await logger.fromContext(context, 'poll', { actions: 'Pinned a message' });
 }
 
 /**

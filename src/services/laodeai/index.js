@@ -15,6 +15,7 @@ import { knowyourmeme } from './handlers/knowyourmeme.js';
 import { urbandictionary } from './handlers/urbandictionary.js';
 import { bonappetit } from './handlers/bonappetit.js';
 import { cookingNytimes } from './handlers/cooking_nytimes.js';
+import { logger } from '#utils/logtail.js';
 
 // list of handlers, also used to filter valid sites
 const VALID_SOURCES = {
@@ -81,6 +82,7 @@ async function laodeai(context) {
 
   if (ddgStatusCode !== 200) {
     await context.reply('Error getting search result.');
+    await logger.fromContext(context, 'laodeai', { sendText: 'Error getting search result.' });
     return;
   }
 
@@ -88,6 +90,7 @@ async function laodeai(context) {
   const sources = $('.web-result').get();
   if (sources.length <= 1 && $(sources[0]).find('.no-results').get()) {
     await context.reply("Uhh, I don't have an answer for that, sorry.");
+    await logger.fromContext(context, 'laodeai', { sendText: "Uhh, I don't have an answer for that, sorry." });
     return;
   }
 
@@ -99,6 +102,7 @@ async function laodeai(context) {
     .filter((url) => VALID_SOURCES[url.hostname.replace('www.', '')]);
   if (validSources.length < 1) {
     await context.reply("Uhh, I don't have an answer for that, sorry.");
+    await logger.fromContext(context, 'laodeai', { sendText: "Uhh, I don't have an answer for that, sorry." });
     return;
   }
 
@@ -114,6 +118,8 @@ async function laodeai(context) {
         { source: image },
         { caption: tooLong ? `Read more on: ${fullCode || result.url}` : '' },
       );
+      await logger.fromContext(context, 'laodeai', { sendText: result.url });
+
       break;
     }
     case 'text': {
@@ -123,12 +129,15 @@ async function laodeai(context) {
       }
 
       await context.telegram.sendMessage(context.message.chat.id, content, { parse_mode: 'HTML' });
+      await logger.fromContext(context, 'laodeai', { sendText: content });
+
       break;
     }
     case 'error': {
       await context.telegram.sendMessage(context.message.chat.id, "I can't find the proper answer for that, sorry.", {
         parse_mode: 'HTML',
       });
+      await logger.fromContext(context, 'laodeai', { sendText: "I can't find the proper answer for that, sorry." });
       break;
     }
   }

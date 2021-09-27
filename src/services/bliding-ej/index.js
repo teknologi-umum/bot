@@ -1,5 +1,6 @@
-import { getCommandArgs } from '../../utils/command.js';
-import { isHomeGroup } from '../../utils/home.js';
+import { getCommandArgs } from '#utils/command.js';
+import { isHomeGroup } from '#utils/home.js';
+import { logger } from '#utils/logtail.js';
 
 /**
  * Defines bliding ej
@@ -40,6 +41,8 @@ async function define(context) {
       `<a href="https://english.stackexchange.com/a/39919">English Stackexchange</a>`,
     { parse_mode: 'HTML', disable_web_page_preview: true },
   );
+
+  await logger.fromContext(context, 'blidingej');
 }
 
 /**

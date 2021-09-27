@@ -4,6 +4,7 @@ import redisClient from '../../utils/redis.js';
 import { poll } from '../poll/index.js';
 import { isHomeGroup } from '../../utils/home.js';
 import { Temporal } from '../../utils/temporal.js';
+import { logger } from '#utils/logtail.js';
 
 const pollSchema = new mongoose.Schema(
   {
@@ -39,6 +40,7 @@ async function quiz(context, mongo, cache) {
 
   if (context.message.chat.type === 'private') {
     await context.telegram.sendMessage(chatID, 'Quiz is only available for groups', { parse_mode: 'HTML' });
+    await logger.fromContext(context, 'quiz', { sendText: 'Quiz is only available for groups' });
     return;
   }
 
@@ -55,6 +57,9 @@ async function quiz(context, mongo, cache) {
         parse_mode: 'HTML',
       },
     );
+    await logger.fromContext(context, 'quiz', {
+      sendText: `You can't request another new quiz for today. Wait for tomorrow, then ask a new one &#x1F61A`,
+    });
     return;
   }
 
@@ -85,6 +90,11 @@ async function quiz(context, mongo, cache) {
         correct_option_id: pickQuiz.answer - 1,
       },
     );
+    await logger.fromContext(context, 'quiz', {
+      actions: `Sent a poll with id ${response.message_id}`,
+      sendText: pickQuiz?.question ?? '',
+      sendImage: pickQuiz?.code ?? '',
+    });
 
     // Pin the message if it's a supergroup type
     if (context.message.chat.type === 'supergroup') {
@@ -101,6 +111,10 @@ async function quiz(context, mongo, cache) {
         is_anonymous: pickQuiz.anonymous ?? false,
       },
     );
+    await logger.fromContext(context, 'quiz', {
+      actions: `Sent a poll with id ${response.message_id}`,
+      sendText: question,
+    });
 
     // Pin the message if it's a supergroup type
     if (context.message.chat.type === 'supergroup') {

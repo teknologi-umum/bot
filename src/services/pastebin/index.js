@@ -1,3 +1,4 @@
+import { logger } from '#utils/logtail.js';
 import got from 'got';
 import { defaultHeaders } from '../../utils/http.js';
 import { sizeInBytes } from '../../utils/size.js';
@@ -40,33 +41,34 @@ async function pastebin(context) {
 
   if (!replyMessage.text) {
     await context.reply('`/pastebin` can only be used on plain texts', { parse_mode: 'MarkdownV2' });
+    await logger.fromContext(context, 'pastebin', { sendText: '`/pastebin` can only be used on plain texts' });
     return;
   }
 
   const pasteURL = await makeRequest(replyMessage.text);
-  await context.telegram.sendMessage(
-    context.message.chat.id,
-    `${
-      isOwner
-        ? ''
-        : `<a href="tg://user?id=${context.message.from.id}">${context.message.from.first_name ?? ''} ${
-            context.message.from?.last_name ?? ''
-          }</a> `
-    }${pasteURL === PASTEBIN_FILE_TOO_BIG ? pasteURL : `Your paste link: ${pasteURL}`}`,
-    {
-      reply_to_message_id: !isOwner && replyMessage.message_id,
-      disable_web_page_preview: true,
-      parse_mode: 'HTML',
-    },
-  );
+  const pasteMessage = `${
+    isOwner
+      ? ''
+      : `<a href="tg://user?id=${context.message.from.id}">${context.message.from.first_name ?? ''} ${
+          context.message.from?.last_name ?? ''
+        }</a> `
+  }${pasteURL === PASTEBIN_FILE_TOO_BIG ? pasteURL : `Your paste link: ${pasteURL}`}`;
+  await context.telegram.sendMessage(context.message.chat.id, pasteMessage, {
+    reply_to_message_id: !isOwner && replyMessage.message_id,
+    disable_web_page_preview: true,
+    parse_mode: 'HTML',
+  });
+  await logger.fromContext(context, 'pastebin', { sendText: pasteMessage });
 
   if (!isPrivateChat) {
     // Pastebin message
     await context.deleteMessage(context.message.message_id);
+    await logger.fromContext(context, 'pastebin', { actions: `Deleted chat id ${context.message.message_id}` });
 
     if (isOwner) {
       // Target message to pastebin
       await context.deleteMessage(replyMessage.message_id);
+      await logger.fromContext(context, 'pastebin', { actions: `Deleted chat id ${context.message.message_id}` });
     }
   }
 }

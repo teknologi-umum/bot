@@ -1,5 +1,5 @@
 import got from 'got';
-import { defaultHeaders } from '../../utils/http.js';
+import { defaultHeaders } from '#utils/http.js';
 
 export async function getTheDevRead(query) {
   const tulisan = await requestDataByMedia('tulisan', query);
