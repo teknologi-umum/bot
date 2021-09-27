@@ -173,7 +173,7 @@ export async function generateImage(code, lang) {
       upscale: 3,
       lineNumber: linenr > 10,
       border: {
-        thickness: 40,
+        thickness: 20,
       },
     },
     responseType: 'buffer',
