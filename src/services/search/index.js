@@ -5,6 +5,7 @@ import { getCommandArgs } from '../../utils/command.js';
 import { cleanURL, fetchDDG } from '../../utils/http.js';
 import { isClean, cleanFilter } from './filter.js';
 import { logger } from '#utils/logtail.js';
+import { sanitize } from '#utils/sanitize.js';
 
 const SEARCH_LIMIT = 10;
 const BEST = 2;
@@ -43,7 +44,7 @@ async function search(context, mongo) {
         .map((_, el) => el.children.map((x) => $.html(x)).join(''))
         .get();
 
-      return { title, href, snippet };
+      return { title: sanitize(title), href, snippet: sanitize(snippet) };
     })
     .get();
 
