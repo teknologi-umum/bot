@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
 import { randomNumber } from 'carret';
-import redisClient from '../../utils/redis.js';
+import redisClient from '#utils/redis.js';
 import { poll } from '../poll/index.js';
-import { isHomeGroup } from '../../utils/home.js';
-import { Temporal } from '../../utils/temporal.js';
+import { isHomeGroup } from '#utils/home.js';
+import { Temporal } from '#utils/temporal.js';
 import { logger } from '#utils/logtail.js';
+import { sanitize } from '#utils/sanitize.js';
 
 const pollSchema = new mongoose.Schema(
   {
@@ -75,13 +76,13 @@ async function quiz(context, mongo, cache) {
 
   if (pickQuiz.question.length > 200) {
     // Send the question as a separate message
-    await context.telegram.sendMessage(chatID, pickQuiz.question, { parse_mode: 'HTML' });
+    await context.telegram.sendMessage(chatID, sanitize(pickQuiz.question), { parse_mode: 'HTML' });
   }
 
   if (pickQuiz.type === 'quiz') {
     const response = await context.telegram.sendQuiz(
       chatID,
-      question,
+      sanitize(question),
       pickQuiz.choices.map((o) => String(o)),
       {
         allows_multiple_answers: pickQuiz.multipleAnswer ?? false,
@@ -103,7 +104,7 @@ async function quiz(context, mongo, cache) {
   } else if (pickQuiz.type === 'survey') {
     const response = await context.telegram.sendPoll(
       chatID,
-      question,
+      sanitize(question),
       pickQuiz.choices.map((o) => String(o)),
       {
         allows_multiple_answers: pickQuiz.multipleAnswer ?? false,
