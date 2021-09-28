@@ -1,3 +1,4 @@
+import { logger } from '#utils/logtail.js';
 import { isBigGroup } from '../../utils/home.js';
 import { getRandomQuote } from './utils.js';
 
@@ -17,6 +18,7 @@ async function handleCommand(context) {
     parse_mode: 'HTML',
     disable_web_page_preview: true,
   });
+  await logger.fromContext(context, 'quote', { sendText: message });
 }
 
 /**

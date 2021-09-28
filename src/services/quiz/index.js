@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
 import { randomNumber } from 'carret';
-import redisClient from '../../utils/redis.js';
+import redisClient from '#utils/redis.js';
 import { poll } from '../poll/index.js';
-import { isHomeGroup } from '../../utils/home.js';
-import { Temporal } from '../../utils/temporal.js';
+import { isHomeGroup } from '#utils/home.js';
+import { Temporal } from '#utils/temporal.js';
+import { logger } from '#utils/logtail.js';
+import { sanitize } from '#utils/sanitize.js';
 
 const pollSchema = new mongoose.Schema(
   {
@@ -39,6 +41,7 @@ async function quiz(context, mongo, cache) {
 
   if (context.message.chat.type === 'private') {
     await context.telegram.sendMessage(chatID, 'Quiz is only available for groups', { parse_mode: 'HTML' });
+    await logger.fromContext(context, 'quiz', { sendText: 'Quiz is only available for groups' });
     return;
   }
 
@@ -55,6 +58,9 @@ async function quiz(context, mongo, cache) {
         parse_mode: 'HTML',
       },
     );
+    await logger.fromContext(context, 'quiz', {
+      sendText: `You can't request another new quiz for today. Wait for tomorrow, then ask a new one &#x1F61A`,
+    });
     return;
   }
 
@@ -70,13 +76,13 @@ async function quiz(context, mongo, cache) {
 
   if (pickQuiz.question.length > 200) {
     // Send the question as a separate message
-    await context.telegram.sendMessage(chatID, pickQuiz.question, { parse_mode: 'HTML' });
+    await context.telegram.sendMessage(chatID, sanitize(pickQuiz.question), { parse_mode: 'HTML' });
   }
 
   if (pickQuiz.type === 'quiz') {
     const response = await context.telegram.sendQuiz(
       chatID,
-      question,
+      sanitize(question),
       pickQuiz.choices.map((o) => String(o)),
       {
         allows_multiple_answers: pickQuiz.multipleAnswer ?? false,
@@ -85,6 +91,11 @@ async function quiz(context, mongo, cache) {
         correct_option_id: pickQuiz.answer - 1,
       },
     );
+    await logger.fromContext(context, 'quiz', {
+      actions: `Sent a poll with id ${response.message_id}`,
+      sendText: pickQuiz?.question ?? '',
+      sendImage: pickQuiz?.code ?? '',
+    });
 
     // Pin the message if it's a supergroup type
     if (context.message.chat.type === 'supergroup') {
@@ -93,7 +104,7 @@ async function quiz(context, mongo, cache) {
   } else if (pickQuiz.type === 'survey') {
     const response = await context.telegram.sendPoll(
       chatID,
-      question,
+      sanitize(question),
       pickQuiz.choices.map((o) => String(o)),
       {
         allows_multiple_answers: pickQuiz.multipleAnswer ?? false,
@@ -101,6 +112,10 @@ async function quiz(context, mongo, cache) {
         is_anonymous: pickQuiz.anonymous ?? false,
       },
     );
+    await logger.fromContext(context, 'quiz', {
+      actions: `Sent a poll with id ${response.message_id}`,
+      sendText: question,
+    });
 
     // Pin the message if it's a supergroup type
     if (context.message.chat.type === 'supergroup') {

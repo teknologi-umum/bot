@@ -1,3 +1,5 @@
+import { logger } from '#utils/logtail.js';
+
 /**
  * Send help to user when needed.
  * @param {import('telegraf').Context} context
@@ -15,6 +17,7 @@ async function help(context) {
       parse_mode: 'HTML',
     },
   );
+  await logger.fromContext(context, 'help');
 }
 
 /**

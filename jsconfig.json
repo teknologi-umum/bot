@@ -1,9 +1,14 @@
 {
   "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
     "baseUrl": ".",
     "paths": {
       "#services/*": ["./src/services/*"],
       "#utils/*": ["./src/utils/*"]
-    }
-  }
+    },
+    "moduleResolution": "node"
+  },
+  "include": ["src/**/*", "test/**/*"],
+  "exclude": ["dist/**/*", "node_modules/**/*"]
 }

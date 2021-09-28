@@ -22,6 +22,7 @@ import * as dukun from './services/dukun/index.js';
 import * as laodeai from './services/laodeai/index.js';
 import * as analytics from './services/analytics/index.js';
 import * as pastebin from './services/pastebin/index.js';
+import { logger } from '#utils/logtail.js';
 
 dotenv.config({ path: pathTo(import.meta.url, '../.env') });
 
@@ -54,7 +55,7 @@ async function main() {
 
   bot.telegram.setMyCommands(commands);
 
-  bot.catch((error, context) => {
+  bot.catch(async (error, context) => {
     sentry.captureException(error, (scope) => {
       scope.setContext('chat', {
         chat_id: context.message.chat.id,
@@ -78,7 +79,8 @@ async function main() {
       return scope;
     });
     if (process.env.NODE_ENV !== 'production') terminal.error(error);
-    context.reply('Uh oh, something went wrong. Ask the devs to check their logs.');
+    await context.reply('Uh oh, something went wrong. Ask the devs to check their logs.');
+    await logger.log({ message: 'Uh oh, something went wrong. Ask the devs to check their logs.', command: 'error' });
   });
 
   // For more information about what this is, please refer to:
@@ -89,6 +91,7 @@ async function main() {
     } MB. Resident Set Size: ${memoryUsage().rss / 1000000} MB.`,
   );
 
+  await logger.log({ message: 'Launching bot..', command: 'launch' });
   terminal.info('Launching bot..');
   await bot.launch();
 }

@@ -4,6 +4,7 @@ import { renderTemplate } from '../../utils/template.js';
 import { getCommandArgs } from '../../utils/command.js';
 import { cleanURL, fetchDDG } from '../../utils/http.js';
 import { isClean, cleanFilter } from './filter.js';
+import { logger } from '#utils/logtail.js';
 
 const SEARCH_LIMIT = 10;
 const BEST = 2;
@@ -20,12 +21,14 @@ async function search(context, mongo) {
   const clean = await isClean(query, mongo);
   if (!clean) {
     await context.reply('Keep the search clean, shall we? 😉');
+    await logger.fromContext(context, 'search', { sendText: 'Keep the search clean, shall we? 😉' });
     return;
   }
 
   const { body, requestUrl, statusCode } = await fetchDDG(got, query);
   if (statusCode !== 200) {
     await context.reply('Error getting search result.');
+    await logger.fromContext(context, 'search', { sendText: 'Error getting search result.' });
     return;
   }
 
@@ -49,7 +52,7 @@ async function search(context, mongo) {
   // Trim to certain length
   items = items.slice(0, SEARCH_LIMIT + BEST);
 
-  await context.telegram.sendMessage(
+  const sentMessage = await context.telegram.sendMessage(
     context.message.chat.id,
     renderTemplate('search/search.template.hbs', {
       items,
@@ -59,6 +62,7 @@ async function search(context, mongo) {
     }),
     { parse_mode: 'HTML', disable_web_page_preview: true },
   );
+  await logger.fromContext(context, 'search', { sendText: sentMessage.text });
 }
 
 /**

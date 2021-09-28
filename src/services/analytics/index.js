@@ -1,3 +1,4 @@
+import { logger } from '#utils/logtail.js';
 import mongoose from 'mongoose';
 
 const analyticsSchema = new mongoose.Schema(
@@ -72,6 +73,7 @@ export function register(bot, mongo) {
       },
       { upsert: true, new: true },
     );
+    await logger.fromContext(context, 'analytics', { actions: `I got updated to ${new_chat_member.status}` });
   });
 
   return [];

@@ -4,6 +4,7 @@ import redisClient from '../../utils/redis.js';
 import { getCommandArgs } from '../../utils/command.js';
 import { defaultHeaders } from '../../utils/http.js';
 import { Temporal } from '../../utils/temporal.js';
+import { logger } from '#utils/logtail.js';
 
 /**
  * Send covid information.
@@ -29,22 +30,22 @@ async function covid(context, cache) {
     });
 
     if (statusCode !== 404 && statusCode !== 200) {
+      await logger.fromContext(context, 'covid', { sendText: `Country: ${country}` });
       return Promise.reject({ request, rawBody, statusCode });
     }
 
     if (statusCode === 404) {
       await context.telegram.sendMessage(chatId, 'That country name is not valid or does not exists.');
+      await logger.fromContext(context, 'covid', { sendText: `Country: ${country}` });
       return;
     }
 
     if (!body) {
-      return await context.telegram.sendMessage(
-        chatId,
-        `Data for the <b>${body.country}</b> country is not yet available.`,
-        {
-          parse_mode: 'HTML',
-        },
-      );
+      await context.telegram.sendMessage(chatId, `Data for the <b>${body.country}</b> country is not yet available.`, {
+        parse_mode: 'HTML',
+      });
+      await logger.fromContext(context, 'covid', { sendText: `Country: ${country}` });
+      return;
     }
 
     // TODO: total dosis vaksin
@@ -62,6 +63,7 @@ async function covid(context, cache) {
         parse_mode: 'HTML',
       },
     );
+    await logger.fromContext(context, 'covid', { sendText: `Country: ${country}` });
     return;
   }
 
@@ -69,6 +71,7 @@ async function covid(context, cache) {
 
   if (getGlobalData) {
     await context.telegram.sendMessage(chatId, getGlobalData, { parse_mode: 'HTML' });
+    await logger.fromContext(context, 'covid', { sendText: getGlobalData });
     return;
   }
 
@@ -110,6 +113,7 @@ async function covid(context, cache) {
     parse_mode: 'HTML',
   });
   await redis.SETEX('covid:global', 60 * 60 * 6, preformatMessage);
+  await logger.fromContext(context, 'covid', { sendText: preformatMessage });
 }
 
 /**

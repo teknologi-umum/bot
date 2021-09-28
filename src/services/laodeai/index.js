@@ -3,6 +3,7 @@ import got from 'got';
 import { getCommandArgs } from '#utils/command.js';
 import { cleanURL, fetchDDG } from '#utils/http.js';
 import { sanitize } from '#utils/sanitize.js';
+import { logger } from '#utils/logtail.js';
 import { generateImage } from '../snap/utils.js';
 import { makeRequest } from '../pastebin/index.js';
 import { stackoverflow } from './handlers/stackoverflow.js';
@@ -70,24 +71,37 @@ const VALID_SOURCES = {
   'cooking.nytimes.com': cookingNytimes,
 };
 
+/**
+ *
+ * @param {{ url: string, type: 'image' | 'text', content: string } | { type: 'error' }} result
+ * @param {import('telegraf').Telegraf} context
+ * @returns
+ */
 async function sendImage(result, context) {
   const tooLong = result.content.length > 3000 || result.content.split('\n').length > 190;
   const fullCode = tooLong ? await makeRequest(result.content) : false;
   const image = await generateImage(result.content.substring(0, 3000), '');
-  await context.telegram.sendPhoto(
+  return await context.telegram.sendPhoto(
     context.message.chat.id,
     { source: image },
     { caption: tooLong ? `Read more on: ${fullCode || result.url}` : '' },
   );
 }
 
+/**
+ *
+ * @param {{ url: string, type: 'image' | 'text', content: string } | { type: 'error' }} result
+ * @param {import('telegraf').Telegraf} context
+ * @param {Boolean} trim
+ * @returns
+ */
 async function sendText(result, context, trim) {
   let content = sanitize(result.content);
   if (trim && content.length > 500) {
     content = `${content.substring(0, 500)}...\n\nSee more on: ${result.url}`;
   }
 
-  await context.telegram.sendMessage(context.message.chat.id, content, { parse_mode: 'HTML' });
+  return await context.telegram.sendMessage(context.message.chat.id, content, { parse_mode: 'HTML' });
 }
 
 /**
@@ -102,6 +116,7 @@ async function laodeai(context) {
 
   if (ddgStatusCode !== 200) {
     await context.reply('Error getting search result.');
+    await logger.fromContext(context, 'laodeai', { sendText: 'Error getting search result.' });
     return;
   }
 
@@ -117,6 +132,7 @@ async function laodeai(context) {
   const sources = $('.web-result').get();
   if (sources.length <= 1 && $(sources[0]).find('.no-results').get()) {
     await context.reply("Uhh, I don't have an answer for that, sorry.");
+    await logger.fromContext(context, 'laodeai', { sendText: "Uhh, I don't have an answer for that, sorry." });
     return;
   }
 
@@ -128,6 +144,7 @@ async function laodeai(context) {
     .filter((url) => VALID_SOURCES[url.hostname.replace('www.', '')]);
   if (validSources.length < 1) {
     await context.reply("Uhh, I don't have an answer for that, sorry.");
+    await logger.fromContext(context, 'laodeai', { sendText: "Uhh, I don't have an answer for that, sorry." });
     return;
   }
 
@@ -135,17 +152,23 @@ async function laodeai(context) {
 
   switch (result.type) {
     case 'image': {
-      await sendImage(result, context);
+      const sentMessage = await sendImage(result, context);
+      await logger.fromContext(context, 'laodeai', {
+        sendText: sentMessage.caption ?? '',
+        actions: `Sent a photo with id ${sentMessage.message_id}`,
+      });
       break;
     }
     case 'text': {
-      await sendText(result, context, true);
+      const sentMessage = await sendText(result, context, true);
+      await logger.fromContext(context, 'laodeai', { sendText: sentMessage.text });
       break;
     }
     case 'error': {
       await context.telegram.sendMessage(context.message.chat.id, "I can't find the proper answer for that, sorry.", {
         parse_mode: 'HTML',
       });
+      await logger.fromContext(context, 'laodeai', { sendText: "I can't find the proper answer for that, sorry." });
       break;
     }
   }

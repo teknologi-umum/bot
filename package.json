@@ -55,6 +55,7 @@
     "#utils/*": "./src/utils/*"
   },
   "dependencies": {
+    "@logtail/node": "^0.1.10",
     "@sentry/node": "^6.12.0",
     "carret": "^1.0.4",
     "cheerio": "^1.0.0-rc.10",

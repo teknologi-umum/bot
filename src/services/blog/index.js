@@ -1,8 +1,9 @@
-import redisClient from '../../utils/redis.js';
 import { getTheDevRead } from './request.js';
-import { randomArray } from '../../utils/random.js';
-import { renderTemplate } from '../../utils/template.js';
-import { getCommandArgs } from '../../utils/command.js';
+import redisClient from '#utils/redis.js';
+import { randomArray } from '#utils/random.js';
+import { renderTemplate } from '#utils/template.js';
+import { getCommandArgs } from '#utils/command.js';
+import { logger } from '#utils/logtail.js';
 
 const WHITELIST = ['javascript', 'php', 'go', 'c', 'typescript', 'python'];
 
@@ -64,6 +65,7 @@ async function devRead(context, cache) {
     url,
   }));
   await redis.SETEX(`devread:${encodeURI(query.toLowerCase())}`, 60 * 60 * 6, JSON.stringify(filteredData));
+  await logger.fromContext(context, 'devread', { sendText: read || '' });
 }
 
 /**

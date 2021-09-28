@@ -1,6 +1,7 @@
 import { safeEval } from './parser.js';
 import { getCommandArgs } from '../../utils/command.js';
 import { resolveCryptoCurrencies, resolveCurrencyRates, resolveStocks } from './superpowers.js';
+import { logger } from '#utils/logtail.js';
 
 /**
  *
@@ -22,6 +23,7 @@ Output:
 ${output}
 \`\`\`
   `);
+  await logger.fromContext(context, 'eval', { sendText: output });
 }
 
 /**
