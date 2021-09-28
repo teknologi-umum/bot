@@ -102,7 +102,10 @@ async function sendText(result, context, trim) {
     content = `${trimHtml(500, content)}...\n\nSee more on: ${result.url}`;
   }
 
-  return await context.telegram.sendMessage(context.message.chat.id, content, { parse_mode: 'HTML' });
+  return await context.telegram.sendMessage(context.message.chat.id, content, {
+    parse_mode: 'HTML',
+    disable_web_page_preview: true,
+  });
 }
 
 /**
