@@ -3,6 +3,7 @@ import got from 'got';
 import { getCommandArgs } from '#utils/command.js';
 import { cleanURL, fetchDDG } from '#utils/http.js';
 import { sanitize } from '#utils/sanitize.js';
+import { trimHtml } from '#utils/trimHtml.js';
 import { logger } from '#utils/logtail.js';
 import { generateImage } from '../snap/utils.js';
 import { makeRequest } from '../pastebin/index.js';
@@ -98,10 +99,13 @@ async function sendImage(result, context) {
 async function sendText(result, context, trim) {
   let content = sanitize(result.content);
   if (trim && content.length > 500) {
-    content = `${content.substring(0, 500)}...\n\nSee more on: ${result.url}`;
+    content = `${trimHtml(500, content)}...\n\nSee more on: ${result.url}`;
   }
 
-  return await context.telegram.sendMessage(context.message.chat.id, content, { parse_mode: 'HTML' });
+  return await context.telegram.sendMessage(context.message.chat.id, content, {
+    parse_mode: 'HTML',
+    disable_web_page_preview: true,
+  });
 }
 
 /**
