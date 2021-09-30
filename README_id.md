@@ -16,6 +16,8 @@ Kalau kamu awam di ranah open source, kami sangat menyarankan untuk membaca bebe
 - [Github Workflow: Cara Berkontribusi di Proyek Open Source](https://www.petanikode.com/github-workflow/)
 - [Tips untuk Pull Request berkualitas tinggi](https://twitter.com/sudo_navendu/status/1437456596473303042) (bahasa Inggris)
 
+Kamu bisa memulai dengan membaca [bagian dan petunjuk kontribusi](https://github.com/teknologi-umum/bot/blob/master/README_id.md#aku-mau-kontribusi-aku-bisa-bantu-apa-aja). Lalu kamu bisa mencari [issue yang dapat kamu kerjakan](https://github.com/teknologi-umum/bot/issues?q=is%3Aopen+is%3Aissue+label%3Ahacktoberfest).
+
 ## Aku mau invite bot ini ke grup ku, boleh?
 
 Boleh banget! Begini caranya:

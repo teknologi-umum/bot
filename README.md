@@ -16,7 +16,7 @@ If you're new to open source, we really recommend reading a few articles about c
 - [Hacktoberfest Contributor's Guide: How To Find and Contribute to Open-Source Projects](https://www.digitalocean.com/community/tutorials/hacktoberfest-contributor-s-guide-how-to-find-and-contribute-to-open-source-projects)
 - [Tips for high-quality Pull Request](https://twitter.com/sudo_navendu/status/1437456596473303042)
 
-Then you can start by reading our [contribution](https://github.com/teknologi-umum/bot#i-want-to-contribute-what-can-i-do) part and guidelines.
+You can start by reading our [contribution](https://github.com/teknologi-umum/bot#i-want-to-contribute-what-can-i-do) part and guidelines. Then you can search for [issues that you can work on](https://github.com/teknologi-umum/bot/issues?q=is%3Aopen+is%3Aissue+label%3Ahacktoberfest).
 
 Have fun!
 
