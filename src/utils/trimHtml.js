@@ -37,5 +37,5 @@ export const trimHtml = (max, content) => {
     .get()
     .map((el) => el.endIndex + 1);
 
-  return content.substring(0, closest(max, endIndices));
+  return content.substring(0, closest(max, endIndices) + 1);
 };
