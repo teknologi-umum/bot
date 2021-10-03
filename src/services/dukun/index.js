@@ -125,9 +125,9 @@ async function dukun(context, mongo, cache) {
 
       const sentMessage = await context.telegram.sendMessage(
         context.chat.id,
-        `Dukun master <a href="tg://user?id=${replyMessage.from.id}">${replyMessage.from.first_name} ${
-          replyMessage.from?.last_name ?? ''
-        }</a>points: ${updatedData.points}`,
+        `Dukun master <a href="tg://user?id=${replyMessage.from.id}">${replyMessage.from.first_name}${
+          replyMessage.from.last_name !== undefined ? ' ' + replyMessage.from.last_name : ''
+        }</a> points: ${updatedData.points}`,
         { parse_mode: 'HTML' },
       );
 
@@ -168,8 +168,8 @@ async function dukun(context, mongo, cache) {
 
     const sentMessage = await context.telegram.sendMessage(
       context.chat.id,
-      `Dukun <a href="tg://user?id=${replyMessage.from.id}">${replyMessage.from.first_name} ${
-        replyMessage.from?.last_name ?? ''
+      `Dukun <a href="tg://user?id=${replyMessage.from.id}">${replyMessage.from.first_name}${
+        replyMessage.from.last_name !== undefined ? ' ' + replyMessage.from.last_name : ''
       }</a> points: ${updatedData.points}`,
       { parse_mode: 'HTML' },
     );
