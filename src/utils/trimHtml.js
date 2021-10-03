@@ -32,10 +32,11 @@ export const trimHtml = (max, content) => {
     },
   });
 
-  const endIndices = $('*')
+  const endIndices = $('div')
     .children()
     .get()
     .map((el) => el.endIndex + 1);
 
-  return content.substring(0, closest(max, endIndices) + 1);
+  // -5 because the first `<div>` tag counts but we don't actually use them
+  return content.substring(0, closest(max, endIndices) - 5);
 };
