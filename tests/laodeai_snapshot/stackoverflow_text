@@ -1,4 +1,3 @@
-
 If <code>fish</code> is a local variable, this code won't pass compilation, since <code>fish</code> must be initialized.
 
 If <code>fish</code> is an instance variable, this code will throw NullPointerException, since the default value of <code>fish</code> will be null, and de-referencing a null reference throws this exception.

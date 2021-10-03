@@ -1,4 +1,3 @@
-
 In 5.7 the sqlmode is set by default to:
 
 <pre><code> ONLY_FULL_GROUP_BY,NO_AUTO_CREATE_USER,STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION
