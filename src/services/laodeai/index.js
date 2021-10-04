@@ -182,7 +182,7 @@ async function laodeai(context) {
       break;
     }
     case 'error': {
-      await sendError();
+      await sendError(context);
       break;
     }
   }
