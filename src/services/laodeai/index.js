@@ -109,6 +109,17 @@ async function sendText(result, context, trim) {
 }
 
 /**
+ *
+ * @param {import('telegraf').Telegraf} context
+ * @returns
+ */
+async function sendError(context) {
+  await context.reply("Uhh, I don't have an answer for that, sorry.");
+  await logger.fromContext(context, 'laodeai', { sendText: "Uhh, I don't have an answer for that, sorry." });
+  return;
+}
+
+/**
  * @param {import('telegraf').Telegraf} context
  * @returns {Promise<void>}
  */
@@ -135,8 +146,7 @@ async function laodeai(context) {
 
   const sources = $('.web-result').get();
   if (sources.length <= 1 && $(sources[0]).find('.no-results').get()) {
-    await context.reply("Uhh, I don't have an answer for that, sorry.");
-    await logger.fromContext(context, 'laodeai', { sendText: "Uhh, I don't have an answer for that, sorry." });
+    await sendError(context);
     return;
   }
 
@@ -146,13 +156,16 @@ async function laodeai(context) {
       return new URL(decodeURIComponent(href));
     })
     .filter((url) => VALID_SOURCES[url.hostname.replace('www.', '')]);
-  if (validSources.length < 1) {
-    await context.reply("Uhh, I don't have an answer for that, sorry.");
-    await logger.fromContext(context, 'laodeai', { sendText: "Uhh, I don't have an answer for that, sorry." });
+  if (!validSources) {
+    await sendError(context);
     return;
   }
 
   const result = await goThroughURLs(validSources);
+  if (!result) {
+    await sendError(context);
+    return;
+  }
 
   switch (result.type) {
     case 'image': {
@@ -169,10 +182,7 @@ async function laodeai(context) {
       break;
     }
     case 'error': {
-      await context.telegram.sendMessage(context.message.chat.id, "I can't find the proper answer for that, sorry.", {
-        parse_mode: 'HTML',
-      });
-      await logger.fromContext(context, 'laodeai', { sendText: "I can't find the proper answer for that, sorry." });
+      await sendError(context);
       break;
     }
   }
