@@ -74,7 +74,7 @@ const VALID_SOURCES = {
 
 /**
  *
- * @param {{ url: string, type: 'image' | 'text', content: string } | { type: 'error' }} result
+ * @param {{ url: string, type: 'image' | 'text' | 'error', content: string }} result
  * @param {import('telegraf').Telegraf} context
  * @returns
  */
@@ -82,7 +82,9 @@ async function sendImage(result, context) {
   const tooLong = result.content.length > 3000 || result.content.split('\n').length > 190;
   const fullCode = tooLong ? await makeRequest(result.content) : false;
   const image = await generateImage(result.content.substring(0, 3000), '');
-  return await context.telegram.sendPhoto(
+
+  // no await, see https://eslint.org/docs/rules/no-return-await
+  return context.telegram.sendPhoto(
     context.message.chat.id,
     { source: image },
     { caption: tooLong ? `Read more on: ${fullCode || result.url}` : '' },
@@ -91,7 +93,7 @@ async function sendImage(result, context) {
 
 /**
  *
- * @param {{ url: string, type: 'image' | 'text', content: string } | { type: 'error' }} result
+ * @param {{ url: string, type: 'image' | 'text' | 'error', content: string }} result
  * @param {import('telegraf').Telegraf} context
  * @param {Boolean} trim
  * @returns
@@ -102,7 +104,8 @@ async function sendText(result, context, trim) {
     content = `${trimHtml(500, content)}...\n\nSee more on: ${result.url}`;
   }
 
-  return await context.telegram.sendMessage(context.message.chat.id, content, {
+  // no await, see https://eslint.org/docs/rules/no-return-await
+  return context.telegram.sendMessage(context.message.chat.id, content, {
     parse_mode: 'HTML',
     disable_web_page_preview: true,
   });
