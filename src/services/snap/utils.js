@@ -167,7 +167,7 @@ export async function generateImage(code, lang) {
   const { body } = await got.post('https://teknologi-umum-graphene.fly.dev/api', {
     headers: defaultHeaders,
     json: {
-      code,
+      code: code.replace(/^\s+|\s+$/g, ''),
       lang,
       theme: 'github-dark',
       upscale: 3,
