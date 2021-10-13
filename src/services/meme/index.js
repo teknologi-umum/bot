@@ -25,7 +25,7 @@ export function register(bot, cache) {
     const bigGroup = await isBigGroup(context);
     if (bigGroup) return;
     await context.telegram.sendPhoto(context.message.chat.id, 'https://i.ibb.co/XtSbXBT/image.png');
-    await logger.fromContext(context, 'kktbsys', { sendText: `https://i.ibb.co/XtSbXBT/image.png` });
+    await logger.fromContext(context, 'kktbsys', { sendText: 'https://i.ibb.co/XtSbXBT/image.png' });
   });
 
   bot.command('illuminati', async (context) => {
@@ -36,7 +36,7 @@ export function register(bot, cache) {
       'https://media.giphy.com/media/uFOW5cbNaoTaU/giphy.gif',
     );
     await logger.fromContext(context, 'illuminati', {
-      sendText: `https://media.giphy.com/media/uFOW5cbNaoTaU/giphy.gif`,
+      sendText: 'https://media.giphy.com/media/uFOW5cbNaoTaU/giphy.gif',
     });
   });
 
@@ -44,7 +44,7 @@ export function register(bot, cache) {
     const bigGroup = await isBigGroup(context);
     if (bigGroup) return;
     await context.telegram.sendPhoto(context.message.chat.id, 'https://i.ibb.co/P1Q0650/yntkts.jpg');
-    await logger.fromContext(context, 'yntkts', { sendText: `https://i.ibb.co/P1Q0650/yntkts.jpg` });
+    await logger.fromContext(context, 'yntkts', { sendText: 'https://i.ibb.co/P1Q0650/yntkts.jpg' });
   });
 
   bot.command('homework', async (context) => {
@@ -52,7 +52,7 @@ export function register(bot, cache) {
     if (bigGroup) return;
     await context.telegram.sendPhoto(context.message.chat.id, 'https://i.ibb.co/541knqp/photo-2021-08-21-02-54-24.jpg');
     await logger.fromContext(context, 'homework', {
-      sendText: `https://i.ibb.co/541knqp/photo-2021-08-21-02-54-24.jpg`,
+      sendText: 'https://i.ibb.co/541knqp/photo-2021-08-21-02-54-24.jpg',
     });
   });
 
