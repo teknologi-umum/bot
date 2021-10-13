@@ -14,6 +14,13 @@ import { logger } from '#utils/logtail.js';
 export function register(bot, cache) {
   const redis = redisClient(cache);
 
+  bot.command('hilih', async (context) => {
+    const bigGroup = await isBigGroup(context);
+    if (bigGroup) return;
+    await context.telegram.sendPhoto(context.message.chat.id, 'https://i.ibb.co/dMbd6dF/short.jpg');
+    await logger.fromContext(context, 'hilih', { sendText: 'https://i.ibb.co/dMbd6dF/short.jpg' });
+  });
+
   bot.command('kktbsys', async (context) => {
     const bigGroup = await isBigGroup(context);
     if (bigGroup) return;
@@ -77,6 +84,10 @@ export function register(bot, cache) {
   });
 
   return [
+    {
+      command: 'hilih',
+      description: 'Arnold Poernomo ngomong hilih',
+    },
     {
       command: 'joke',
       description: 'Get random jokes bapack2.',
