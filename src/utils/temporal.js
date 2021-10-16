@@ -5,7 +5,6 @@
 
 export class Temporal {
   /**
-   *
    * @param {Date} date javascript new Date() object
    */
   constructor(date) {
@@ -29,7 +28,7 @@ export class Temporal {
         return this.date.getMonth() === dateToCompare.getMonth();
       }
       case 'week': {
-        return getWeek(this.date) === getWeek(dateToCompare);
+        return this.#getWeek(this.date) === this.#getWeek(dateToCompare);
       }
       case 'day': {
         return this.date.getDay() === dateToCompare.getDay();
@@ -125,18 +124,18 @@ export class Temporal {
       }
     }
   }
-}
+  /**
+   * Get current week
+   * @param {Date} date
+   * @returns {Number} The week of the year
+   * @private
+   */
+  #getWeek(date) {
+    if (!date || !(date instanceof Date)) {
+      throw new Error('*face palms*');
+    }
 
-/**
- * Get current week
- * @param {Date} date
- * @returns {Number} The week of the year
- */
-function getWeek(date) {
-  if (!date || !(date instanceof Date)) {
-    throw new Error('*face palms*');
+    const firstJanuary = new Date(new Date().getFullYear(), 0, 1);
+    return Math.ceil(((date - firstJanuary) / 86400000 + firstJanuary.getDay() + 1) / 7);
   }
-
-  const firstJanuary = new Date(new Date().getFullYear(), 0, 1);
-  return Math.ceil(((date - firstJanuary) / 86400000 + firstJanuary.getDay() + 1) / 7);
 }

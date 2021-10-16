@@ -3,7 +3,7 @@ import redisClient from '#utils/redis.js';
 import { randomArray } from '#utils/random.js';
 import { renderTemplate } from '#utils/template.js';
 import { getCommandArgs } from '#utils/command.js';
-import { logger } from '#utils/logtail.js';
+import { logger } from '#utils/logger/logtail.js';
 
 const WHITELIST = ['javascript', 'php', 'go', 'c', 'typescript', 'python'];
 
@@ -13,7 +13,7 @@ const WHITELIST = ['javascript', 'php', 'go', 'c', 'typescript', 'python'];
  * @returns {Promise<void>}
  */
 async function devRead(context, cache) {
-  const redis = new redisClient(cache);
+  const redis = redisClient(cache);
 
   const query = getCommandArgs('devread', context);
 

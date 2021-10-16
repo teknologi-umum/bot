@@ -1,10 +1,10 @@
 import cheerio from 'cheerio';
 import got from 'got';
-import { renderTemplate } from '../../utils/template.js';
-import { getCommandArgs } from '../../utils/command.js';
-import { cleanURL, fetchDDG } from '../../utils/http.js';
+import { renderTemplate } from '#utils/template.js';
+import { getCommandArgs } from '#utils/command.js';
+import { cleanURL, fetchDDG } from '#utils/http.js';
 import { isClean, cleanFilter } from './filter.js';
-import { logger } from '#utils/logtail.js';
+import { logger } from '#utils/logger/logtail.js';
 import { sanitize } from '#utils/sanitize.js';
 
 const SEARCH_LIMIT = 10;

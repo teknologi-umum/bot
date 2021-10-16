@@ -4,36 +4,6 @@
   "main": "src/app.js",
   "license": "GPL-3.0",
   "type": "module",
-  "contributors": [
-    {
-      "name": "Reinaldy Rafli",
-      "url": "https://github.com/aldy505"
-    },
-    {
-      "name": "Laode Muhammad Al Fatih",
-      "url": "https://github.com/lamualfa"
-    },
-    {
-      "name": "artileda",
-      "url": "https://github.com/artileda"
-    },
-    {
-      "name": "Ronny Gunawan",
-      "url": "https://github.com/ronnygunawan"
-    },
-    {
-      "name": "elianiva",
-      "url": "https://github.com/elianiva"
-    },
-    {
-      "name": "Muhammad Valian Masdani",
-      "url": "https://github.com/vmasdani"
-    },
-    {
-      "name": "farhan443",
-      "url": "https://github.com/farhan443"
-    }
-  ],
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon --max-old-space-size=220 src/app.js",
@@ -71,12 +41,12 @@
   },
   "devDependencies": {
     "c8": "^7.10.0",
-    "eslint": "^7.32.0",
+    "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.2",
     "nodemon": "^2.0.13",
-    "prettier": "^2.3.2",
+    "prettier": "^2.4.1",
     "uvu": "^0.5.2"
   },
   "engineStrict": true,

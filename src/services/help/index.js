@@ -1,4 +1,4 @@
-import { logger } from '#utils/logtail.js';
+import { logger } from '#utils/logger/logtail.js';
 
 /**
  * Send help to user when needed.

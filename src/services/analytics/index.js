@@ -1,4 +1,4 @@
-import { logger } from '#utils/logtail.js';
+import { logger } from '#utils/logger/logtail.js';
 import mongoose from 'mongoose';
 
 const analyticsSchema = new mongoose.Schema(
@@ -41,8 +41,8 @@ export function register(bot, mongo) {
     const { chat, from, new_chat_member } = context.myChatMember;
     if (chat.type === 'private') return;
 
-    const chatMembers = await context.getChatMembersCount(chat.id);
-    const chatAdministrators = await context.getChatAdministrators(chat.id);
+    const chatMembers = new_chat_member.status !== 'kicked' ? await context.getChatMembersCount(chat.id) : 0;
+    const chatAdministrators = new_chat_member.status !== 'kicked' ? await context.getChatAdministrators(chat.id) : [];
     await Analytics.findOneAndUpdate(
       { groupID: chat.id },
       {
@@ -52,10 +52,10 @@ export function register(bot, mongo) {
           username: chat.username ?? '',
           type: chat.type,
           administrators: chatAdministrators.map((o) => ({
-            userID: String(o.user.id),
+            userID: String(o.user.id) ?? '',
             name: `${o.user.first_name} ${o.user.last_name ?? ''}`,
             userName: o.user.username ?? '',
-            isBot: o.user.is_bot,
+            isBot: o.user.is_bot ?? false,
           })),
           updatedBy: {
             userID: String(from.id),

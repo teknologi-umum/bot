@@ -4,7 +4,7 @@ import redisClient from '#utils/redis.js';
 import { poll } from '../poll/index.js';
 import { isHomeGroup } from '#utils/home.js';
 import { Temporal } from '#utils/temporal.js';
-import { logger } from '#utils/logtail.js';
+import { logger } from '#utils/logger/logtail.js';
 import { sanitize } from '#utils/sanitize.js';
 
 const pollSchema = new mongoose.Schema(
@@ -35,7 +35,7 @@ const pollSchema = new mongoose.Schema(
 async function quiz(context, mongo, cache) {
   if (!isHomeGroup(context)) return;
 
-  const redis = new redisClient(cache);
+  const redis = redisClient(cache);
   const currentTime = new Temporal(new Date());
   const chatID = context.message.chat.id;
 

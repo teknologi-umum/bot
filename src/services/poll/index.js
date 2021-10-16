@@ -1,7 +1,7 @@
-import { logger } from '#utils/logtail.js';
-import { isHomeGroup } from '../../utils/home.js';
-import redisClient from '../../utils/redis.js';
-import { Temporal } from '../../utils/temporal.js';
+import { logger } from '#utils/logger/logtail.js';
+import { isHomeGroup } from '#utils/home.js';
+import redisClient from '#utils/redis.js';
+import { Temporal } from '#utils/temporal.js';
 
 /**
  * Process poll created by user to not
@@ -12,7 +12,7 @@ import { Temporal } from '../../utils/temporal.js';
  * @returns {Promise<void>}
  */
 export async function poll(context, cache, poll, pollID) {
-  const redis = new redisClient(cache);
+  const redis = redisClient(cache);
   const currentTime = new Temporal(new Date());
 
   const { content, id, date } = await redis.HGETALL(`poll:${String(context.message.chat.id)}`);

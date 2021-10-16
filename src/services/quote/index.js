@@ -1,5 +1,5 @@
-import { logger } from '#utils/logtail.js';
-import { isBigGroup } from '../../utils/home.js';
+import { logger } from '#utils/logger/logtail.js';
+import { isBigGroup } from '#utils/home.js';
 import { getRandomQuote } from './utils.js';
 
 /**

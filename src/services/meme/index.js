@@ -1,9 +1,9 @@
 import got from 'got';
 import { randomNumber } from 'carret';
-import { defaultHeaders } from '../../utils/http.js';
-import redisClient from '../../utils/redis.js';
-import { isBigGroup } from '../../utils/home.js';
-import { logger } from '#utils/logtail.js';
+import { defaultHeaders } from '#utils/http.js';
+import redisClient from '#utils/redis.js';
+import { isBigGroup } from '#utils/home.js';
+import { logger } from '#utils/logger/logtail.js';
 
 /**
  * Send memes..
@@ -12,7 +12,7 @@ import { logger } from '#utils/logtail.js';
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, cache) {
-  const redis = new redisClient(cache);
+  const redis = redisClient(cache);
 
   bot.command('hilih', async (context) => {
     const bigGroup = await isBigGroup(context);

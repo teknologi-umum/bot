@@ -1,6 +1,6 @@
 import { getCommandArgs } from '#utils/command.js';
 import { isHomeGroup } from '#utils/home.js';
-import { logger } from '#utils/logtail.js';
+import { logger } from '#utils/logger/logtail.js';
 
 /**
  * Defines bliding ej
@@ -13,7 +13,7 @@ async function define(context) {
   const chatId = context.message.chat.id;
   const argument = getCommandArgs('blidingej', context);
 
-  if (argument.match(/^indo|id/)) {
+  if (argument.startsWith('indo') || argument.startsWith('id')) {
     await context.telegram.sendMessage(
       chatId,
       `<b>Bliding ej</b> adalah istilah untuk <i>bleeding edge</i>.\n\n` +

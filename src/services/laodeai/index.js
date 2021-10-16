@@ -4,7 +4,7 @@ import { getCommandArgs } from '#utils/command.js';
 import { cleanURL, fetchDDG } from '#utils/http.js';
 import { sanitize } from '#utils/sanitize.js';
 import { trimHtml } from '#utils/trimHtml.js';
-import { logger } from '#utils/logtail.js';
+import { logger } from '#utils/logger/logtail.js';
 import { generateImage } from '../snap/utils.js';
 import { makeRequest } from '../pastebin/index.js';
 import { stackoverflow } from './handlers/stackoverflow.js';
@@ -30,8 +30,6 @@ const VALID_SOURCES = {
   'superuser.com': stackexchange,
   'askubuntu.com': stackexchange,
   'mathoverflow.net': stackexchange,
-  // I know this is kind of dumb, so..
-  // FIXME: Use regexp! Or not, I don't know which is better
   'gamedev.stackexchange.com': stackexchange,
   'gaming.stackexchange.com': stackexchange,
   'webapps.stackexchange.com': stackexchange,
@@ -66,6 +64,9 @@ const VALID_SOURCES = {
   'networkengineering.stackexchange.com': stackexchange,
   'islam.stackexchange.com': stackexchange,
   'dba.stackexchange.com': stackexchange,
+  'chemistry.stackexchange.com': stackexchange,
+  'law.stackexchange.com': stackexchange,
+  'history.stackexchange.com': stackexchange,
   'knowyourmeme.com': knowyourmeme,
   'urbandictionary.com': urbandictionary,
   'bonappetit.com': bonappetit,
