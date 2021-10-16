@@ -4,6 +4,12 @@ on:
   pull_request:
     branches:
       - '*'
+  push:
+    branches:
+      - 'feat/**'
+      - 'fix/**'
+      - 'refactor/**'
+      - 'test/**'
 
 jobs:
   ci:
