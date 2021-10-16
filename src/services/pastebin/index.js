@@ -1,9 +1,9 @@
-import { logger } from '#utils/logtail.js';
 import got from 'got';
-import { defaultHeaders } from '../../utils/http.js';
-import { sizeInBytes } from '../../utils/size.js';
+import { logger } from '#utils/logger/logtail.js';
+import { defaultHeaders } from '#utils/http.js';
+import { sizeInBytes } from '#utils/size.js';
 
-export const PASTEBIN_FILE_TOO_BIG = "Can't create pastebin. Text is bigger than 512 KB";
+export const PASTEBIN_FILE_TOO_BIG = "Can't create pastebin. Text is bigger than 5 MB";
 
 /**
  *
@@ -11,20 +11,21 @@ export const PASTEBIN_FILE_TOO_BIG = "Can't create pastebin. Text is bigger than
  * @returns {Promise<String>} URL
  */
 export async function makeRequest(text) {
-  if (sizeInBytes(text) >= 512) {
+  if (sizeInBytes(text) >= 1024 * 1024 * 5) {
     return PASTEBIN_FILE_TOO_BIG;
   }
 
-  const { body } = await got.post('http://hastebin.com/documents', {
+  const { body } = await got.post('https://polarite.teknologiumum.com/', {
     body: text,
     headers: {
       ...defaultHeaders,
       'Content-Type': 'text/plain',
+      Authorization: 'Teknologi Umum <teknologi.umum@gmail.com>',
     },
-    responseType: 'json',
+    responseType: 'text',
   });
 
-  return `https://hastebin.com/${body.key}`;
+  return body;
 }
 
 /**
@@ -81,5 +82,10 @@ async function pastebin(context) {
 export function register(bot) {
   bot.command('pastebin', pastebin);
 
-  return [];
+  return [
+    {
+      command: 'pastebin',
+      description: 'Put your paste into Polarite',
+    },
+  ];
 }
