@@ -12,7 +12,7 @@ import { logger } from '#utils/logtail.js';
  * @returns {Promise<void>}
  */
 async function covid(context, cache) {
-  const redis = redisClient(cache);
+  const redis = new redisClient(cache);
   const chatId = context.message.chat.id;
   const country = getCommandArgs('covid', context);
 

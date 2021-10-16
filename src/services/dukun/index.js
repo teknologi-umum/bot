@@ -44,7 +44,7 @@ async function dukun(context, mongo, cache) {
     return;
   }
 
-  const redis = redisClient(cache);
+  const redis = new redisClient(cache);
   const argument = getCommandArgs('dukun', context);
 
   const Dukun = mongo.model('Dukun', dukunSchema, 'dukun');
@@ -209,7 +209,7 @@ async function dukun(context, mongo, cache) {
  * @returns {Promise<void>}
  */
 async function fetchUpstream(dukunModel, redis, updatedData) {
-  const allDukun = await dukunModel.find({});
+  const allDukun = await dukunModel.find({ $sort: { points: -1 } });
   await redis.MSET('dukun:all', JSON.stringify(allDukun));
   if (updatedData.master) {
     await redis.MSET('dukun:master:points', updatedData.points);

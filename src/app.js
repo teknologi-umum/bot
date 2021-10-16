@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import redis from 'redis';
 
-import { sentry, terminal } from './utils/logger.js';
+import { sentry, terminal } from './utils/logger.js/index.js.js';
 import { pathTo } from './utils/path.js';
 
 import * as poll from './services/poll/index.js';

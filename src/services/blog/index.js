@@ -13,7 +13,7 @@ const WHITELIST = ['javascript', 'php', 'go', 'c', 'typescript', 'python'];
  * @returns {Promise<void>}
  */
 async function devRead(context, cache) {
-  const redis = redisClient(cache);
+  const redis = new redisClient(cache);
 
   const query = getCommandArgs('devread', context);
 

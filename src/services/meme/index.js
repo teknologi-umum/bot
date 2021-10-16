@@ -12,7 +12,7 @@ import { logger } from '#utils/logtail.js';
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, cache) {
-  const redis = redisClient(cache);
+  const redis = new redisClient(cache);
 
   bot.command('kktbsys', async (context) => {
     const bigGroup = await isBigGroup(context);
