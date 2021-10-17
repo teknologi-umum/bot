@@ -1,10 +1,10 @@
 import got from 'got';
-import { renderTemplate } from '../../utils/template.js';
-import redisClient from '../../utils/redis.js';
-import { getCommandArgs } from '../../utils/command.js';
-import { defaultHeaders } from '../../utils/http.js';
-import { Temporal } from '../../utils/temporal.js';
-import { logger } from '#utils/logtail.js';
+import { renderTemplate } from '#utils/template.js';
+import redisClient from '#utils/redis.js';
+import { getCommandArgs } from '#utils/command.js';
+import { defaultHeaders } from '#utils/http.js';
+import { Temporal } from '#utils/temporal.js';
+import { logger } from '#utils/logger/logtail.js';
 
 /**
  * Send covid information.

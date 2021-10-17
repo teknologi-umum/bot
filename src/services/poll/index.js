@@ -1,7 +1,7 @@
-import { logger } from '#utils/logtail.js';
-import { isHomeGroup } from '../../utils/home.js';
-import redisClient from '../../utils/redis.js';
-import { Temporal } from '../../utils/temporal.js';
+import { logger } from '#utils/logger/logtail.js';
+import { isHomeGroup } from '#utils/home.js';
+import redisClient from '#utils/redis.js';
+import { Temporal } from '#utils/temporal.js';
 
 /**
  * Process poll created by user to not
@@ -15,14 +15,11 @@ export async function poll(context, cache, poll, pollID) {
   const redis = redisClient(cache);
   const currentTime = new Temporal(new Date());
 
-  const [getLastMessageContent, lastPinnedMessage, lastPollDate] = await redis.MGET(
-    `poll:${String(context.message.chat.id)}:message:content`,
-    `poll:${String(context.message.chat.id)}:message:id`,
-    `poll:${String(context.message.chat.id)}:date`,
-  );
-  let lastMessageContent = JSON.parse(getLastMessageContent);
+  const { content, id, date } = await redis.HGETALL(`poll:${String(context.message.chat.id)}`);
 
-  if (!lastMessageContent || !currentTime.compare(new Date(lastPollDate), 'day')) {
+  let lastMessageContent = JSON.parse(content);
+
+  if (!lastMessageContent || !currentTime.compare(new Date(date), 'day')) {
     lastMessageContent = { survey: [], quiz: [] };
   }
 
@@ -42,15 +39,15 @@ export async function poll(context, cache, poll, pollID) {
     `Survey\n` +
     `${lastMessageContent.survey.map((i) => `<a href="${chatLink}/${i.id}">${i.text}</a>`).join('\n')}\n`;
 
-  if (lastPollDate && currentTime.compare(new Date(lastPollDate), 'day')) {
+  if (date && currentTime.compare(new Date(date), 'day')) {
     // append to existing message
-    await context.telegram.editMessageText(context.message.chat.id, Number(lastPinnedMessage), '', preformatMessage, {
+    await context.telegram.editMessageText(context.message.chat.id, Number(id), '', preformatMessage, {
       parse_mode: 'HTML',
       disable_web_page_preview: true,
     });
-    await redis.MSET(`poll:${String(context.message.chat.id)}:message:content`, JSON.stringify(lastMessageContent));
+    await redis.HSET(`poll:${String(context.message.chat.id)}`, 'content', JSON.stringify(lastMessageContent));
     await logger.fromContext(context, 'poll', {
-      actions: `Edited a message: ${Number(lastPinnedMessage)}`,
+      actions: `Edited a message: ${Number(id)}`,
       sendText: preformatMessage,
     });
     return;
@@ -66,12 +63,13 @@ export async function poll(context, cache, poll, pollID) {
     sendText: preformatMessage,
   });
 
-  await redis.MSET(
-    `poll:${String(context.message.chat.id)}:message:id`,
+  await redis.HSET(
+    `poll:${String(context.message.chat.id)}`,
+    'id',
     String(response.message_id),
-    `poll:${String(context.message.chat.id)}:message:content`,
+    'content',
     JSON.stringify(lastMessageContent),
-    `poll:${String(context.message.chat.id)}:date`,
+    'date',
     currentTime.date.toISOString(),
   );
   await context.telegram.pinChatMessage(context.message.chat.id, response.message_id, {

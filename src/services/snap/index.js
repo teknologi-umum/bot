@@ -1,5 +1,5 @@
 import { getCommandArgs } from '#utils/command.js';
-import { logger } from '#utils/logtail.js';
+import { logger } from '#utils/logger/logtail.js';
 import { makeRequest, PASTEBIN_FILE_TOO_BIG } from '../pastebin/index.js';
 import { ERR_INVALID_LANGUAGE, generateImage } from './utils.js';
 

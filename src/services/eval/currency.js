@@ -1,5 +1,5 @@
 import got from 'got';
-import { SingleValueCache } from '../../utils/cache.js';
+import { SingleValueCache } from '#utils/cache.js';
 
 // cache TTL: 10 minutes
 const cacheTtl = 10 * 60 * 1000;

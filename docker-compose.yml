@@ -1,7 +1,9 @@
 services:
   redis:
-    image: redis:6.2.5-alpine
-    network_mode: host
+    image: redis:6.2.6-alpine
+    restart: always
+    ports:
+      - 6379:6379
   mongo:
     image: mongo:4.4.8-focal
     restart: always

@@ -20,7 +20,9 @@ Pada dokumen ini, kamu akan menemukan cara menggunakan Teknologi Umum Bot. Comma
 - 🛩📬 [`/joke`](#-joke)
 - 🛩📬 [`/quote`](#-quote)
 - 🛩📬 [`/yntkts`](#-yntkts)
-- 🚧🌏📬 [`/laodeai`](#-laodeai)
+- 🛩📬 [`/hilih`](#-hilih)
+- 🌏📬 [`/laodeai`](#-laodeai)
+- 🚧🌏📬 [`/pastebin`](#-pastebin)
 
 Legends:
 
@@ -157,12 +159,26 @@ Hanya tersedia di grup kurang dari 500 orang dan pesan privat.
 
 - `/yntkts`
 
-## `/laodeai`
+## `/hilih`
 
-🚧 FITUR INI EKSPERIMENTAL
+Mengirimkan meme Chef Arnold Poernomo, "hilih".
+
+Hanya tersedia di grup kurang dari 500 orang dan pesan privat.
+
+- `/hilih`
+
+## `/laodeai`
 
 Mengirimkan jawaban dari masalahmu.
 
 - `/laodeai <query>`
 
 <img src="../.github/images/laodeai.jpg" width="300px" />
+
+## `/pastebin`
+
+🚧 FITUR INI EKSPERIMENTAL
+
+Mengubah pastemu ke Polarite (Pastebin milik kami). Cara kerja serupa dengan `/snap`.
+
+- `/pastebin`
