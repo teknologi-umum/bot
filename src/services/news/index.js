@@ -1,4 +1,4 @@
-import { renderTemplate } from '../../utils/template.js';
+import { renderTemplate } from '#utils/template.js';
 import got from 'got';
 import { SingleValueCache } from '#utils/cache.js';
 
