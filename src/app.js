@@ -25,7 +25,6 @@ import * as laodeai from './services/laodeai/index.js';
 import * as analytics from './services/analytics/index.js';
 import * as pastebin from './services/pastebin/index.js';
 import * as news from './services/news/index.js';
-import { logger } from '#utils/logtail.js';
 
 dotenv.config({ path: pathTo(import.meta.url, '../.env') });
 
