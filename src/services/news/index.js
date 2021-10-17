@@ -15,17 +15,18 @@ const cache = new SingleValueCache(cacheTtl);
  */
 async function news(context) {
   const { newsList, statusCode } = await cache.getOrCreate(async () => {
-    const { body } = await got.get('https://berita-indo-api.vercel.app/v1/cnn-news', {
+    const { body, statusCode } = await got.get('https://berita-indo-api.vercel.app/v1/cnn-news', {
       responseType: 'json',
       throwHttpErrors: false,
     });
     return {
       newsList: body.data.slice(0, 15).map(({ title, link, contentSnippet }) => ({ title, link, contentSnippet })),
-      statusCode: body.code,
+      statusCode,
     };
   });
 
-  if (statusCode !== 200) return context.telegram.sendMessage(context.message.chat.id, 'Gagal mendapatkan berita');
+  if (statusCode !== 200)
+    return await context.telegram.sendMessage(context.message.chat.id, 'Gagal mendapatkan berita');
 
   context.telegram.sendMessage(
     context.message.chat.id,
