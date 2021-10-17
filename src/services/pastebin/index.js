@@ -15,7 +15,7 @@ export async function makeRequest(text) {
     return PASTEBIN_FILE_TOO_BIG;
   }
 
-  const { body } = await got.post('https://polarite.teknologiumum.com/', {
+  const { body } = await got.post('https://teknologi-umum-polarite.fly.dev/', {
     body: text,
     headers: {
       ...defaultHeaders,

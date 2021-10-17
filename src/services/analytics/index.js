@@ -38,11 +38,11 @@ const analyticsSchema = new mongoose.Schema(
 export function register(bot, mongo) {
   bot.on('my_chat_member', async (context) => {
     const Analytics = mongo.model('Analytics', analyticsSchema, 'analytics');
-    const { chat, from, new_chat_member } = context.myChatMember;
+    const { chat, from, new_chat_member: newChatMember } = context.myChatMember;
     if (chat.type === 'private') return;
 
-    const chatMembers = new_chat_member.status !== 'kicked' ? await context.getChatMembersCount(chat.id) : 0;
-    const chatAdministrators = new_chat_member.status !== 'kicked' ? await context.getChatAdministrators(chat.id) : [];
+    const chatMembers = newChatMember.status !== 'kicked' ? await context.getChatMembersCount(chat.id) : 0;
+    const chatAdministrators = newChatMember.status !== 'kicked' ? await context.getChatAdministrators(chat.id) : [];
     await Analytics.findOneAndUpdate(
       { groupID: chat.id },
       {
@@ -64,7 +64,7 @@ export function register(bot, mongo) {
             isBot: from.is_bot,
           },
           membersCount: chatMembers,
-          status: new_chat_member.status,
+          status: newChatMember.status,
         },
         $setOnInsert: {
           groupID: String(chat.id),
@@ -73,7 +73,7 @@ export function register(bot, mongo) {
       },
       { upsert: true, new: true },
     );
-    await logger.fromContext(context, 'analytics', { actions: `I got updated to ${new_chat_member.status}` });
+    await logger.fromContext(context, 'analytics', { actions: `I got updated to ${newChatMember.status}` });
   });
 
   return [];
