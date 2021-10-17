@@ -1,3 +1,6 @@
+/**
+ * Provides default headers for a HTTP request
+ */
 export const defaultHeaders = {
   Accept: 'application/json,*/*',
   'User-Agent': 'Teknologi Umum <teknologi.umum@gmail.com>',

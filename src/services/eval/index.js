@@ -1,7 +1,7 @@
 import { safeEval } from './parser.js';
-import { getCommandArgs } from '../../utils/command.js';
 import { resolveCryptoCurrencies, resolveCurrencyRates, resolveStocks } from './superpowers.js';
-import { logger } from '#utils/logtail.js';
+import { getCommandArgs } from '#utils/command.js';
+import { logger } from '#utils/logger/logtail.js';
 
 /**
  *

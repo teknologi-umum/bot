@@ -1,9 +1,4 @@
 /**
- * @file loggly.js
- * @fileoverview Quick Loggly integration for Node.js, and yes it's written from scratch.
- */
-
-/**
  * @typedef {Object} FullConfig
  * @property {String} chatID
  * @property {String} userID
@@ -17,10 +12,6 @@
  */
 
 import { Logtail } from '@logtail/node';
-import dotenv from 'dotenv';
-import { pathTo } from './path.js';
-
-dotenv.config({ path: pathTo(import.meta.url, '../../.env') });
 
 export class Logger {
   /**

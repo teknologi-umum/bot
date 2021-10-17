@@ -20,7 +20,9 @@ In this document you will find how to use Teknologi Umum Bot. Its' commands and 
 - 🛩📬 [`/joke`](#-joke)
 - 🛩📬 [`/quote`](#-quote)
 - 🛩📬 [`/yntkts`](#-yntkts)
-- 🚧🌏📬 [`/laodeai`](#-laodeai)
+- 🛩📬 [`/hilih`](#-hilih)
+- 🌏📬 [`/laodeai`](#-laodeai)
+- 🚧🌏📬 [`/pastebin`](#-pastebin)
 
 Legends:
 
@@ -158,12 +160,26 @@ Only available in groups less than 500 members and private chats.
 
 - `/yntkts`
 
-## `/laodeai`
+## `/hilih`
 
-🚧 THIS FEATURE IS EXPERIMENTAL
+Sends you a Chef Arnold Poernomo's "hilih" meme.
+
+Only available in groups less than 500 members and private chats.
+
+- `/hilih`
+
+## `/laodeai`
 
 Sends you his (yes, it's a HE) own answer of your problem.
 
 - `/laodeai <query>`
 
 <img src="../.github/images/laodeai.jpg" width="300px" />
+
+## `/pastebin`
+
+🚧 THIS FEATURE IS EXPERIMENTAL
+
+Put your paste into Polarite (our own Pastebin). Works similar with how `/snap` works.
+
+- `/pastebin`

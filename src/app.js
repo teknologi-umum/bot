@@ -4,8 +4,10 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import redis from 'redis';
 
-import { sentry, terminal } from './utils/logger.js';
-import { pathTo } from './utils/path.js';
+import { sentry } from '#utils/logger/sentry.js';
+import { terminal } from '#utils/logger/terminal.js';
+import { logger } from '#utils/logger/logtail.js';
+import { pathTo } from '#utils/path.js';
 
 import * as poll from './services/poll/index.js';
 import * as meme from './services/meme/index.js';
@@ -22,7 +24,6 @@ import * as dukun from './services/dukun/index.js';
 import * as laodeai from './services/laodeai/index.js';
 import * as analytics from './services/analytics/index.js';
 import * as pastebin from './services/pastebin/index.js';
-import { logger } from '#utils/logtail.js';
 
 dotenv.config({ path: pathTo(import.meta.url, '../.env') });
 
@@ -99,8 +100,13 @@ async function main() {
 main();
 
 function terminate(caller) {
+  const t = Date.now();
+  mongo.close((err) => {
+    err && terminal.error(err);
+  });
   cache.QUIT();
-  return bot.stop(caller);
+  bot.stop(caller);
+  terminal.info(`${caller}: ${Date.now() - t}ms`);
 }
 
 // Enable graceful stop
