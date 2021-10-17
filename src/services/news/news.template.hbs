@@ -1,0 +1,9 @@
+{{#expect data}}
+
+Berita terbaru hari ini: \n\n
+
+{{#each data as _, idx}}
+
+{{idx + 1}}. <a href="{{{data[idx].link}}}">{{{data[idx].title}}}</a>\n
+{{{data[idx].contentSnippet}}}\n\n
+{{/each}}
