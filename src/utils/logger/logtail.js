@@ -12,10 +12,6 @@
  */
 
 import { Logtail } from '@logtail/node';
-import dotenv from 'dotenv';
-import { pathTo } from '../path.js';
-
-dotenv.config({ path: pathTo(import.meta.url, '../../.env') });
 
 export class Logger {
   /**
