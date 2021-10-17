@@ -50,7 +50,7 @@ async function main() {
     laodeai.register(bot),
     analytics.register(bot, mongo),
     pastebin.register(bot),
-    news.register(bot, cache),
+    news.register(bot),
   ]
     .filter((v) => Array.isArray(v))
     .flat();
