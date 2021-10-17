@@ -24,7 +24,7 @@ async function news(context, cache) {
   });
 
   if (cachedResult.code !== 200) {
-    throw 'Gagal mendapatkan berita';
+    context.telegram.sendMessage(context.message.chat.id, 'Gagal mendapatkan berita');
   }
 
   context.telegram.sendMessage(
