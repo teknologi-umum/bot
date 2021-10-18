@@ -1,0 +1,10 @@
+{{#expect newsList}}
+
+Berita terbaru hari ini: \n\n
+
+{{#each newsList as news, idx}}
+
+{{idx + 1}}. <a href="{{{news.link}}}">{{{news.title}}}</a>\n
+{{{news.contentSnippet}}}\n\n
+
+{{/each}}
