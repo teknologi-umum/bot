@@ -11,7 +11,7 @@ export function caniuse($) {
     .map((el) => {
       const name = $(el).find('.browser-heading').text();
       const status = $(el).find('ol > li').last().text().trim();
-      const symbol = status.includes('not') ? '❌ ' : status.match('partial') ? '🚧 ' : '✅ ';
+      const symbol = status.includes('Not') ? '❌ ' : status.match('Partial') ? '🚧 ' : '✅ ';
       return { name: symbol + name, status };
     });
 
