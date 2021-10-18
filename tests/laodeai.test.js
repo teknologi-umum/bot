@@ -15,6 +15,7 @@ import { urbandictionary } from '../src/services/laodeai/handlers/urbandictionar
 import { bonappetit } from '#services/laodeai/handlers/bonappetit.js';
 import { cookingNytimes } from '#services/laodeai/handlers/cooking_nytimes.js';
 import { zeroclick } from '#services/laodeai/handlers/zeroclick.js';
+import { caniuse } from '#services/laodeai/handlers/caniuse.js';
 
 const readFile = (path) => readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), path), { encoding: 'utf-8' });
 
@@ -215,6 +216,22 @@ test('should be able to parse zeroclick output', () => {
 test('should return error on empty zeroclick html', () => {
   const html = cheerio.load('<body></body>');
   const output = zeroclick(html);
+
+  assert.equal(output, { type: 'error', content: '' });
+});
+
+test('should be able to parse caniuse output', () => {
+  const file = readFile('./laodeai_fixture/caniuse.html');
+  const html = cheerio.load(file);
+  const output = caniuse(html);
+
+  assert.equal(output.type, 'text');
+  assert.equal(output.content, readFile('./laodeai_snapshot/caniuse'));
+});
+
+test('should return error on empty caniuse html', () => {
+  const html = cheerio.load('<body></body>');
+  const output = caniuse(html);
 
   assert.equal(output, { type: 'error', content: '' });
 });

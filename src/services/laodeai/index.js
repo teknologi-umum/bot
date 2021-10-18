@@ -17,6 +17,7 @@ import { knowyourmeme } from './handlers/knowyourmeme.js';
 import { urbandictionary } from './handlers/urbandictionary.js';
 import { bonappetit } from './handlers/bonappetit.js';
 import { cookingNytimes } from './handlers/cooking_nytimes.js';
+import { caniuse } from './handlers/caniuse.js';
 import { zeroclick } from './handlers/zeroclick.js';
 
 // list of handlers, also used to filter valid sites
@@ -70,6 +71,7 @@ const VALID_SOURCES = {
   'urbandictionary.com': urbandictionary,
   'bonappetit.com': bonappetit,
   'cooking.nytimes.com': cookingNytimes,
+  'caniuse.com': caniuse,
 };
 
 /**
@@ -99,9 +101,10 @@ async function sendImage(result, context) {
  * @returns
  */
 async function sendText(result, context, trim) {
+  const limit = 800;
   let content = sanitize(result.content);
-  if (trim && content.length > 500) {
-    content = `${trimHtml(500, content)}...\n\nSee more on: ${result.url}`;
+  if (trim && content.length > limit) {
+    content = `${trimHtml(limit, content)}...\n\nSee more on: ${result.url}`;
   }
 
   // no await, see https://eslint.org/docs/rules/no-return-await

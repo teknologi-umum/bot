@@ -1,0 +1,6 @@
+{{#expect browsers}}
+Result from caniuse.com:\n
+
+{{#each browsers as browser}}
+<b>{{browser.name}}</b> - {{browser.status}}
+{{/each}}
