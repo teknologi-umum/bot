@@ -25,10 +25,12 @@ async function news(context) {
     };
   });
 
-  if (statusCode !== 200)
-    return await context.telegram.sendMessage(context.message.chat.id, 'Gagal mendapatkan berita');
+  if (statusCode !== 200) {
+    await context.telegram.sendMessage(context.message.chat.id, 'Gagal mendapatkan berita');
+    return;
+  }
 
-  context.telegram.sendMessage(
+  await context.telegram.sendMessage(
     context.message.chat.id,
     renderTemplate('news/news.template.hbs', {
       newsList,
