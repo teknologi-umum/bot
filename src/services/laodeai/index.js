@@ -143,14 +143,6 @@ async function laodeai(context) {
   }
 
   const $ = cheerio.load(ddgBody);
-
-  // prioritise zero click result
-  const zcResult = zeroclick($);
-  if (zcResult.content) {
-    await sendText(zcResult, context, false);
-    return;
-  }
-
   const sources = $('.web-result').get();
   if (sources.length <= 1 && $(sources[0]).find('.no-results').get()) {
     await sendError(context);
@@ -170,6 +162,13 @@ async function laodeai(context) {
 
   const result = await goThroughURLs(validSources);
   if (!result) {
+    // fallback to zeroclick
+    const zcResult = zeroclick($);
+    if (zcResult.content) {
+      await sendText(zcResult, context, false);
+      return;
+    }
+
     await sendError(context);
     return;
   }
