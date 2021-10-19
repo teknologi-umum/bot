@@ -8,7 +8,7 @@ What can this bot do? Well, _bleeding edge_ stuffs! You'll find everything when 
 
 Feel free to contribute and add some _bleeding edge_ features.
 
-## I'm here for Hacktoberfest, what can I do?
+# I'm here for Hacktoberfest, what can I do?
 
 If you're new to open source, we really recommend reading a few articles about contributing to open source projects:
 
@@ -20,7 +20,7 @@ You can start by reading our [contribution](https://github.com/teknologi-umum/bo
 
 Have fun!
 
-## Can I invite the bot to my group?
+# Can I invite the bot to my group?
 
 Absolutely! Here's how:
 
@@ -30,7 +30,7 @@ Absolutely! Here's how:
 4. Once he's inside, please made him an admin. If you didn't do this, the bot is pretty much useless. It can't read or send any message.
 5. Spread the good news!
 
-## I want to contribute, what can I do?
+# I want to contribute, what can I do?
 
 You can do anything! Fix bugs, add features, or browse [issues page](https://github.com/teknologi-umum/bot/issues) to see if there's something you can solve and work on.
 
@@ -44,7 +44,7 @@ Do you need all the knowledge of using Redis and MongoDB? Absolutely not! If the
 
 See [CONTRIBUTING](./CONTRIBUTING.md) for more detailed instruction.
 
-## License
+# License
 
 ```
 TeknologiUmumBot is a bot to fulfill Teknologi Umum's telegram group needs.
@@ -66,6 +66,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 See full license [here](./LICENSE).
 
-## Privacy Policy
+# Privacy Policy
 
 See [PRIVACY_POLICY](./docs/PRIVACY_POLICY.md).
