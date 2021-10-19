@@ -1,19 +1,22 @@
-Result from caniuse.com:
+Result of <b>CSS Grid Layout (level 1)</b> from caniuse.com:
 
-<b>🚧 IE</b> - 11: Partial support
-<b>✅ Edge</b> - 94: Supported
-<b>✅ Firefox</b> - 94 - 95: Supported
-<b>✅ Chrome</b> - 95 - 97: Supported
-<b>✅ Safari</b> - TP: Supported
-<b>✅ Opera</b> - 80: Supported
-<b>✅ Safari on iOS</b> - 15: Supported
-<b>❌ Opera Mini</b> - all: Not supported
-<b>✅ Android Browser</b> - 94: Supported
-<b>✅ Opera Mobile</b> - 64: Supported
-<b>✅ Chrome for Android</b> - 94: Supported
-<b>✅ Firefox for Android</b> - 92: Supported
-<b>✅ UC Browser for Android</b> - 12.12: Supported
-<b>✅ Samsung Internet</b> - 15.0: Supported
-<b>✅ QQ Browser</b> - 10.4: Supported
-<b>❌ Baidu Browser</b> - 7.12: Not supported
-<b>✅ KaiOS Browser</b> - 2.5: Supported
+Method of using a grid concept to lay out content, providing a mechanism for authors to divide available space for layout into columns and rows using a set of predictable sizing behaviors. Includes support for all grid-* properties and the fr unit.
+
+<b>Global usage</b>: 96.16%
+<b>🚧 IE</b> v 11: Partial support
+<b>✅ Edge</b> v 94: Supported
+<b>✅ Firefox</b> v 94 - 95: Supported
+<b>✅ Chrome</b> v 95 - 97: Supported
+<b>✅ Safari</b> v TP: Supported
+<b>✅ Opera</b> v 80: Supported
+<b>✅ Safari on iOS</b> v 15: Supported
+<b>❌ Opera Mini</b> v all: Not supported
+<b>✅ Android Browser</b> v 94: Supported
+<b>✅ Opera Mobile</b> v 64: Supported
+<b>✅ Chrome for Android</b> v 94: Supported
+<b>✅ Firefox for Android</b> v 92: Supported
+<b>✅ UC Browser for Android</b> v 12.12: Supported
+<b>✅ Samsung Internet</b> v 15.0: Supported
+<b>✅ QQ Browser</b> v 10.4: Supported
+<b>❌ Baidu Browser</b> v 7.12: Not supported
+<b>✅ KaiOS Browser</b> v 2.5: Supported
