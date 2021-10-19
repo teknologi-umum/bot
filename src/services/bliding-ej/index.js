@@ -26,6 +26,7 @@ async function define(context) {
         `<a href="https://english.stackexchange.com/a/39919">English Stackexchange</a>`,
       { parse_mode: 'HTML', disable_web_page_preview: true },
     );
+    await logger.fromContext(context, 'blidingej');
     return;
   }
 

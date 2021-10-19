@@ -15,12 +15,23 @@ export async function poll(context, cache, poll, pollID) {
   const redis = redisClient(cache);
   const currentTime = new Temporal(new Date());
 
-  const { content, id, date } = await redis.HGETALL(`poll:${String(context.message.chat.id)}`);
+  // If this is empty, this could be a null value. So this can't be directly destructured.
+  const pollByGroup = await redis.HGETALL(`poll:${String(context.message.chat.id)}`);
 
-  let lastMessageContent = JSON.parse(content);
+  /** @type {{ survey: Array<{id: String, text: String}>, quiz: Array<{id: String, text: String}>}} lastMessageContent */
+  let lastMessageContent;
 
-  if (!lastMessageContent || !currentTime.compare(new Date(date), 'day')) {
+  // Check if pollByGroup is null or not
+  if (!pollByGroup) {
     lastMessageContent = { survey: [], quiz: [] };
+  } else {
+    const { content, date } = pollByGroup;
+
+    lastMessageContent = JSON.parse(content);
+
+    if (!lastMessageContent || !currentTime.compare(new Date(date), 'day')) {
+      lastMessageContent = { survey: [], quiz: [] };
+    }
   }
 
   if (poll.type === 'regular') {
@@ -39,17 +50,19 @@ export async function poll(context, cache, poll, pollID) {
     `Survey\n` +
     `${lastMessageContent.survey.map((i) => `<a href="${chatLink}/${i.id}">${i.text}</a>`).join('\n')}\n`;
 
-  if (date && currentTime.compare(new Date(date), 'day')) {
+  if (pollByGroup?.date && currentTime.compare(new Date(pollByGroup.date), 'day')) {
     // append to existing message
-    await context.telegram.editMessageText(context.message.chat.id, Number(id), '', preformatMessage, {
-      parse_mode: 'HTML',
-      disable_web_page_preview: true,
-    });
-    await redis.HSET(`poll:${String(context.message.chat.id)}`, 'content', JSON.stringify(lastMessageContent));
-    await logger.fromContext(context, 'poll', {
-      actions: `Edited a message: ${Number(id)}`,
-      sendText: preformatMessage,
-    });
+    await Promise.allSettled([
+      context.telegram.editMessageText(context.message.chat.id, Number(pollByGroup.id), '', preformatMessage, {
+        parse_mode: 'HTML',
+        disable_web_page_preview: true,
+      }),
+      redis.HSET(`poll:${String(context.message.chat.id)}`, 'content', JSON.stringify(lastMessageContent)),
+      logger.fromContext(context, 'poll', {
+        actions: `Edited a message: ${Number(pollByGroup.id)}`,
+        sendText: preformatMessage,
+      }),
+    ]);
     return;
   }
 
@@ -58,23 +71,26 @@ export async function poll(context, cache, poll, pollID) {
     parse_mode: 'HTML',
     disable_web_page_preview: true,
   });
-  await logger.fromContext(context, 'poll', {
-    actions: `Message sent: ${response.message_id}`,
-    sendText: preformatMessage,
-  });
 
-  await redis.HSET(
-    `poll:${String(context.message.chat.id)}`,
-    'id',
-    String(response.message_id),
-    'content',
-    JSON.stringify(lastMessageContent),
-    'date',
-    currentTime.date.toISOString(),
-  );
-  await context.telegram.pinChatMessage(context.message.chat.id, response.message_id, {
-    disable_notification: false,
-  });
+  await Promise.allSettled([
+    logger.fromContext(context, 'poll', {
+      actions: `Message sent: ${response.message_id}`,
+      sendText: preformatMessage,
+    }),
+    redis.HSET(
+      `poll:${String(context.message.chat.id)}`,
+      'id',
+      String(response.message_id),
+      'content',
+      JSON.stringify(lastMessageContent),
+      'date',
+      currentTime.date.toISOString(),
+    ),
+    context.telegram.pinChatMessage(context.message.chat.id, response.message_id, {
+      disable_notification: false,
+    }),
+  ]);
+
   await logger.fromContext(context, 'poll', { actions: 'Pinned a message' });
 }
 

@@ -48,9 +48,9 @@ async function quiz(context, mongo, cache) {
   const Poll = mongo.model('Poll', pollSchema, 'quiz');
 
   // Check if today's quiz is already posted.
-  const { date } = await redis.HGETALL(`quiz:${String(chatID)}`);
+  const quizByChatID = await redis.HGETALL(`quiz:${String(chatID)}`);
 
-  if (date && currentTime.compare(new Date(date), 'day')) {
+  if (quizByChatID && currentTime.compare(new Date(quizByChatID.date), 'day')) {
     context.telegram.sendMessage(
       chatID,
       `You can't request another new quiz for today. Wait for tomorrow, then ask a new one &#x1F61A`,
