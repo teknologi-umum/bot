@@ -1,6 +1,9 @@
-{{#expect browsers}}
-Result from caniuse.com:\n
+{{#expect title, description, global, browsers}}
+Result of <b>{{title}}</b> from caniuse.com:\n\n
 
+{{description}}
+
+<b>Global usage</b>: {{global}}
 {{#each browsers as browser}}
-<b>{{browser.name}}</b> - {{browser.status}}
+<b>{{browser.name}}</b> v {{browser.status}}
 {{/each}}

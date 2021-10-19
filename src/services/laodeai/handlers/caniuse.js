@@ -6,7 +6,18 @@ import { renderTemplate } from '#utils/template.js';
  * @returns {{ type: 'text' | 'error', content: String}}
  */
 export function caniuse($) {
-  const browsers = $('.support-list')
+  const content = $('main .feature-block');
+  const title = $(content).find('.feature-heading .feature-title').text().trim();
+  const description = $(content)
+    .find('.feature-description')
+    .text()
+    .split('\n')
+    .map((i) => i.trim())
+    .join(' ')
+    .trim();
+  const global = $(content).find('.usage-container .support-stats .total').text();
+  const browsers = $(content)
+    .find('.support-list')
     .get()
     .map((el) => {
       const name = $(el).find('.browser-heading').text();
@@ -16,7 +27,7 @@ export function caniuse($) {
     });
 
   if (browsers.length > 0) {
-    const content = renderTemplate('./laodeai/handlers/caniuse.template.hbs', { browsers });
+    const content = renderTemplate('./laodeai/handlers/caniuse.template.hbs', { title, description, global, browsers });
 
     return {
       type: 'text',
