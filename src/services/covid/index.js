@@ -109,11 +109,14 @@ async function covid(context, cache) {
   });
 
   // TODO: Total dosis vaksin dunia & total dosis vaksin Indonesia
-  await context.telegram.sendMessage(chatId, preformatMessage, {
-    parse_mode: 'HTML',
+  await Promise.allSettled([
+    context.telegram.sendMessage(chatId, preformatMessage, {
+      parse_mode: 'HTML',
+    }),
+    redis.SETEX('covid:global', 60 * 60 * 6, preformatMessage),
+  ]).then(async () => {
+    await logger.fromContext(context, 'covid', { sendText: preformatMessage });
   });
-  await redis.SETEX('covid:global', 60 * 60 * 6, preformatMessage);
-  await logger.fromContext(context, 'covid', { sendText: preformatMessage });
 }
 
 /**

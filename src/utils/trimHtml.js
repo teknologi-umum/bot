@@ -4,7 +4,7 @@ import * as cheerio from 'cheerio';
  * Find closest number, higher than needle, from an array
  * @param {number} needle
  * @param {number[]} haystack
- * @returns number
+ * @returns {number}
  */
 const closest = (needle, haystack) => {
   const validCandidates = haystack.filter((x) => x > needle);
@@ -23,7 +23,7 @@ const closest = (needle, haystack) => {
  * Trim HTML according to tag
  * @param {number} max
  * @param {string} content
- * @returns string
+ * @returns {string}
  */
 export const trimHtml = (max, content) => {
   // add wrapper div for cheerio.children selector to work
