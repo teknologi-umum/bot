@@ -33,19 +33,19 @@
     "esprima": "^4.0.1",
     "got": "^11.8.2",
     "kleur": "^4.1.4",
-    "mongoose": "^6.0.4",
+    "mongoose": "^6.0.12",
     "redis": "^3.1.2",
     "sanitize-html": "^2.5.2",
     "telegraf": "^4.4.2",
-    "tempura": "^0.3.2"
+    "tempura": "^0.4.0"
   },
   "devDependencies": {
     "c8": "^7.10.0",
-    "eslint": "^8.0.1",
+    "eslint": "^8.1.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "husky": "^7.0.2",
-    "nodemon": "^2.0.13",
+    "husky": "^7.0.4",
+    "nodemon": "^2.0.14",
     "prettier": "^2.4.1",
     "uvu": "^0.5.2"
   },
