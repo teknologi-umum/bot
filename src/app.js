@@ -1,32 +1,32 @@
-import { memoryUsage } from 'process';
-import { Telegraf } from 'telegraf';
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
-import redis from 'redis';
+import { memoryUsage } from "process";
+import { Telegraf } from "telegraf";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import redis from "redis";
 
-import { sentry } from '#utils/logger/sentry.js';
-import { terminal } from '#utils/logger/terminal.js';
-import { logger } from '#utils/logger/logtail.js';
-import { pathTo } from '#utils/path.js';
+import { sentry } from "#utils/logger/sentry.js";
+import { terminal } from "#utils/logger/terminal.js";
+import { logger } from "#utils/logger/logtail.js";
+import { pathTo } from "#utils/path.js";
 
-import * as poll from './services/poll/index.js';
-import * as meme from './services/meme/index.js';
-import * as help from './services/help/index.js';
-import * as quote from './services/quote/index.js';
-import * as covid from './services/covid/index.js';
-import * as snap from './services/snap/index.js';
-import * as blidingej from './services/bliding-ej/index.js';
-import * as evalBot from './services/eval/index.js';
-import * as blog from './services/blog/index.js';
-import * as quiz from './services/quiz/index.js';
-import * as search from './services/search/index.js';
-import * as dukun from './services/dukun/index.js';
-import * as laodeai from './services/laodeai/index.js';
-import * as analytics from './services/analytics/index.js';
-import * as pastebin from './services/pastebin/index.js';
-import * as news from './services/news/index.js';
+import * as poll from "./services/poll/index.js";
+import * as meme from "./services/meme/index.js";
+import * as help from "./services/help/index.js";
+import * as quote from "./services/quote/index.js";
+import * as covid from "./services/covid/index.js";
+import * as snap from "./services/snap/index.js";
+import * as blidingej from "./services/bliding-ej/index.js";
+import * as evalBot from "./services/eval/index.js";
+import * as blog from "./services/blog/index.js";
+import * as quiz from "./services/quiz/index.js";
+import * as search from "./services/search/index.js";
+import * as dukun from "./services/dukun/index.js";
+import * as laodeai from "./services/laodeai/index.js";
+import * as analytics from "./services/analytics/index.js";
+import * as pastebin from "./services/pastebin/index.js";
+import * as news from "./services/news/index.js";
 
-dotenv.config({ path: pathTo(import.meta.url, '../.env') });
+dotenv.config({ path: pathTo(import.meta.url, "../.env") });
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const cache = redis.createClient(String(process.env.REDIS_URL));
@@ -60,7 +60,7 @@ async function main() {
 
   bot.catch(async (error, context) => {
     sentry.captureException(error, (scope) => {
-      scope.setContext('chat', {
+      scope.setContext("chat", {
         chat_id: context.message.chat.id,
         chat_title: context.message.chat.title,
         chat_type: context.message.chat.type,
@@ -68,7 +68,7 @@ async function main() {
         text: context.message.text,
         update_type: context.updateType,
       });
-      scope.setContext('from', {
+      scope.setContext("from", {
         from_id: context.message.from.id,
         from_username: context.message.from.username,
         is_bot: context.message.from.is_bot,
@@ -81,9 +81,14 @@ async function main() {
       });
       return scope;
     });
-    if (process.env.NODE_ENV !== 'production') terminal.error(error);
-    await context.reply('Uh oh, something went wrong. Ask the devs to check their logs.');
-    await logger.log({ message: 'Uh oh, something went wrong. Ask the devs to check their logs.', command: 'error' });
+    if (process.env.NODE_ENV !== "production") terminal.error(error);
+    await context.reply(
+      "Uh oh, something went wrong. Ask the devs to check their logs."
+    );
+    await logger.log({
+      message: "Uh oh, something went wrong. Ask the devs to check their logs.",
+      command: "error",
+    });
   });
 
   // For more information about what this is, please refer to:
@@ -91,11 +96,11 @@ async function main() {
   terminal.log(
     `Heap total: ${memoryUsage().heapTotal / 1000000} MB. Heap used: ${
       memoryUsage().heapUsed / 1000000
-    } MB. Resident Set Size: ${memoryUsage().rss / 1000000} MB.`,
+    } MB. Resident Set Size: ${memoryUsage().rss / 1000000} MB.`
   );
 
-  await logger.log({ message: 'Launching bot..', command: 'launch' });
-  terminal.info('Launching bot..');
+  await logger.log({ message: "Launching bot..", command: "launch" });
+  terminal.info("Launching bot..");
   await bot.launch();
 }
 
@@ -112,5 +117,5 @@ function terminate(caller) {
 }
 
 // Enable graceful stop
-process.once('SIGINT', () => terminate('SIGINT'));
-process.once('SIGTERM', () => terminate('SIGTERM'));
+process.once("SIGINT", () => terminate("SIGINT"));
+process.once("SIGTERM", () => terminate("SIGTERM"));

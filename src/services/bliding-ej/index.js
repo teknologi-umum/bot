@@ -1,6 +1,6 @@
-import { getCommandArgs } from '#utils/command.js';
-import { isHomeGroup } from '#utils/home.js';
-import { logger } from '#utils/logger/logtail.js';
+import { getCommandArgs } from "#utils/command.js";
+import { isHomeGroup } from "#utils/home.js";
+import { logger } from "#utils/logger/logtail.js";
 
 /**
  * Defines bliding ej
@@ -11,9 +11,9 @@ async function define(context) {
   if (!isHomeGroup(context)) return;
 
   const chatId = context.message.chat.id;
-  const argument = getCommandArgs('blidingej', context);
+  const argument = getCommandArgs("blidingej", context);
 
-  if (argument.startsWith('indo') || argument.startsWith('id')) {
+  if (argument.startsWith("indo") || argument.startsWith("id")) {
     await context.telegram.sendMessage(
       chatId,
       `<b>Bliding ej</b> adalah istilah untuk <i>bleeding edge</i>.\n\n` +
@@ -24,9 +24,9 @@ async function define(context) {
         `Bacaan dan referensi lebih lanjut:\n` +
         `<a href="https://en.wikipedia.org/wiki/Bleeding_edge_technology">Wikipedia</a>\n` +
         `<a href="https://english.stackexchange.com/a/39919">English Stackexchange</a>`,
-      { parse_mode: 'HTML', disable_web_page_preview: true },
+      { parse_mode: "HTML", disable_web_page_preview: true }
     );
-    await logger.fromContext(context, 'blidingej');
+    await logger.fromContext(context, "blidingej");
     return;
   }
 
@@ -40,10 +40,10 @@ async function define(context) {
       `Further readings and references:\n` +
       `<a href="https://en.wikipedia.org/wiki/Bleeding_edge_technology">Wikipedia</a>\n` +
       `<a href="https://english.stackexchange.com/a/39919">English Stackexchange</a>`,
-    { parse_mode: 'HTML', disable_web_page_preview: true },
+    { parse_mode: "HTML", disable_web_page_preview: true }
   );
 
-  await logger.fromContext(context, 'blidingej');
+  await logger.fromContext(context, "blidingej");
 }
 
 /**
@@ -52,12 +52,12 @@ async function define(context) {
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot) {
-  bot.command('blidingej', define);
+  bot.command("blidingej", define);
 
   return [
     {
-      command: 'blidingej',
-      description: 'Define bliding ej',
+      command: "blidingej",
+      description: "Define bliding ej",
     },
   ];
 }

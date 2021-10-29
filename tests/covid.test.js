@@ -1,11 +1,11 @@
-import { test } from 'uvu';
-import * as assert from 'uvu/assert';
-import { renderTemplate } from '../src/utils/template.js';
+import { test } from "uvu";
+import * as assert from "uvu/assert";
+import { renderTemplate } from "../src/utils/template.js";
 
-test('should render data into country template', () => {
-  const result = renderTemplate('covid/country.template.hbs', {
-    date: '21 April 2010',
-    country: 'Indonesia',
+test("should render data into country template", () => {
+  const result = renderTemplate("covid/country.template.hbs", {
+    date: "21 April 2010",
+    country: "Indonesia",
     confirmed: 100,
     deaths: 90,
     recovered: 10,
@@ -24,13 +24,13 @@ Last Updated: <b><i>21 April 2010</i></b>
 Total confirmed: <b>100</b>
 Deaths: <b>90</b>
 Recovered: <b>10</b>
-Active: <b>1</b>`,
+Active: <b>1</b>`
   );
 });
 
-test('should render data into global template', () => {
-  const result = renderTemplate('covid/global.template.hbs', {
-    date: '20 April 2020',
+test("should render data into global template", () => {
+  const result = renderTemplate("covid/global.template.hbs", {
+    date: "20 April 2020",
     globalConfirmed: 1000,
     globalDeaths: 100,
     globalRecovered: 2000,
@@ -52,7 +52,7 @@ Global recovered: <b>2000</b>
 
 Indonesia confirmed: <b>1000</b>
 Indonesia deaths: <b>50</b>
-Indonesia recovered: <b>5</b>`,
+Indonesia recovered: <b>5</b>`
   );
 });
 

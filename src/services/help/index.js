@@ -1,4 +1,4 @@
-import { logger } from '#utils/logger/logtail.js';
+import { logger } from "#utils/logger/logtail.js";
 
 /**
  * Send help to user when needed.
@@ -14,10 +14,10 @@ async function help(context) {
       `I'm also an open source bot! If you want to add me into your group or have any feature request, ` +
       `please refer to the <a href="https://github.com/teknologi-umum/bot">Github repository</a>.`,
     {
-      parse_mode: 'HTML',
-    },
+      parse_mode: "HTML",
+    }
   );
-  await logger.fromContext(context, 'help');
+  await logger.fromContext(context, "help");
 }
 
 /**
@@ -26,12 +26,12 @@ async function help(context) {
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot) {
-  bot.command('help', help);
+  bot.command("help", help);
 
   return [
     {
-      command: 'help',
-      description: 'Get help information.',
+      command: "help",
+      description: "Get help information.",
     },
   ];
 }

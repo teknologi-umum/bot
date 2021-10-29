@@ -1,4 +1,4 @@
-import * as cheerio from 'cheerio';
+import * as cheerio from "cheerio";
 
 /**
  * Find closest number, higher than needle, from an array
@@ -35,7 +35,7 @@ export const trimHtml = (max, content) => {
     },
   });
 
-  const endIndices = $('div')
+  const endIndices = $("div")
     .children()
     .get()
     .map((el) => el.endIndex + 1);

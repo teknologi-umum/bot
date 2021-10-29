@@ -10,9 +10,9 @@ export const getCommandArgs = (cmd, context) => {
   } = context;
 
   if (text.startsWith(`/${cmd}`)) {
-    const result = text.split(' ');
+    const result = text.split(" ");
     result.shift();
-    return result.length > 0 ? result.join(' ') : '';
+    return result.length > 0 ? result.join(" ") : "";
   }
 
   return context.message.text;

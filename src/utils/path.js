@@ -1,5 +1,5 @@
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
+import { fileURLToPath } from "url";
+import { dirname, resolve } from "path";
 
 /**
  * A oneline solution for resolving path.resolve(__dirname, 'something.js') to an absolute path.

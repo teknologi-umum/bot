@@ -12,7 +12,7 @@ export function Semaphore() {
   };
 
   this.release = function () {
-    if (queue.length === 0) throw new Error('Semaphore queue is empty');
+    if (queue.length === 0) throw new Error("Semaphore queue is empty");
     const entry = queue.shift();
     entry.release();
   };

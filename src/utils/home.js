@@ -1,7 +1,7 @@
-import dotenv from 'dotenv';
-import { pathTo } from './path.js';
+import dotenv from "dotenv";
+import { pathTo } from "./path.js";
 
-dotenv.config({ path: pathTo(import.meta.url, '../../.env') });
+dotenv.config({ path: pathTo(import.meta.url, "../../.env") });
 
 /**
  * Checks if we are in a home group or not

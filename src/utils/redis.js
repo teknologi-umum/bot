@@ -95,10 +95,17 @@ function redisClient(client) {
      */
     async SET(key, value, options) {
       return new Promise((resolve, reject) => {
-        client.SET(key, value, options?.mode ?? '', options?.flag ?? '', options?.duration ?? 0, (error, reply) => {
-          if (error) return reject(error);
-          return resolve(reply);
-        });
+        client.SET(
+          key,
+          value,
+          options?.mode ?? "",
+          options?.flag ?? "",
+          options?.duration ?? 0,
+          (error, reply) => {
+            if (error) return reject(error);
+            return resolve(reply);
+          }
+        );
       });
     },
     /**
