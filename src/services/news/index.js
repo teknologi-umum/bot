@@ -1,6 +1,7 @@
 import got from "got";
 import { renderTemplate } from "#utils/template.js";
 import { SingleValueCache } from "#utils/cache.js";
+import { logger } from "#utils/logger/logtail";
 
 // cache TTL : 30 minutes
 const cacheTtl = 30 * 60 * 1000;
@@ -49,6 +50,7 @@ async function news(context) {
     }),
     { parse_mode: "HTML", disable_web_page_preview: true }
   );
+  await logger.fromContext(context, "news", { sendText: newsList });
 }
 
 /**
