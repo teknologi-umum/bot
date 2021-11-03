@@ -7,11 +7,9 @@ import * as cheerio from 'cheerio';
  * @returns {number}
  */
 const closest = (needle, haystack) => {
-  const validCandidates = haystack.filter((x) => x > needle);
-
-  return validCandidates.length < 1
+  return haystack.length < 1
     ? haystack.at(-1) // we like bliding ej, Array.prototype.at is only available from 16.6.0
-    : validCandidates.reduce((curr, acc) => {
+    : haystack.reduce((curr, acc) => {
         const aDiff = Math.abs(curr - needle);
         const bDiff = Math.abs(acc - needle);
 
