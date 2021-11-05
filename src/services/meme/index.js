@@ -81,47 +81,50 @@ export function register(bot, cache) {
     const bigGroup = await isBigGroup(context);
     if (bigGroup) return;
 
-    rateLimiter.consume(context.from.id, 1).catch(async (rl) => {
-      await context.telegram.sendMessage(
-        context.message.chat.id,
-        `You have been rate limited. Try again in ${rl.msBeforeNext / 1000} seconds.`,
-        { parse_mode: "HTML" }
-      );
-    });
-    let total = await redis.GET("jokes:total");
+    rateLimiter.consume(context.from.id, 1)
+      .then(async () => {
+        let total = await redis.GET("jokes:total");
 
-    if (!total) {
-      const { body } = await got.get(
-        "https://jokesbapak2.herokuapp.com/v1/total",
-        {
-          headers: defaultHeaders,
-          responseType: "json",
-          timeout: {
-            request: 10_000
-          },
-          retry: {
-            limit: 3
-          }
+        if (!total) {
+          const { body } = await got.get(
+            "https://jokesbapak2.herokuapp.com/v1/total",
+            {
+              headers: defaultHeaders,
+              responseType: "json",
+              timeout: {
+                request: 10_000
+              },
+              retry: {
+                limit: 3
+              }
+            }
+          );
+  
+          await redis.SETEX(
+            "jokes:total",
+            60 * 60 * 12,
+            Number.parseInt(body.message)
+          );
+          total = Number.parseInt(body.message);
         }
-      );
-
-      await redis.SETEX(
-        "jokes:total",
-        60 * 60 * 12,
-        Number.parseInt(body.message)
-      );
-      total = Number.parseInt(body.message);
-    }
-
-    const id = randomNumber(0, total);
-
-    await context.telegram.sendPhoto(
-      context.message.chat.id,
-      `https://jokesbapak2.herokuapp.com/v1/id/${id}`
-    );
-    await logger.fromContext(context, "joke", {
-      sendText: `https://jokesbapak2.herokuapp.com/v1/id/${id}`
-    });
+  
+        const id = randomNumber(0, total);
+  
+        await context.telegram.sendPhoto(
+          context.message.chat.id,
+          `https://jokesbapak2.herokuapp.com/v1/id/${id}`
+        );
+        await logger.fromContext(context, "joke", {
+          sendText: `https://jokesbapak2.herokuapp.com/v1/id/${id}`
+        });
+      })
+      .catch(async (rl) => {
+        await context.telegram.sendMessage(
+          context.message.chat.id,
+          `You have been rate limited. Try again in ${rl.msBeforeNext / 1000} seconds.`,
+          { parse_mode: "HTML" }
+        );
+      });
   });
 
   return [
