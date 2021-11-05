@@ -8,7 +8,6 @@
     "start": "node src/app.js",
     "dev": "nodemon --max-old-space-size=220 src/app.js",
     "lint": "eslint --fix --ignore-path .gitignore .",
-    "format": "prettier --write .",
     "prepare": "node prepare.cjs",
     "test": "c8 --reporter=lcov --reporter=text uvu tests"
   },
@@ -26,7 +25,7 @@
   },
   "dependencies": {
     "@logtail/node": "^0.1.10",
-    "@sentry/node": "^6.13.3",
+    "@sentry/node": "^6.14.1",
     "carret": "^1.0.4",
     "cheerio": "^1.0.0-rc.10",
     "dotenv": "^10.0.0",
@@ -36,21 +35,16 @@
     "mongoose": "^6.0.12",
     "rate-limiter-flexible": "^2.3.3",
     "redis": "^3.1.2",
-    "sanitize-html": "^2.5.2",
+    "sanitize-html": "^2.5.3",
     "telegraf": "^4.4.2",
     "tempura": "^0.4.0"
   },
   "devDependencies": {
-    "@teknologi-umum/eslint-config-base": "^0.0.1",
+    "@teknologi-umum/eslint-config-base": "^0.0.2",
     "c8": "^7.10.0",
     "eslint": "^8.1.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.25.2",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.4",
     "nodemon": "^2.0.14",
-    "prettier": "^2.4.1",
     "uvu": "^0.5.2"
   },
   "engineStrict": true,
