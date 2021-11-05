@@ -9,7 +9,7 @@ import { ERR_INVALID_LANGUAGE, generateImage } from "./utils.js";
  * @returns {Promise<void>}
  */
 async function snap(context) {
-  if (!context.message.reply_to_message) return;
+  if (!context.message.reply_to_message) return Promise.resolve();
 
   const replyMessage = context.message.reply_to_message;
   const isOwner = context.message.from.id === replyMessage.from.id;
@@ -17,12 +17,12 @@ async function snap(context) {
 
   if (!replyMessage.text) {
     await context.reply("`/snap` can only be used on plain texts", {
-      parse_mode: "MarkdownV2",
+      parse_mode: "MarkdownV2"
     });
     await logger.fromContext(context, "snap", {
-      sendText: "`/snap` can only be used on plain texts",
+      sendText: "`/snap` can only be used on plain texts"
     });
-    return;
+    return Promise.resolve();
   }
 
   /** @type {String} code */
@@ -47,39 +47,41 @@ async function snap(context) {
           fullCode === PASTEBIN_FILE_TOO_BIG
             ? "Code is bigger than 512 KB, please upload the complete code yourself."
             : fullCode
-            ? `Full code on: ${fullCode}`
-            : ""
+              ? `Full code on: ${fullCode}`
+              : ""
         }`,
-        reply_to_message_id: !isOwner && replyMessage.message_id,
+        reply_to_message_id: !isOwner && replyMessage.message_id
       }
     );
     await logger.fromContext(context, "snap", {
       sendText: code,
-      actions: "Sent a photo",
+      actions: "Sent a photo"
     });
 
     if (!isPrivateChat) {
       // Snap message
       await context.deleteMessage(context.message.message_id);
       await logger.fromContext(context, "snap", {
-        actions: `Deleted a message with id ${context.message.message_id}`,
+        actions: `Deleted a message with id ${context.message.message_id}`
       });
       if (isOwner) {
         // Target message to snap
         await context.deleteMessage(replyMessage.message_id);
         await logger.fromContext(context, "snap", {
-          actions: `Deleted a message with id ${replyMessage.message_id}`,
+          actions: `Deleted a message with id ${replyMessage.message_id}`
         });
       }
     }
+    
+    return Promise.resolve();
   } catch (err) {
     // Handle specific error message
     if (err === ERR_INVALID_LANGUAGE) {
       await context.telegram.sendMessage(context.message.chat.id, err, {
-        parse_mode: "MarkdownV2",
+        parse_mode: "MarkdownV2"
       });
       await logger.fromContext(context, "snap", { sendText: err });
-      return;
+      return Promise.resolve();
     }
     return Promise.reject(err);
   }
@@ -96,7 +98,7 @@ export function register(bot) {
   return [
     {
       command: "snap",
-      description: "Screenshot the code in the reply message.",
-    },
+      description: "Screenshot the code in the reply message."
+    }
   ];
 }

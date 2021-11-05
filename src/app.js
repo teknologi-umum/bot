@@ -31,7 +31,7 @@ dotenv.config({ path: pathTo(import.meta.url, "../.env") });
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const cache = redis.createClient(String(process.env.REDIS_URL));
 const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
-  useNewUrlParser: true,
+  useNewUrlParser: true
 });
 
 async function main() {
@@ -51,7 +51,7 @@ async function main() {
     laodeai.register(bot),
     analytics.register(bot, mongo),
     pastebin.register(bot),
-    news.register(bot),
+    news.register(bot)
   ]
     .filter((v) => Array.isArray(v))
     .flat();
@@ -66,18 +66,18 @@ async function main() {
         chat_type: context.message.chat.type,
         chat_username: context.message.chat.username,
         text: context.message.text,
-        update_type: context.updateType,
+        update_type: context.updateType
       });
       scope.setContext("from", {
         from_id: context.message.from.id,
         from_username: context.message.from.username,
         is_bot: context.message.from.is_bot,
-        from_name: `${context.message.from.first_name} ${context.message.from.last_name}`,
+        from_name: `${context.message.from.first_name} ${context.message.from.last_name}`
       });
       scope.setTags({
         chat_id: context.message.chat.id,
         from_id: context.message.from.id,
-        from_username: context.message.from.username,
+        from_username: context.message.from.username
       });
       return scope;
     });
@@ -87,7 +87,7 @@ async function main() {
     );
     await logger.log({
       message: "Uh oh, something went wrong. Ask the devs to check their logs.",
-      command: "error",
+      command: "error"
     });
   });
 

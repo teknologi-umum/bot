@@ -13,17 +13,17 @@ test("should do something", async () => {
 });
 
 test("should split a family lol", async () => {
-  const result = await safeEval(`[...'👨‍👩‍👧‍👦']`);
-  assert.equal(result, '["👨","‍","👩","‍","👧","‍","👦"]');
+  const result = await safeEval("[...'👨‍👩‍👧‍👦']");
+  assert.equal(result, "[\"👨\",\"‍\",\"👩\",\"‍\",\"👧\",\"‍\",\"👦\"]");
 });
 
 test("should be racist", async () => {
-  const result = await safeEval(`Array.from('👦🏾')`);
-  assert.equal(result, '["👦","🏾"]');
+  const result = await safeEval("Array.from('👦🏾')");
+  assert.equal(result, "[\"👦\",\"🏾\"]");
 });
 
 test("should be able to map array", async () => {
-  const result = await safeEval(`[].map(x => x)`);
+  const result = await safeEval("[].map(x => x)");
   assert.equal(result, "[]");
 });
 
@@ -51,7 +51,7 @@ test("binary operators are allowed", () => {
     "===",
     "!==",
     "-",
-    ">>>",
+    ">>>"
   ].every((op) => {
     try {
       return isAllowed(esprima.parse(`0 ${op} 0`));
@@ -74,12 +74,12 @@ test("should not be able to access unlisted member", () => {
 
 test("should be able to serialize BigInt", async () => {
   const result = await safeEval("BigInt(1)");
-  assert.equal(result, '"1n"');
+  assert.equal(result, "\"1n\"");
 });
 
 test("should be able to serialize string", async () => {
-  const result = await safeEval('"foo"');
-  assert.equal(result, '"foo"');
+  const result = await safeEval("\"foo\"");
+  assert.equal(result, "\"foo\"");
 });
 
 test("should throw error when evaluating 0n because of esprima bug", async () => {
@@ -88,28 +88,28 @@ test("should throw error when evaluating 0n because of esprima bug", async () =>
 });
 
 test("should not be able to evaluate require", async () => {
-  const result = await safeEval('require("fs")');
+  const result = await safeEval("require(\"fs\")");
   assert.equal(result, "Tidak boleh mengakses require");
 });
 
 test("should be able to serialize NaN", async () => {
-  const result = await safeEval('parseInt("a")');
-  assert.equal(result, '"NaN"');
+  const result = await safeEval("parseInt(\"a\")");
+  assert.equal(result, "\"NaN\"");
 });
 
 test("should be able to serialize Infinity", async () => {
   const result = await safeEval("1/0");
-  assert.equal(result, '"Infinity"');
+  assert.equal(result, "\"Infinity\"");
 });
 
 test("should not be able to access String.repeat", async () => {
-  const result = await safeEval('"a".repeat(10)');
+  const result = await safeEval("\"a\".repeat(10)");
   assert.equal(result, "Tidak boleh mengakses repeat");
 });
 
 test("should be able to use local in arrow function", async () => {
-  const result = await safeEval('["a", "b"].map(x => x.toUpperCase())');
-  assert.equal(result, '["A","B"]');
+  const result = await safeEval("[\"a\", \"b\"].map(x => x.toUpperCase())");
+  assert.equal(result, "[\"A\",\"B\"]");
 });
 
 test("should not be able to access property of identifiers that are not whitelisted", async () => {
@@ -123,7 +123,7 @@ test("should not be able to access properties that are not whitelisted", async (
 });
 
 test("should not be able to use functions that are not whitelisted in HOF", async () => {
-  const result = await safeEval('["100"].map(Math.clamp)');
+  const result = await safeEval("[\"100\"].map(Math.clamp)");
   assert.equal(result, "Tidak boleh mengakses Math.clamp");
 });
 
@@ -148,7 +148,7 @@ test("should be able to evaluate ternary expression", async () => {
 });
 
 test("should be able to evaluate unary expression", async () => {
-  const result = await safeEval('+"1"');
+  const result = await safeEval("+\"1\"");
   assert.equal(result, "1");
 });
 
@@ -196,15 +196,15 @@ test("should not be able to create instance of classes that are not whitelisted"
 });
 
 test("should not be able to declare property using computed expression", async () => {
-  const result = await safeEval('({["foo"]: "bar"})');
+  const result = await safeEval("({[\"foo\"]: \"bar\"})");
   assert.equal(result, "Tidak boleh membuat property menggunakan accessor");
 });
 
 test("should execute superpowers before eval", async () => {
   const result = await safeEval("1", [
-    async function (source) {
+    async function(source) {
       return source + "+1";
-    },
+    }
   ]);
   assert.equal(result, "2");
 });

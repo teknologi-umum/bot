@@ -12,19 +12,19 @@ const analyticsSchema = new mongoose.Schema(
         userID: String,
         name: String,
         userName: String,
-        isBot: Boolean,
-      },
+        isBot: Boolean
+      }
     ],
     updatedBy: {
       userID: String,
       name: String,
       userName: String,
-      isBot: Boolean,
+      isBot: Boolean
     },
     status: String,
     membersCount: Number,
     joinedAt: Date,
-    updatedAt: Date,
+    updatedAt: Date
   },
   { collection: "analytics" }
 );
@@ -61,26 +61,26 @@ export function register(bot, mongo) {
             userID: String(o.user.id) ?? "",
             name: `${o.user.first_name} ${o.user.last_name ?? ""}`,
             userName: o.user.username ?? "",
-            isBot: o.user.is_bot ?? false,
+            isBot: o.user.is_bot ?? false
           })),
           updatedBy: {
             userID: String(from.id),
             name: `${from.first_name} ${from.last_name ?? ""}`,
             userName: from.username ?? "",
-            isBot: from.is_bot,
+            isBot: from.is_bot
           },
           membersCount: chatMembers,
-          status: newChatMember.status,
+          status: newChatMember.status
         },
         $setOnInsert: {
           groupID: String(chat.id),
-          joinedAt: new Date(),
-        },
+          joinedAt: new Date()
+        }
       },
       { upsert: true, new: true }
     );
     await logger.fromContext(context, "analytics", {
-      actions: `I got updated to ${newChatMember.status}`,
+      actions: `I got updated to ${newChatMember.status}`
     });
   });
 

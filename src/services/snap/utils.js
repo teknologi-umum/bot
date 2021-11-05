@@ -151,7 +151,7 @@ const VALID_LANGUAGES = {
   文言: true,
   xml: true,
   xsl: true,
-  yaml: true,
+  yaml: true
 };
 
 export const ERR_INVALID_LANGUAGE =
@@ -159,9 +159,9 @@ export const ERR_INVALID_LANGUAGE =
 
 export async function generateImage(code, lang) {
   if (!code) return Promise.reject("Code must be supplied\\!");
-  if (lang && !VALID_LANGUAGES[lang]) {
+  if (lang && !VALID_LANGUAGES[lang]) 
     return Promise.reject(ERR_INVALID_LANGUAGE);
-  }
+  
 
   const linenr = code.split("\n").length;
   const { body } = await got.post("https://graphene.teknologiumum.com/api", {
@@ -173,18 +173,18 @@ export async function generateImage(code, lang) {
       upscale: 3,
       lineNumber: linenr > 10,
       border: {
-        thickness: 20,
-      },
+        thickness: 20
+      }
     },
     responseType: "buffer",
     timeout: {
-      request: 30_000,
+      request: 30_000
     },
     retry: {
       limit: 3,
       methods: ["POST"],
-      statusCodes: [429, 500, 502, 503, 504],
-    },
+      statusCodes: [429, 500, 502, 503, 504]
+    }
   });
 
   return body;

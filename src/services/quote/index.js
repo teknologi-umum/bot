@@ -16,7 +16,7 @@ async function handleCommand(context) {
 
   await context.telegram.sendMessage(chatId, message, {
     parse_mode: "HTML",
-    disable_web_page_preview: true,
+    disable_web_page_preview: true
   });
   await logger.fromContext(context, "quote", { sendText: message });
 }
@@ -32,7 +32,7 @@ export function register(bot) {
   return [
     {
       command: "quote",
-      description: "Get random quote from great people.",
-    },
+      description: "Get random quote from great people."
+    }
   ];
 }

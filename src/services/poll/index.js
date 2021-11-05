@@ -31,22 +31,21 @@ export async function poll(context, cache, poll, pollID) {
 
     lastMessageContent = JSON.parse(content);
 
-    if (!lastMessageContent || !currentTime.compare(new Date(date), "day")) {
+    if (!lastMessageContent || !currentTime.compare(new Date(date), "day")) 
       lastMessageContent = { survey: [], quiz: [] };
-    }
   }
 
-  if (poll.type === "regular") {
+  if (poll.type === "regular") 
     lastMessageContent.survey.push({
       id: pollID,
-      text: poll.question.split(/\n/)[0],
+      text: poll.question.split(/\n/)[0]
     });
-  } else if (poll.type === "quiz") {
+  else if (poll.type === "quiz") 
     lastMessageContent.quiz.push({
       id: pollID,
-      text: poll.question.split(/\n/)[0],
+      text: poll.question.split(/\n/)[0]
     });
-  }
+  
 
   const chat = await context.getChat();
   const chatLink = `https://t.me/${chat.username}`;
@@ -58,11 +57,11 @@ export async function poll(context, cache, poll, pollID) {
       false,
       false
     )}</strong>\n\n` +
-    `Quiz\n` +
+    "Quiz\n" +
     `${lastMessageContent.quiz
       .map((i) => `<a href="${chatLink}/${i.id}">${i.text}</a>`)
       .join("\n")}\n\n` +
-    `Survey\n` +
+    "Survey\n" +
     `${lastMessageContent.survey
       .map((i) => `<a href="${chatLink}/${i.id}">${i.text}</a>`)
       .join("\n")}\n`;
@@ -80,7 +79,7 @@ export async function poll(context, cache, poll, pollID) {
         preformatMessage,
         {
           parse_mode: "HTML",
-          disable_web_page_preview: true,
+          disable_web_page_preview: true
         }
       ),
       redis.HSET(
@@ -90,8 +89,8 @@ export async function poll(context, cache, poll, pollID) {
       ),
       logger.fromContext(context, "poll", {
         actions: `Edited a message: ${Number(pollByGroup.id)}`,
-        sendText: preformatMessage,
-      }),
+        sendText: preformatMessage
+      })
     ]);
     return;
   }
@@ -102,14 +101,14 @@ export async function poll(context, cache, poll, pollID) {
     preformatMessage,
     {
       parse_mode: "HTML",
-      disable_web_page_preview: true,
+      disable_web_page_preview: true
     }
   );
 
   await Promise.allSettled([
     logger.fromContext(context, "poll", {
       actions: `Message sent: ${response.message_id}`,
-      sendText: preformatMessage,
+      sendText: preformatMessage
     }),
     redis.HSET(
       `poll:${String(context.message.chat.id)}`,
@@ -124,9 +123,9 @@ export async function poll(context, cache, poll, pollID) {
       context.message.chat.id,
       response.message_id,
       {
-        disable_notification: false,
+        disable_notification: false
       }
-    ),
+    )
   ]);
 
   await logger.fromContext(context, "poll", { actions: "Pinned a message" });
@@ -142,14 +141,14 @@ export function register(bot, cache) {
   bot.on("message", async (context, next) => {
     // Only works on supergroup
     if (context.message?.poll && context.message?.chat?.type === "supergroup") {
-      if (!isHomeGroup(context)) return;
+      if (!isHomeGroup(context)) return Promise.resolve();
       await poll(
         context,
         cache,
         context.message.poll,
         context.message.message_id
       );
-      return;
+      return Promise.resolve();
     }
 
     return next();

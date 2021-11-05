@@ -5,7 +5,7 @@ import { fetchStock } from "./stock.js";
 export async function resolveStocks(source) {
   // query: $AALI-R.high
   const queries = source.match(
-    /\$[A-Z]{4}(-[A-Z][A-Z0-9]{0,2})?(\.[a-z]+)?\b/g
+    /\$[A-Z]{4}(-[A-Z][A-Z\d]{0,2})?(\.[a-z]+)?\b/g
   );
   if (queries === null || queries.length === 0) return source;
 
@@ -26,11 +26,11 @@ export async function resolveStocks(source) {
     // 1 stockCode: no delay
     // 2 stockCodes: 5000ms delay
     // 3 stockCodes: 2500ms delay
-    if (i > 0) {
+    if (i > 0) 
       await new Promise((resolve) =>
         setTimeout(resolve, 5000 / (stockCodes.size - 1))
       );
-    }
+    
     const stock = await fetchStock(stockCode);
     stockByCode[stockCode] = stock;
     i++;
@@ -44,20 +44,19 @@ export async function resolveStocks(source) {
     const stockCode = cashtag.substring(1);
     const stock = stockByCode[stockCode];
 
-    if (property === undefined) {
+    if (property === undefined) 
       // no property specified, replace to close
       source = source.replaceAll(query, `(${stock.close})`);
-    } else if (stock[property] === undefined) {
+    else if (stock[property] === undefined) 
       // invalid property
       throw `Saham tidak memiliki property ${property}`;
-    } else if (typeof stock[property] === "string") {
+    else if (typeof stock[property] === "string") 
       source = source.replaceAll(
         query,
-        `("${stock[property].replaceAll(`"`, `\\"`)}")`
+        `("${stock[property].replaceAll("\"", "\\\"")}")`
       );
-    } else {
+    else 
       source = source.replaceAll(query, `(${stock[property]})`);
-    }
   }
 
   return source;
@@ -84,9 +83,9 @@ export async function resolveCryptoCurrencies(source) {
   for (const symbol of symbols) {
     // 1 symbol: no delay
     // 2 symbols or more: 1000ms delay
-    if (i > 0) {
+    if (i > 0) 
       await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
+    
     const rate = await fetchCryptoCurrency(symbol);
     rateBySymbol[symbol] = rate;
     i++;
@@ -100,20 +99,19 @@ export async function resolveCryptoCurrencies(source) {
     const symbol = cashtag.substring(1);
     const rate = rateBySymbol[symbol];
 
-    if (property === undefined) {
+    if (property === undefined) 
       // no property specified, replace to last
       source = source.replaceAll(query, `(${rate.last})`);
-    } else if (rate[property] === undefined) {
+    else if (rate[property] === undefined) 
       // invalid property
       throw `Crypto tidak memiliki property ${property}`;
-    } else if (typeof rate[property] === "string") {
+    else if (typeof rate[property] === "string") 
       source = source.replaceAll(
         query,
-        `("${rate[property].replaceAll(`"`, `\\"`)}")`
+        `("${rate[property].replaceAll("\"", "\\\"")}")`
       );
-    } else {
+    else 
       source = source.replaceAll(query, `(${rate[property]})`);
-    }
   }
 
   return source;
@@ -127,9 +125,9 @@ export async function resolveCurrencyRates(source) {
 
   // pair: USDIDR
   const pairs = new Set();
-  for (const cashtag of cashtags) {
+  for (const cashtag of cashtags) 
     pairs.add(cashtag.substring(1));
-  }
+  
 
   // resolve rates
   const pairsWithRate = await Promise.all(
@@ -138,9 +136,9 @@ export async function resolveCurrencyRates(source) {
       return [pair, rate];
     })
   );
-  for (const [pair, rate] of pairsWithRate) {
+  for (const [pair, rate] of pairsWithRate) 
     source = source.replaceAll("$" + pair, `(${rate})`);
-  }
+  
 
   return source;
 }

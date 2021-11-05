@@ -6,7 +6,7 @@
  */
 export const getCommandArgs = (cmd, context) => {
   const {
-    message: { text },
+    message: { text }
   } = context;
 
   if (text.startsWith(`/${cmd}`)) {

@@ -3,7 +3,7 @@
  */
 export const defaultHeaders = {
   Accept: "application/json,*/*",
-  "User-Agent": "Teknologi Umum Bot <teknologi.umum@gmail.com>",
+  "User-Agent": "Teknologi Umum Bot <teknologi.umum@gmail.com>"
 };
 
 /**
@@ -24,12 +24,12 @@ export const fetchDDG = async (got, query) => {
   const response = await got.get("https://html.duckduckgo.com/html/", {
     searchParams: {
       kp: 1, // safe search // 1: strict | -1: moderate | 2: off
-      q: query,
+      q: query
     },
     headers: {
-      Accept: "text/html",
+      Accept: "text/html"
     },
-    responseType: "text",
+    responseType: "text"
   });
 
   return response;

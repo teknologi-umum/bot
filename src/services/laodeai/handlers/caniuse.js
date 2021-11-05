@@ -30,8 +30,8 @@ export function caniuse($) {
       const symbol = status.includes("Not")
         ? "❌ "
         : status.match("Partial")
-        ? "🚧 "
-        : "✅ ";
+          ? "🚧 "
+          : "✅ ";
       return { name: symbol + name, status };
     });
 
@@ -40,17 +40,17 @@ export function caniuse($) {
       title,
       description,
       global,
-      browsers,
+      browsers
     });
 
     return {
       type: "text",
-      content: content.trim(),
+      content: content.trim()
     };
   }
 
   return {
     type: "error",
-    content: "",
+    content: ""
   };
 }

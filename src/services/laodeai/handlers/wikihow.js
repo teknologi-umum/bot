@@ -29,12 +29,12 @@ export function wikihow($) {
 
     return {
       type: "text",
-      content: formatted.replace(/\r\n/g, "\n"),
+      content: formatted.replace(/\r\n/g, "\n")
     };
   }
 
   return {
     type: "error",
-    content: "",
+    content: ""
   };
 }

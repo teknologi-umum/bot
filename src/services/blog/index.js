@@ -29,7 +29,7 @@ async function devRead(context, cache) {
   if (WHITELIST.includes(query.toLowerCase())) {
     // Check if the data exists in redis
     const [queryData] = await redis.MGET([
-      `devread:${encodeURI(query.toLowerCase())}`,
+      `devread:${encodeURI(query.toLowerCase())}`
     ]);
 
     if (queryData) {
@@ -40,7 +40,7 @@ async function devRead(context, cache) {
         )
         .join("\n");
       await context.telegram.sendMessage(context.message.chat.id, read, {
-        parse_mode: "HTML",
+        parse_mode: "HTML"
       });
       return;
     }
@@ -63,13 +63,13 @@ async function devRead(context, cache) {
       renderTemplate("blog/blog.template.hbs", {
         title: x?.title ?? "",
         body: x?.body ?? "",
-        url: x?.url ?? "",
+        url: x?.url ?? ""
       })
     )
     .join("\n");
 
   await context.telegram.sendMessage(context.message.chat.id, read, {
-    parse_mode: "HTML",
+    parse_mode: "HTML"
   });
 
   // Cache the result in redis for 6 hours
@@ -85,7 +85,7 @@ async function devRead(context, cache) {
         ? body.substr(0, 299) + "..."
         : body
       : body,
-    url,
+    url
   }));
   await redis.SETEX(
     `devread:${encodeURI(query.toLowerCase())}`,
@@ -106,7 +106,7 @@ export function register(bot, cache) {
   return [
     {
       command: "devread",
-      description: "Articles for developers",
-    },
+      description: "Articles for developers"
+    }
   ];
 }

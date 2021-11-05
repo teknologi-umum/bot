@@ -2,7 +2,7 @@ import { safeEval } from "./parser.js";
 import {
   resolveCryptoCurrencies,
   resolveCurrencyRates,
-  resolveStocks,
+  resolveStocks
 } from "./superpowers.js";
 import { getCommandArgs } from "#utils/command.js";
 import { logger } from "#utils/logger/logtail.js";
@@ -18,7 +18,7 @@ async function evalCommand(context) {
   const output = await safeEval(source, [
     resolveCurrencyRates,
     resolveStocks,
-    resolveCryptoCurrencies,
+    resolveCryptoCurrencies
   ]);
 
   await context.replyWithMarkdown(`
@@ -45,7 +45,7 @@ export function register(bot) {
   return [
     {
       command: "eval",
-      description: "Evaluate javascript expression.",
-    },
+      description: "Evaluate javascript expression."
+    }
   ];
 }

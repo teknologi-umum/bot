@@ -38,5 +38,5 @@ export const terminal = {
         `[${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}]`
       )} ${kleur.green(inspect(message))}`
     );
-  },
+  }
 };

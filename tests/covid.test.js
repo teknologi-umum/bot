@@ -9,7 +9,7 @@ test("should render data into country template", () => {
     confirmed: 100,
     deaths: 90,
     recovered: 10,
-    active: 1,
+    active: 1
   });
 
   assert.fixture(
@@ -36,7 +36,7 @@ test("should render data into global template", () => {
     globalRecovered: 2000,
     indonesiaConfirmed: 1000,
     indonesiaDeaths: 50,
-    indonesiaRecovered: 5,
+    indonesiaRecovered: 5
   });
   assert.fixture(
     result,

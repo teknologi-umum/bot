@@ -5,7 +5,7 @@ import { getCommandArgs } from "../src/utils/command.js";
 test("should get argument if command is invoked without username", () => {
   const fakeContext = {
     message: { text: "/foo some random text" },
-    me: "teknologiumumbot",
+    me: "teknologiumumbot"
   };
 
   const argument = getCommandArgs("foo", fakeContext);
@@ -16,7 +16,7 @@ test("should get argument if command is invoked without username", () => {
 test("should get argument if command is invoked with username", () => {
   const fakeContext = {
     message: { text: "/foo@teknologiumumbot some random text" },
-    me: "teknologiumumbot",
+    me: "teknologiumumbot"
   };
 
   const argument = getCommandArgs("foo", fakeContext);
@@ -27,7 +27,7 @@ test("should get argument if command is invoked with username", () => {
 test("should return original message if not a valid command", () => {
   const fakeContext = {
     message: { text: "some random text" },
-    me: "teknologiumumbot",
+    me: "teknologiumumbot"
   };
 
   const argument = getCommandArgs("foo", fakeContext);
@@ -38,7 +38,7 @@ test("should return original message if not a valid command", () => {
 test("should return empty string if no params was given", () => {
   const fakeContext = {
     message: { text: "/foo" },
-    me: "teknologiumumbot",
+    me: "teknologiumumbot"
   };
 
   const argument = getCommandArgs("foo", fakeContext);

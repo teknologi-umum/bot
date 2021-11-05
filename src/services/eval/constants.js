@@ -35,7 +35,7 @@ export const allowedBuiltInObjects = new Set([
   "UInt32Array",
   "UInt8Array",
   "UInt8ClampedArray",
-  "undefined",
+  "undefined"
 ]);
 
 export const allowedProperties = new Set([
@@ -232,5 +232,5 @@ export const allowedProperties = new Set([
   "unshift",
   "UTC",
   "valueOf",
-  "values",
+  "values"
 ]);

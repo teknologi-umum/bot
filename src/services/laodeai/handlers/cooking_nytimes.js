@@ -46,6 +46,6 @@ export function cookingNytimes($) {
 
   return {
     type: "error",
-    content: "",
+    content: ""
   };
 }

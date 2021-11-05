@@ -72,7 +72,7 @@ const VALID_SOURCES = {
   "urbandictionary.com": urbandictionary,
   "bonappetit.com": bonappetit,
   "cooking.nytimes.com": cookingNytimes,
-  "caniuse.com": caniuse,
+  "caniuse.com": caniuse
 };
 
 /**
@@ -102,17 +102,17 @@ async function sendImage(result, context) {
  * @param {Boolean} trim
  * @returns
  */
-async function sendText(result, context, trim) {
+function sendText(result, context, trim) {
   const limit = 800;
   let content = sanitize(result.content);
-  if (trim && content.length > limit) {
+  if (trim && content.length > limit) 
     content = `${trimHtml(limit, content)}...\n\nSee more on: ${result.url}`;
-  }
+  
 
   // no await, see https://eslint.org/docs/rules/no-return-await
   return context.telegram.sendMessage(context.message.chat.id, content, {
     parse_mode: "HTML",
-    disable_web_page_preview: true,
+    disable_web_page_preview: true
   });
 }
 
@@ -124,9 +124,51 @@ async function sendText(result, context, trim) {
 async function sendError(context) {
   await context.reply("Uhh, I don't have an answer for that, sorry.");
   await logger.fromContext(context, "laodeai", {
-    sendText: "Uhh, I don't have an answer for that, sorry.",
+    sendText: "Uhh, I don't have an answer for that, sorry."
   });
-  return;
+}
+
+
+/**
+ * Literally will go through URLs
+ * @param {URL[]} validSources
+ * @returns {Promise<{ url: string, type: 'image' | 'text', content: string } | { type: 'error' }>}
+ */
+async function goThroughURLs(validSources) {
+  for (let i = 0; i < validSources.length; i++) {
+    const url = validSources[i];
+    const { body, statusCode } = await got.get(url.href, {
+      headers: {
+        Accept: "text/html"
+      },
+      responseType: "text",
+      throwHttpErrors: false,
+      timeout: {
+        request: 15_000
+      }
+    });
+
+    if (statusCode !== 200) 
+      continue;
+    
+
+    const urlResult = {
+      url: url.href,
+      ...VALID_SOURCES[url.hostname.replace("www.", "")](cheerio.load(body))
+    };
+
+    if (urlResult.type === "error") {
+      if (i === validSources.length - 1) 
+        // Just give up man
+        return { type: "error" };
+      
+      continue;
+    } else {
+      return urlResult;
+    }
+  }
+
+  return { type: "error" };
 }
 
 /**
@@ -145,7 +187,7 @@ async function laodeai(context) {
   if (ddgStatusCode !== 200) {
     await context.reply("Error getting search result.");
     await logger.fromContext(context, "laodeai", {
-      sendText: "Error getting search result.",
+      sendText: "Error getting search result."
     });
     return;
   }
@@ -184,65 +226,25 @@ async function laodeai(context) {
   }
 
   switch (result.type) {
-    case "image": {
-      const sentMessage = await sendImage(result, context);
-      await logger.fromContext(context, "laodeai", {
-        sendText: sentMessage.caption ?? "",
-        actions: `Sent a photo with id ${sentMessage.message_id}`,
-      });
-      break;
-    }
-    case "text": {
-      const sentMessage = await sendText(result, context, true);
-      await logger.fromContext(context, "laodeai", {
-        sendText: sentMessage.text,
-      });
-      break;
-    }
-    case "error": {
-      await sendError(context);
-      break;
-    }
-  }
-}
-
-/**
- * Literally will go through URLs
- * @param {URL[]} validSources
- * @returns {Promise<{ url: string, type: 'image' | 'text', content: string } | { type: 'error' }>}
- */
-async function goThroughURLs(validSources) {
-  for (let i = 0; i < validSources.length; i++) {
-    const url = validSources[i];
-    const { body, statusCode } = await got.get(url.href, {
-      headers: {
-        Accept: "text/html",
-      },
-      responseType: "text",
-      throwHttpErrors: false,
-      timeout: {
-        request: 15_000,
-      },
+  case "image": {
+    const sentMessage = await sendImage(result, context);
+    await logger.fromContext(context, "laodeai", {
+      sendText: sentMessage.caption ?? "",
+      actions: `Sent a photo with id ${sentMessage.message_id}`
     });
-
-    if (statusCode !== 200) {
-      continue;
-    }
-
-    const urlResult = {
-      url: url.href,
-      ...VALID_SOURCES[url.hostname.replace("www.", "")](cheerio.load(body)),
-    };
-
-    if (urlResult.type === "error") {
-      if (i === validSources.length - 1) {
-        // Just give up man
-        return { type: "error" };
-      }
-      continue;
-    } else {
-      return urlResult;
-    }
+    break;
+  }
+  case "text": {
+    const sentMessage = await sendText(result, context, true);
+    await logger.fromContext(context, "laodeai", {
+      sendText: sentMessage.text
+    });
+    break;
+  }
+  case "error": {
+    await sendError(context);
+    break;
+  }
   }
 }
 
@@ -258,7 +260,7 @@ export function register(bot) {
   return [
     {
       command: "laodeai",
-      description: "Cari di StackOverFlow",
-    },
+      description: "Cari di StackOverFlow"
+    }
   ];
 }

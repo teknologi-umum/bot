@@ -15,17 +15,17 @@ export function wikipedia($) {
     .slice(0, 3)
     .join("\n");
 
-  if (paragraphs) {
+  if (paragraphs) 
     return {
       type: "text",
       content: sanitize(paragraphs)
         .replace(/\[(\d+|update)\]/g, "")
         .replace(/\r\n/g, "\n")
-        .trim(),
+        .trim()
     };
-  }
+  
   return {
     type: "error",
-    content: "",
+    content: ""
   };
 }

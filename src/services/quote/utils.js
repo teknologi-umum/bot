@@ -25,7 +25,7 @@ export async function fetchRandomQuote() {
   // TODO: Fetch from many resources
   const { body } = await got.get("https://jagokata.com/kata-bijak/acak.html", {
     responseType: "text",
-    headers: defaultHeaders,
+    headers: defaultHeaders
   });
   return extractQuoteFromHtml(body);
 }

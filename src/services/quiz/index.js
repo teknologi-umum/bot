@@ -20,7 +20,7 @@ const pollSchema = new mongoose.Schema(
     anonymous: Boolean,
     posted: Boolean,
     createdAt: Date,
-    updatedAt: Date,
+    updatedAt: Date
   },
   { collection: "quiz" }
 );
@@ -46,7 +46,7 @@ async function quiz(context, mongo, cache) {
       { parse_mode: "HTML" }
     );
     await logger.fromContext(context, "quiz", {
-      sendText: "Quiz is only available for groups",
+      sendText: "Quiz is only available for groups"
     });
     return;
   }
@@ -59,13 +59,13 @@ async function quiz(context, mongo, cache) {
   if (quizByChatID && currentTime.compare(new Date(quizByChatID.date), "day")) {
     context.telegram.sendMessage(
       chatID,
-      `You can't request another new quiz for today. Wait for tomorrow, then ask a new one &#x1F61A`,
+      "You can't request another new quiz for today. Wait for tomorrow, then ask a new one &#x1F61A",
       {
-        parse_mode: "HTML",
+        parse_mode: "HTML"
       }
     );
     await logger.fromContext(context, "quiz", {
-      sendText: `You can't request another new quiz for today. Wait for tomorrow, then ask a new one &#x1F61A`,
+      sendText: "You can't request another new quiz for today. Wait for tomorrow, then ask a new one &#x1F61A"
     });
     return;
   }
@@ -73,21 +73,21 @@ async function quiz(context, mongo, cache) {
   const quizes = await Poll.find({ posted: false });
   const pickQuiz = quizes[randomNumber(0, quizes.length - 1)];
 
-  if (pickQuiz?.code) {
+  if (pickQuiz?.code) 
     await context.telegram.sendPhoto(chatID, pickQuiz.code);
-  }
+  
 
   const question =
     pickQuiz.question.length > 200
       ? `${pickQuiz.question.substring(0, 20)}... (question above)`
       : pickQuiz.question;
 
-  if (pickQuiz.question.length > 200) {
+  if (pickQuiz.question.length > 200) 
     // Send the question as a separate message
     await context.telegram.sendMessage(chatID, sanitize(pickQuiz.question), {
-      parse_mode: "HTML",
+      parse_mode: "HTML"
     });
-  }
+  
 
   if (pickQuiz.type === "quiz") {
     const response = await context.telegram.sendQuiz(
@@ -98,24 +98,23 @@ async function quiz(context, mongo, cache) {
         allows_multiple_answers: pickQuiz.multipleAnswer ?? false,
         explanation: pickQuiz.explanation ?? "",
         is_anonymous: pickQuiz.anonymous ?? false,
-        correct_option_id: pickQuiz.answer - 1,
+        correct_option_id: pickQuiz.answer - 1
       }
     );
     await logger.fromContext(context, "quiz", {
       actions: `Sent a poll with id ${response.message_id}`,
       sendText: pickQuiz?.question ?? "",
-      sendImage: pickQuiz?.code ?? "",
+      sendImage: pickQuiz?.code ?? ""
     });
 
     // Pin the message if it's a supergroup type
-    if (context.message.chat.type === "supergroup") {
+    if (context.message.chat.type === "supergroup") 
       await poll(
         context,
         cache,
         { question, type: pickQuiz.type },
         response.message_id
       );
-    }
   } else if (pickQuiz.type === "survey") {
     const response = await context.telegram.sendPoll(
       chatID,
@@ -124,23 +123,22 @@ async function quiz(context, mongo, cache) {
       {
         allows_multiple_answers: pickQuiz.multipleAnswer ?? false,
         explanation: pickQuiz.explanation ?? "",
-        is_anonymous: pickQuiz.anonymous ?? false,
+        is_anonymous: pickQuiz.anonymous ?? false
       }
     );
     await logger.fromContext(context, "quiz", {
       actions: `Sent a poll with id ${response.message_id}`,
-      sendText: question,
+      sendText: question
     });
 
     // Pin the message if it's a supergroup type
-    if (context.message.chat.type === "supergroup") {
+    if (context.message.chat.type === "supergroup") 
       await poll(
         context,
         cache,
         { question, type: pickQuiz.type },
         response.message_id
       );
-    }
   }
 
   await Poll.findByIdAndUpdate(pickQuiz["_id"], { posted: true });
@@ -164,7 +162,7 @@ export function register(bot, mongo, cache) {
   return [
     {
       command: "quiz",
-      description: "Sends daily quiz to your group!",
-    },
+      description: "Sends daily quiz to your group!"
+    }
   ];
 }

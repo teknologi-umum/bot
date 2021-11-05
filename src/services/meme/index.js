@@ -4,6 +4,9 @@ import { defaultHeaders } from "#utils/http.js";
 import redisClient from "#utils/redis.js";
 import { isBigGroup } from "#utils/home.js";
 import { logger } from "#utils/logger/logtail.js";
+import { RateLimiterMemory } from "rate-limiter-flexible";
+
+const rateLimiter = new RateLimiterMemory({ points: 6, duration: 60});
 
 /**
  * Send memes..
@@ -22,7 +25,7 @@ export function register(bot, cache) {
       "https://i.ibb.co/dMbd6dF/short.jpg"
     );
     await logger.fromContext(context, "hilih", {
-      sendText: "https://i.ibb.co/dMbd6dF/short.jpg",
+      sendText: "https://i.ibb.co/dMbd6dF/short.jpg"
     });
   });
 
@@ -34,7 +37,7 @@ export function register(bot, cache) {
       "https://i.ibb.co/XtSbXBT/image.png"
     );
     await logger.fromContext(context, "kktbsys", {
-      sendText: "https://i.ibb.co/XtSbXBT/image.png",
+      sendText: "https://i.ibb.co/XtSbXBT/image.png"
     });
   });
 
@@ -46,7 +49,7 @@ export function register(bot, cache) {
       "https://media.giphy.com/media/uFOW5cbNaoTaU/giphy.gif"
     );
     await logger.fromContext(context, "illuminati", {
-      sendText: "https://media.giphy.com/media/uFOW5cbNaoTaU/giphy.gif",
+      sendText: "https://media.giphy.com/media/uFOW5cbNaoTaU/giphy.gif"
     });
   });
 
@@ -58,7 +61,7 @@ export function register(bot, cache) {
       "https://i.ibb.co/P1Q0650/yntkts.jpg"
     );
     await logger.fromContext(context, "yntkts", {
-      sendText: "https://i.ibb.co/P1Q0650/yntkts.jpg",
+      sendText: "https://i.ibb.co/P1Q0650/yntkts.jpg"
     });
   });
 
@@ -70,13 +73,21 @@ export function register(bot, cache) {
       "https://i.ibb.co/541knqp/photo-2021-08-21-02-54-24.jpg"
     );
     await logger.fromContext(context, "homework", {
-      sendText: "https://i.ibb.co/541knqp/photo-2021-08-21-02-54-24.jpg",
+      sendText: "https://i.ibb.co/541knqp/photo-2021-08-21-02-54-24.jpg"
     });
   });
 
   bot.command("joke", async (context) => {
     const bigGroup = await isBigGroup(context);
     if (bigGroup) return;
+
+    rateLimiter.consume(context.from.id, 1).catch(async (rl) => {
+      await context.telegram.sendMessage(
+        context.message.chat.id,
+        `You have been rate limited. Try again in ${rl.msBeforeNext / 1000} seconds.`,
+        { parse_mode: "HTML" }
+      );
+    });
     let total = await redis.GET("jokes:total");
 
     if (!total) {
@@ -86,11 +97,11 @@ export function register(bot, cache) {
           headers: defaultHeaders,
           responseType: "json",
           timeout: {
-            request: 10_000,
+            request: 10_000
           },
           retry: {
-            limit: 3,
-          },
+            limit: 3
+          }
         }
       );
 
@@ -109,34 +120,34 @@ export function register(bot, cache) {
       `https://jokesbapak2.herokuapp.com/v1/id/${id}`
     );
     await logger.fromContext(context, "joke", {
-      sendText: `https://jokesbapak2.herokuapp.com/v1/id/${id}`,
+      sendText: `https://jokesbapak2.herokuapp.com/v1/id/${id}`
     });
   });
 
   return [
     {
       command: "hilih",
-      description: "Arnold Poernomo ngomong hilih",
+      description: "Arnold Poernomo ngomong hilih"
     },
     {
       command: "joke",
-      description: "Get random jokes bapack2.",
+      description: "Get random jokes bapack2."
     },
     {
       command: "kktbsys",
-      description: "Kenapa kamu tanya begitu, siapa yang suruh?",
+      description: "Kenapa kamu tanya begitu, siapa yang suruh?"
     },
     {
       command: "yntkts",
-      description: "Yo ndak tahu! Kok tanya saya.",
+      description: "Yo ndak tahu! Kok tanya saya."
     },
     {
       command: "homework",
-      description: "Ini PR ya ngab?",
+      description: "Ini PR ya ngab?"
     },
     {
       command: "illuminati",
-      description: "Please don't.",
-    },
+      description: "Please don't."
+    }
   ];
 }

@@ -23,7 +23,7 @@ async function search(context, mongo) {
   if (!clean) {
     await context.reply("Keep the search clean, shall we? 😉");
     await logger.fromContext(context, "search", {
-      sendText: "Keep the search clean, shall we? 😉",
+      sendText: "Keep the search clean, shall we? 😉"
     });
     return;
   }
@@ -32,7 +32,7 @@ async function search(context, mongo) {
   if (statusCode !== 200) {
     await context.reply("Error getting search result.");
     await logger.fromContext(context, "search", {
-      sendText: "Error getting search result.",
+      sendText: "Error getting search result."
     });
     return;
   }
@@ -67,7 +67,7 @@ async function search(context, mongo) {
       items,
       query,
       url: decodeURIComponent(requestUrl),
-      bestAmount: BEST,
+      bestAmount: BEST
     }),
     { parse_mode: "HTML", disable_web_page_preview: true }
   );
@@ -86,7 +86,7 @@ export function register(bot, mongo) {
   return [
     {
       command: "search",
-      description: "Cari di DuckDuckGo",
-    },
+      description: "Cari di DuckDuckGo"
+    }
   ];
 }

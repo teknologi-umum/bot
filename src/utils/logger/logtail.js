@@ -28,13 +28,13 @@ export class Logger {
    * @return {Promise<Object>}
    */
   async log(data) {
-    if (!data) {
+    if (!data) 
       return Promise.reject("`data` should not be empty");
-    }
+    
 
-    if (!this.token || process.env.NODE_ENV !== "production") {
+    if (!this.token || process.env.NODE_ENV !== "production") 
       return {};
-    }
+    
 
     const logtail = new Logtail(this.token);
     const response = await logtail.info(data.command, { ...data });
@@ -48,15 +48,17 @@ export class Logger {
    * @return {Promise<Object>}
    */
   async fromContext(context, command = "", additionalData = {}) {
-    return await this.log({
+    const logged = await this.log({
       chatID: context.chat.id,
       userID: context.from.id,
       message: context.message?.text ?? "",
       updateType: context.updateType,
       chatType: context.chat.type,
       command,
-      ...additionalData,
+      ...additionalData
     });
+
+    return logged;
   }
 }
 

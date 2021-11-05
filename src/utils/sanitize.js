@@ -11,20 +11,20 @@ export function sanitize(htmlText, clean = false) {
     allowedTags: clean
       ? []
       : [
-          "a",
-          "b",
-          "i",
-          "s",
-          "u",
-          "em",
-          "strong",
-          "strike",
-          "del",
-          "code",
-          "pre",
-          "br",
-        ],
-    allowedAttributes: clean ? {} : { a: ["href"] },
+        "a",
+        "b",
+        "i",
+        "s",
+        "u",
+        "em",
+        "strong",
+        "strike",
+        "del",
+        "code",
+        "pre",
+        "br"
+      ],
+    allowedAttributes: clean ? {} : { a: ["href"] }
   })
     .replace(/<br>|<br\/>|<br \/>/g, "\n")
     .trimStart();

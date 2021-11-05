@@ -12,15 +12,15 @@ export function stackexchange($) {
   )
     .first()
     .html();
-  if (acceptedText) {
+  if (acceptedText) 
     return {
       type: "text",
-      content: sanitize(acceptedText).trim().replace(/\r\n/g, "\n"),
+      content: sanitize(acceptedText).trim().replace(/\r\n/g, "\n")
     };
-  }
+  
 
   return {
     type: "error",
-    content: "",
+    content: ""
   };
 }

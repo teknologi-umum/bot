@@ -19,7 +19,7 @@ import { caniuse } from "#services/laodeai/handlers/caniuse.js";
 
 const readFile = (path) =>
   readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), path), {
-    encoding: "utf-8",
+    encoding: "utf-8"
   });
 
 test("should be able to parse a stackoverflow code output", () => {

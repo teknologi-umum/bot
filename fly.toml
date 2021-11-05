@@ -1,12 +1,11 @@
 # fly.toml file generated for teknologi-umum-bot on 2021-08-08T13:56:06+07:00
 
 app = "teknologi-umum-bot"
-
 kill_signal = "SIGINT"
 kill_timeout = 5
 
 [env]
 
 [experimental]
-  allowed_public_ports = []
-  auto_rollback = true
+allowed_public_ports = []
+auto_rollback = true

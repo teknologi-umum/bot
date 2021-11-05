@@ -8,24 +8,26 @@ const cacheTtl = 10 * 60 * 1000;
 const cache = new SingleValueCache(cacheTtl);
 
 async function getCurrencyDictionary() {
-  return await cache.getOrCreate(async () => {
+  const c = await cache.getOrCreate(async () => {
     const { statusCode, body } = await got.get(
       "https://monty.vmasdani.my.id/currencies",
       {
         responseType: "json",
-        throwHttpErrors: false,
+        throwHttpErrors: false
       }
     );
 
-    if (statusCode !== 200) {
+    if (statusCode !== 200) 
       throw "Gagal mendapatkan data forex";
-    }
+    
 
     return body.reduce((currencyBySymbol, currency) => {
       currencyBySymbol[currency.name] = currency;
       return currencyBySymbol;
     }, {});
   });
+
+  return c;
 }
 
 export async function getCurrencyQueriesRegex() {

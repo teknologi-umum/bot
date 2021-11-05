@@ -7,16 +7,16 @@ export function bonappetit($) {
   const output = $(".recipe", "#main-content")
     .map((_, el) => {
       const title = $(el)
-        .find('h1[data-testid="ContentHeaderHed"]')
+        .find("h1[data-testid=\"ContentHeaderHed\"]")
         .first()
         .text();
-      const ingrs = $(el).find('div[data-testid="IngredientList"] div');
+      const ingrs = $(el).find("div[data-testid=\"IngredientList\"] div");
       const ingredientsAmount = $(ingrs)
-        .find('p[class*="Amount"]')
+        .find("p[class*=\"Amount\"]")
         .map((_, el) => $(el).text())
         .toArray();
       const ingredientsDesc = $(ingrs)
-        .find('div[class*="Description"]')
+        .find("div[class*=\"Description\"]")
         .map((_, el) => $(el).text())
         .toArray();
       const ingredients = ingredientsAmount.map(
@@ -24,7 +24,7 @@ export function bonappetit($) {
       );
       const directions = $(el)
         .find(
-          'div[data-testid="InstructionsWrapper"] div[class*="InstructionGroupWrapper"] div[class*="InstructionStepWrapper"]'
+          "div[data-testid=\"InstructionsWrapper\"] div[class*=\"InstructionGroupWrapper\"] div[class*=\"InstructionStepWrapper\"]"
         )
         .map((_, el) => $(el).find("div p").text().trim())
         .toArray();
@@ -48,6 +48,6 @@ export function bonappetit($) {
 
   return {
     type: "error",
-    content: "",
+    content: ""
   };
 }

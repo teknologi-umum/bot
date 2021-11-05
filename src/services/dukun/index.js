@@ -25,10 +25,25 @@ const dukunSchema = new mongoose.Schema(
     points: Number,
     master: Boolean,
     createdAt: Date,
-    updatedAt: Date,
+    updatedAt: Date
   },
   { collection: "dukun" }
 );
+
+
+/**
+ * Fetch upstream data, thhen store to cache.
+ * @param {import('mongoose').Model} dukunModel
+ * @param {import('#utils/redis.js').default} redis - This type is wrong atm. Might fix this later.
+ * @param {Dukun} updatedData
+ * @returns {Promise<void>}
+ */
+async function fetchUpstream(dukunModel, redis, updatedData) {
+  const allDukun = await dukunModel.find({}, null, { sort: { points: -1 } });
+  await redis.MSET("dukun:all", JSON.stringify(allDukun));
+  if (updatedData.master) 
+    await redis.MSET("dukun:master:points", updatedData.points);
+}
 
 /**
  *
@@ -64,7 +79,7 @@ async function dukun(context, mongo, cache) {
       );
       await logger.fromContext(context, "dukun", {
         sendText:
-          "Poin dukun hanya bisa diberikan oleh orang lain. Najis banget dah self-claimed🙄",
+          "Poin dukun hanya bisa diberikan oleh orang lain. Najis banget dah self-claimed🙄"
       });
       return;
     }
@@ -91,15 +106,13 @@ async function dukun(context, mongo, cache) {
     if (argument.startsWith("+")) {
       point = Math.abs(Number.parseInt(argument.replace("-", "")));
       // Maximum point addition is 10
-      if (point > 10) {
+      if (point > 10) 
         point = 10;
-      }
     } else if (argument.startsWith("-")) {
       point = Math.abs(Number.parseInt(argument.replace("-", ""))) * -1;
       // Maximum point subtraction is 10
-      if (point < -10) {
+      if (point < -10) 
         point = -10;
-      }
     } else {
       // No argument was given, +1 by default
       point = 1;
@@ -125,14 +138,14 @@ async function dukun(context, mongo, cache) {
         { userID: replyMessage.from.id },
         {
           $inc: {
-            points: point,
+            points: point
           },
           $set: {
             firstName: replyMessage.from?.first_name ?? "",
             lastName: replyMessage.from?.last_name ?? "",
             userName: replyMessage.from?.username ?? "",
-            updatedAt: new Date(),
-          },
+            updatedAt: new Date()
+          }
         },
         { upsert: true, new: true }
       );
@@ -151,7 +164,7 @@ async function dukun(context, mongo, cache) {
 
       await fetchUpstream(Dukun, redis, updatedData);
       await logger.fromContext(context, "dukun", {
-        sendText: sentMessage.text,
+        sendText: sentMessage.text
       });
       return;
     }
@@ -160,10 +173,10 @@ async function dukun(context, mongo, cache) {
     const submittedDukun =
       dukunDataParsed?.find((d) => d.userID === replyMessage.from.id)?.points ??
       0;
-    if (submittedDukun + point >= dukunMasterPoints) {
+    if (submittedDukun + point >= dukunMasterPoints) 
       // Only may increment up to dukunMasterPoint - 1
       point = point - (submittedDukun + point - dukunMasterPoints) - 1;
-    }
+    
 
     // Add dukun point
     /** @type {Dukun} */
@@ -171,19 +184,19 @@ async function dukun(context, mongo, cache) {
       { userID: replyMessage.from.id },
       {
         $inc: {
-          points: point,
+          points: point
         },
         $set: {
           firstName: replyMessage.from?.first_name ?? "",
           lastName: replyMessage.from?.last_name ?? "",
           userName: replyMessage.from?.username ?? "",
-          updatedAt: new Date(),
+          updatedAt: new Date()
         },
         $setOnInsert: {
           userID: replyMessage.from.id,
           master: false,
-          createdAt: new Date(),
-        },
+          createdAt: new Date()
+        }
       },
       { upsert: true, new: true }
     );
@@ -213,7 +226,7 @@ async function dukun(context, mongo, cache) {
     );
     await logger.fromContext(context, "dukun", {
       sendText:
-        "No dukun data available. Try to ngedukun and ask someone to reply your message with /dukun +1. Jangan lupa dipasang sesajennya.",
+        "No dukun data available. Try to ngedukun and ask someone to reply your message with /dukun +1. Jangan lupa dipasang sesajennya."
     });
     return;
   }
@@ -225,26 +238,11 @@ async function dukun(context, mongo, cache) {
     context.chat.id,
     renderTemplate("dukun/dukun.template.hbs", {
       dukun: leaderboard.slice(0, 15),
-      others: leaderboard.length - 15,
+      others: leaderboard.length - 15
     }),
     { parse_mode: "HTML" }
   );
   await logger.fromContext(context, "dukun", { sendText: sentMessage.text });
-}
-
-/**
- * Fetch upstream data, thhen store to cache.
- * @param {import('mongoose').Model} dukunModel
- * @param {import('#utils/redis.js').default} redis - This type is wrong atm. Might fix this later.
- * @param {Dukun} updatedData
- * @returns {Promise<void>}
- */
-async function fetchUpstream(dukunModel, redis, updatedData) {
-  const allDukun = await dukunModel.find({}, null, { sort: { points: -1 } });
-  await redis.MSET("dukun:all", JSON.stringify(allDukun));
-  if (updatedData.master) {
-    await redis.MSET("dukun:master:points", updatedData.points);
-  }
 }
 
 /**
@@ -260,7 +258,7 @@ export function register(bot, mongo, cache) {
   return [
     {
       command: "dukun",
-      description: "Siapa yang paling dukun disini",
-    },
+      description: "Siapa yang paling dukun disini"
+    }
   ];
 }

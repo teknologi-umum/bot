@@ -10,7 +10,7 @@ import { compile } from "tempura";
  */
 export function renderTemplate(path, data) {
   const template = readFileSync(resolve("src", "services", path), {
-    encoding: "utf8",
+    encoding: "utf8"
   });
   return compile(template)(data);
 }

@@ -20,7 +20,7 @@ async function news(context) {
       "https://berita-indo-api.vercel.app/v1/cnn-news",
       {
         responseType: "json",
-        throwHttpErrors: false,
+        throwHttpErrors: false
       }
     );
     return {
@@ -29,9 +29,9 @@ async function news(context) {
         .map(({ title, link, contentSnippet }) => ({
           title,
           link,
-          contentSnippet,
+          contentSnippet
         })),
-      statusCode,
+      statusCode
     };
   });
 
@@ -46,7 +46,7 @@ async function news(context) {
   await context.telegram.sendMessage(
     context.message.chat.id,
     renderTemplate("news/news.template.hbs", {
-      newsList,
+      newsList
     }),
     { parse_mode: "HTML", disable_web_page_preview: true }
   );
@@ -63,7 +63,7 @@ export function register(bot) {
   return [
     {
       command: "news",
-      description: "Memberikan berita terbaru",
-    },
+      description: "Memberikan berita terbaru"
+    }
   ];
 }
