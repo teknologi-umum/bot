@@ -128,8 +128,10 @@ export function isAllowed(ast, locals = []) {
 
 export async function safeEval(source, superpowers = []) {
   try {
+    /* eslint-disable no-await-in-loop */
     for (const superpower of superpowers) 
       source = await superpower(source);
+    /* eslint-enable no-await-in-loop */
   } catch (err) {
     return err;
   }

@@ -128,7 +128,9 @@ test("should not be able to use functions that are not whitelisted in HOF", asyn
 });
 
 test("should not be able to use disallowed expression in string template", async () => {
+  /* eslint-disable no-template-curly-in-string */
   const result = await safeEval("`${foo.toString()}`");
+  /* eslint-enable no-template-curly-in-string */
   assert.equal(result, "Tidak boleh mengakses foo");
 });
 
@@ -202,9 +204,11 @@ test("should not be able to declare property using computed expression", async (
 
 test("should execute superpowers before eval", async () => {
   const result = await safeEval("1", [
+    /* eslint-disable require-await */
     async function(source) {
       return source + "+1";
     }
+    /* eslint-enable require-await */
   ]);
   assert.equal(result, "2");
 });

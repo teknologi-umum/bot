@@ -137,6 +137,7 @@ async function sendError(context) {
 async function goThroughURLs(validSources) {
   for (let i = 0; i < validSources.length; i++) {
     const url = validSources[i];
+    /* eslint-disable no-await-in-loop */
     const { body, statusCode } = await got.get(url.href, {
       headers: {
         Accept: "text/html"
@@ -147,6 +148,7 @@ async function goThroughURLs(validSources) {
         request: 15_000
       }
     });
+    /* eslint-enable no-await-in-loop */
 
     if (statusCode !== 200) 
       continue;

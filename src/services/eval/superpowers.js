@@ -26,12 +26,16 @@ export async function resolveStocks(source) {
     // 1 stockCode: no delay
     // 2 stockCodes: 5000ms delay
     // 3 stockCodes: 2500ms delay
+    /* eslint-disable no-await-in-loop */
     if (i > 0) 
       await new Promise((resolve) =>
         setTimeout(resolve, 5000 / (stockCodes.size - 1))
       );
+    /* eslint-enable no-await-in-loop */
     
+    /* eslint-disable no-await-in-loop */
     const stock = await fetchStock(stockCode);
+    /* eslint-enable no-await-in-loop */
     stockByCode[stockCode] = stock;
     i++;
   }
@@ -83,10 +87,14 @@ export async function resolveCryptoCurrencies(source) {
   for (const symbol of symbols) {
     // 1 symbol: no delay
     // 2 symbols or more: 1000ms delay
+    /* eslint-disable no-await-in-loop */
     if (i > 0) 
       await new Promise((resolve) => setTimeout(resolve, 1000));
+    /* eslint-enable no-await-in-loop */
     
+    /* eslint-disable no-await-in-loop */
     const rate = await fetchCryptoCurrency(symbol);
+    /* eslint-enable no-await-in-loop */
     rateBySymbol[symbol] = rate;
     i++;
   }
