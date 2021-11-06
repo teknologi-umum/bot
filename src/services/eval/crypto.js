@@ -3,7 +3,7 @@ import got from "got";
 export async function fetchCryptoCurrency(cryptoSymbol) {
   if (typeof cryptoSymbol !== "string")
     throw "Simbol mata uang crypto harus berupa string";
-  if (!/^[A-Z]{3,8}(IDR|USDT)$/.test(cryptoSymbol))
+  if (!/^[A-Z]{3,8}(?:IDR|USDT)$/.test(cryptoSymbol))
     throw `Simbol mata uang crypto ${cryptoSymbol} tidak valid`;
 
   const { statusCode, body } = await got.get(
