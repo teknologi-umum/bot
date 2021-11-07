@@ -42,7 +42,7 @@
   "devDependencies": {
     "@teknologi-umum/eslint-config-base": "^0.0.2",
     "c8": "^7.10.0",
-    "eslint": "^8.1.0",
+    "eslint": "^8.2.0",
     "husky": "^7.0.4",
     "nodemon": "^2.0.14",
     "uvu": "^0.5.2"
