@@ -231,9 +231,7 @@ async function dukun(context, mongo, cache) {
     return;
   }
 
-  const leaderboard = dukunDataParsed.sort((a, b) =>
-    a.points < b.points ? 1 : a.points > b.points ? -1 : 0
-  );
+  const leaderboard = dukunDataParsed.sort((a, b) => b.points - a.points);
   const sentMessage = await context.telegram.sendMessage(
     context.chat.id,
     renderTemplate("dukun/dukun.template.hbs", {

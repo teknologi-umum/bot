@@ -6,7 +6,7 @@ import { isBigGroup } from "#utils/home.js";
 import { logger } from "#utils/logger/logtail.js";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 
-const rateLimiter = new RateLimiterMemory({ points: 6, duration: 60});
+const rateLimiter = new RateLimiterMemory({ points: 6, duration: 60 });
 
 /**
  * Send memes..

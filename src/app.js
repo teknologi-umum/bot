@@ -17,7 +17,7 @@ import * as covid from "./services/covid/index.js";
 import * as snap from "./services/snap/index.js";
 import * as blidingej from "./services/bliding-ej/index.js";
 import * as evalBot from "./services/eval/index.js";
-import * as blog from "./services/blog/index.js";
+import * as blog from "./services/devread/index.js";
 import * as quiz from "./services/quiz/index.js";
 import * as search from "./services/search/index.js";
 import * as dukun from "./services/dukun/index.js";
