@@ -1,6 +1,6 @@
 /**
  * @file redis.js
- * @fileoverview Redis functions with JSDoc annotations
+ * @fileoverview Redis functions wrapped in Promise API with JSDoc annotations
  */
 
 /**
