@@ -1,6 +1,6 @@
 /**
  * @file redis.js
- * @fileoverview Async Redis functions with JSDoc annotations
+ * @fileoverview Redis functions wrapped in Promise API with JSDoc annotations
  */
 
 /**
@@ -16,7 +16,7 @@ function redisClient(client) {
      * @returns {Promise<String>} Reply
      * @see Documentation https://redis.io/commands/ping
      */
-    async PING() {
+    PING() {
       return new Promise((resolve, reject) => {
         client.PING((error, reply) => {
           if (error) return reject(error);
@@ -30,7 +30,7 @@ function redisClient(client) {
      * @returns {Promise<String>} "OK"
      * @see Documentation https://redis.io/commands/quit
      */
-    async QUIT() {
+    QUIT() {
       return new Promise((resolve, reject) => {
         client.QUIT((error, reply) => {
           if (error) return reject(error);
@@ -45,7 +45,7 @@ function redisClient(client) {
      * @returns {Promise<string|null>} The value of key, or nil when key does not exist.
      * @see Documentation https://redis.io/commands/get
      */
-    async GET(key) {
+    GET(key) {
       return new Promise((resolve, reject) => {
         client.GET(key, (error, reply) => {
           if (error) return reject(error);
@@ -61,7 +61,7 @@ function redisClient(client) {
      * @returns {Promise<Array<string>>} List of values at the specified keys.
      * @see Documentation https://redis.io/commands/mget
      */
-    async MGET(...key) {
+    MGET(...key) {
       return new Promise((resolve, reject) => {
         client.MGET(key.flat(99), (error, reply) => {
           if (error) return reject(error);
@@ -75,7 +75,7 @@ function redisClient(client) {
      * @returns {Promise<Array<string>>} list of keys matching pattern.
      * @see Documentation https://redis.io/commands/keys
      */
-    async KEYS(pattern) {
+    KEYS(pattern) {
       return new Promise((resolve, reject) => {
         client.KEYS(pattern, (error, reply) => {
           if (error) return reject(error);
@@ -93,12 +93,19 @@ function redisClient(client) {
      * @returns {Promise<string|undefined>} "OK"
      * @see Documentation https://redis.io/commands/set
      */
-    async SET(key, value, options) {
+    SET(key, value, options) {
       return new Promise((resolve, reject) => {
-        client.SET(key, value, options?.mode ?? '', options?.flag ?? '', options?.duration ?? 0, (error, reply) => {
-          if (error) return reject(error);
-          return resolve(reply);
-        });
+        client.SET(
+          key,
+          value,
+          options?.mode ?? "",
+          options?.flag ?? "",
+          options?.duration ?? 0,
+          (error, reply) => {
+            if (error) return reject(error);
+            return resolve(reply);
+          }
+        );
       });
     },
     /**
@@ -108,7 +115,7 @@ function redisClient(client) {
      * @returns {Promise<Number>} 1 if key was set, 0 if key wasn't set
      * @see Documentation https://redis.io/commands/setnx
      */
-    async SETNX(key, value) {
+    SETNX(key, value) {
       return new Promise((resolve, reject) => {
         client.SETNX(key, value, (error, reply) => {
           if (error) return reject(error);
@@ -124,7 +131,7 @@ function redisClient(client) {
      * @returns {Promise<String>} "OK"
      * @see Documentation https://redis.io/commands/setex
      */
-    async SETEX(key, seconds, value) {
+    SETEX(key, seconds, value) {
       return new Promise((resolve, reject) => {
         client.SETEX(key, seconds, value, (error, reply) => {
           if (error) return reject(error);
@@ -138,7 +145,7 @@ function redisClient(client) {
      * @returns {Promise<boolean>} True if the all the keys were set. False if no key was set (at least one key already existed).
      * @see Documentation https://redis.io/commands/mset
      */
-    async MSET(...keys) {
+    MSET(...keys) {
       return new Promise((resolve, reject) => {
         client.MSET(keys.flat(99), (error, reply) => {
           if (error) return reject(error);
@@ -153,7 +160,7 @@ function redisClient(client) {
      * @returns {Promise<boolean>} True if the all the keys were set. False if no key was set (at least one key already existed).
      * @see Documentation https://redis.io/commands/msetnx
      */
-    async MSETNX(...keys) {
+    MSETNX(...keys) {
       return new Promise((resolve, reject) => {
         client.MSETNX(keys.flat(99), (error, reply) => {
           if (error) return reject(error);
@@ -167,7 +174,7 @@ function redisClient(client) {
      * @returns {Promise<Number>} 1 if key exists, 0 is key doesn't exist.
      * @see Documentation https://redis.io/commands/exists
      */
-    async EXISTS(key) {
+    EXISTS(key) {
       return new Promise((resolve, reject) => {
         client.EXISTS(key, (error, reply) => {
           if (error) return reject(error);
@@ -185,7 +192,7 @@ function redisClient(client) {
      * @returns {Promise<String>} "OK"
      * @see Documentation https://redis.io/commands/rename
      */
-    async RENAME(key, newkey) {
+    RENAME(key, newkey) {
       return new Promise((resolve, reject) => {
         client.RENAME(key, newkey, (error, reply) => {
           if (error) return reject(error);
@@ -201,7 +208,7 @@ function redisClient(client) {
      * @returns {Promise<number>} 1 is timeout was set. 0 if key does not exist.
      * @see Documentation https://redis.io/commands/expire
      */
-    async EXPIRE(key, seconds) {
+    EXPIRE(key, seconds) {
       return new Promise((resolve, reject) => {
         client.EXPIRE(key, seconds, (error, reply) => {
           if (error) return reject(error);
@@ -217,7 +224,7 @@ function redisClient(client) {
      * @returns {Promise<number>} TTL in seconds, or a negative value in order to signal an error.
      * @see Documentation https://redis.io/commands/ttl
      */
-    async TTL(key) {
+    TTL(key) {
       return new Promise((resolve, reject) => {
         client.TTL(key, (error, reply) => {
           if (error) return reject(error);
@@ -232,7 +239,7 @@ function redisClient(client) {
      * @returns {Promise<Number>} 1 if the timeout was removed. 0 if key does not exist or does not have an associated timeout.
      * @see Documentation https://redis.io/commands/persist
      */
-    async PERSIST(key) {
+    PERSIST(key) {
       return new Promise((resolve, reject) => {
         client.PERSIST(key, (error, reply) => {
           if (error) return reject(error);
@@ -247,7 +254,7 @@ function redisClient(client) {
      * @returns {Promise<String>} type of key, or none when key does not exist.
      * @see Documentation https://redis.io/commands/type
      */
-    async TYPE(key) {
+    TYPE(key) {
       return new Promise((resolve, reject) => {
         client.TYPE(key, (error, reply) => {
           if (error) return reject(error);
@@ -265,7 +272,7 @@ function redisClient(client) {
      * @returns {Promise<Number>} the value of key after the increment
      * @see Documentation https://redis.io/commands/incr
      */
-    async INCR(key) {
+    INCR(key) {
       return new Promise((resolve, reject) => {
         client.INCR(key, (error, reply) => {
           if (error) return reject(error);
@@ -282,7 +289,7 @@ function redisClient(client) {
      * @returns {Promise<Number>} the value of key after the decrement
      * @see Documentation https://redis.io/commands/decr
      */
-    async DECR(key) {
+    DECR(key) {
       return new Promise((resolve, reject) => {
         client.DECR(key, (error, reply) => {
           if (error) return reject(error);
@@ -298,7 +305,7 @@ function redisClient(client) {
      * @returns {Promise<Number>} the length of the string after the append operation.
      * @see Documentation https://redis.io/commands/append
      */
-    async APPEND(key, value) {
+    APPEND(key, value) {
       return new Promise((resolve, reject) => {
         client.APPEND(key, value, (error, reply) => {
           if (error) return reject(error);
@@ -312,8 +319,8 @@ function redisClient(client) {
      * @returns {Promise<Number>} The number of keys that were removed.
      * @see Documentation https://redis.io/commands/del
      */
-    async DEL(...key) {
-      return new Promise(function (resolve, reject) {
+    DEL(...key) {
+      return new Promise(function(resolve, reject) {
         client.DEL(key.flat(99), (error, reply) => {
           if (error) return reject(error);
           return resolve(reply);
@@ -328,8 +335,8 @@ function redisClient(client) {
      * @returns {Promise<Number>} 1 if the hash contains field. 0 if the hash does not contain field, or key does not exist.
      * @see Documentation https://redis.io/commands/hexists
      */
-    async HEXISTS(key, field) {
-      return new Promise(function (resolve, reject) {
+    HEXISTS(key, field) {
+      return new Promise(function(resolve, reject) {
         client.HEXISTS(key, field, (err, reply) => {
           if (err) return reject(err);
           return resolve(reply);
@@ -347,8 +354,8 @@ function redisClient(client) {
      * @returns {Promise<Number>} The number of fields that were added.
      * @see Documentation https://redis.io/commands/hset
      */
-    async HSET(key, ...hash) {
-      return new Promise(function (resolve, reject) {
+    HSET(key, ...hash) {
+      return new Promise(function(resolve, reject) {
         client.HSET(key, ...hash, (err, reply) => {
           if (err) return reject(err);
           return resolve(reply);
@@ -367,8 +374,8 @@ function redisClient(client) {
      * @returns {Promise<String[]>} list of values associated with the given fields, in the same order as they are requested.
      * @see Documentation https://redis.io/commands/hmget
      */
-    async HMGET(key, ...hash) {
-      return new Promise(function (resolve, reject) {
+    HMGET(key, ...hash) {
+      return new Promise(function(resolve, reject) {
         client.HMGET(key, ...hash, (err, reply) => {
           if (err) return reject(err);
           return resolve(reply);
@@ -382,14 +389,14 @@ function redisClient(client) {
      * @returns {Promise<Record<string, string>>} list of fields and their values stored in the hash, or an empty list when key does not exist.
      * @see Documentation https://redis.io/commands/hgetall
      */
-    async HGETALL(key) {
+    HGETALL(key) {
       return new Promise((resolve, reject) => {
         client.HGETALL(key, (err, reply) => {
           if (err) return reject(err);
           return resolve(reply);
         });
       });
-    },
+    }
   };
 }
 

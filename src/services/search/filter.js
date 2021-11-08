@@ -1,10 +1,10 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const wordSchema = new mongoose.Schema(
   {
-    value: String,
+    value: String
   },
-  { collection: 'badstuff' },
+  { collection: "badstuff" }
 );
 
 /**
@@ -14,14 +14,17 @@ const wordSchema = new mongoose.Schema(
  * @returns {Promise<Array<{href: string, text: string}>>}
  */
 export async function cleanFilter(search, mongo) {
-  const Words = mongo.model('Words', wordSchema, 'badstuff');
+  const Words = mongo.model("Words", wordSchema, "badstuff");
   const tempAggregate = [];
 
   for (let i = 0; i < search.length; i++) {
     const { href, title } = search[i];
-    const textArray = title.split(/[^A-Za-z0-9]/gi);
+    const textArray = title.split(/[^A-Z\d]/gi);
     const url = new URL(href);
-    const urlArray = [url.hostname.replace(/www[A-Za-z0-9]*\./i, ''), ...url.pathname.split('/')];
+    const urlArray = [
+      url.hostname.replace(/www[A-Z\d]*\./i, ""),
+      ...url.pathname.split("/")
+    ];
     tempAggregate.push(...textArray, ...urlArray);
   }
 
@@ -30,15 +33,17 @@ export async function cleanFilter(search, mongo) {
     return s;
   }, new Set());
 
-  const matches = await Words.aggregate([{ $match: { value: { $in: Array.from(results) } } }]);
+  const matches = await Words.aggregate([
+    { $match: { value: { $in: Array.from(results) } } }
+  ]);
   const dedupeMatches = matches.map((m) => m.value);
 
   const result = search.filter((o) => {
-    for (const match of dedupeMatches) {
-      if (o.href.includes(match) || o.title.includes(match)) {
+    for (const match of dedupeMatches) 
+      if (o.href.includes(match) || o.title.includes(match)) 
         return false;
-      }
-    }
+      
+    
 
     return true;
   });
@@ -52,7 +57,7 @@ export async function cleanFilter(search, mongo) {
  * @returns {Promise<Boolean>}
  */
 export async function isClean(input, mongo) {
-  const Words = mongo.model('Words', wordSchema, 'badstuff');
+  const Words = mongo.model("Words", wordSchema, "badstuff");
   const words = input
     .split(/\s+/)
     .map((w) => w.toLowerCase())
@@ -60,6 +65,8 @@ export async function isClean(input, mongo) {
       s.add(w);
       return s;
     }, new Set());
-  const matches = await Words.aggregate([{ $match: { value: { $in: Array.from(words) } } }]);
+  const matches = await Words.aggregate([
+    { $match: { value: { $in: Array.from(words) } } }
+  ]);
   return matches.length === 0;
 }

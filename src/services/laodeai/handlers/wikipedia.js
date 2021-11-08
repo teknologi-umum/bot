@@ -1,4 +1,4 @@
-import { sanitize } from '#utils/sanitize.js';
+import { sanitize } from "#utils/sanitize.js";
 
 /**
  * Process Wikipedia from Cheerio readout
@@ -6,23 +6,26 @@ import { sanitize } from '#utils/sanitize.js';
  * @returns {{ type: 'text' | 'error', content: String}}
  */
 export function wikipedia($) {
-  const paragraphs = $('#bodyContent .mw-body-content .mw-parser-output p', '.mw-body')
+  const paragraphs = $(
+    "#bodyContent .mw-body-content .mw-parser-output p",
+    ".mw-body"
+  )
     .map((_, el) => $(el).html())
     .toArray()
     .slice(0, 3)
-    .join('\n');
+    .join("\n");
 
-  if (paragraphs) {
+  if (paragraphs) 
     return {
-      type: 'text',
+      type: "text",
       content: sanitize(paragraphs)
-        .replace(/\[(\d+|update)\]/g, '')
-        .replace(/\r\n/g, '\n')
-        .trim(),
+        .replace(/\[(\d+|update)\]/g, "")
+        .replace(/\r\n/g, "\n")
+        .trim()
     };
-  }
+  
   return {
-    type: 'error',
-    content: '',
+    type: "error",
+    content: ""
   };
 }

@@ -1,6 +1,6 @@
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
-import { compile } from 'tempura';
+import { readFileSync } from "fs";
+import { resolve } from "path";
+import { compile } from "tempura";
 
 /**
  * Helper function to render the template
@@ -9,8 +9,8 @@ import { compile } from 'tempura';
  * @return {Promise<string>}
  */
 export function renderTemplate(path, data) {
-  const template = readFileSync(resolve('src', 'services', path), {
-    encoding: 'utf8',
+  const template = readFileSync(resolve("src", "services", path), {
+    encoding: "utf8"
   });
   return compile(template)(data);
 }

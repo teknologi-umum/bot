@@ -25,9 +25,6 @@ jobs:
       - name: ESLint check
         run: npx eslint --ignore-path .gitignore .
 
-      - name: Prettier check
-        run: npx prettier --check .
-
       - name: Test
         run: npm run test
 
@@ -55,7 +52,7 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         with:
-          args: 'deploy'
+          args: "deploy"
 
       - name: Create Sentry release
         uses: getsentry/action-release@v1

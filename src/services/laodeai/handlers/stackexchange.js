@@ -1,4 +1,4 @@
-import { sanitize } from '#utils/sanitize.js';
+import { sanitize } from "#utils/sanitize.js";
 
 /**
  * Process Stackexchange from Cheerio readout
@@ -6,16 +6,21 @@ import { sanitize } from '#utils/sanitize.js';
  * @returns {{ type: 'text' | 'error', content: String}}
  */
 export function stackexchange($) {
-  const acceptedText = $('.answer .post-layout .answercell .s-prose', '#answers').first().html();
-  if (acceptedText) {
+  const acceptedText = $(
+    ".answer .post-layout .answercell .s-prose",
+    "#answers"
+  )
+    .first()
+    .html();
+  if (acceptedText) 
     return {
-      type: 'text',
-      content: sanitize(acceptedText).trim().replace(/\r\n/g, '\n'),
+      type: "text",
+      content: sanitize(acceptedText).trim().replace(/\r\n/g, "\n")
     };
-  }
+  
 
   return {
-    type: 'error',
-    content: '',
+    type: "error",
+    content: ""
   };
 }

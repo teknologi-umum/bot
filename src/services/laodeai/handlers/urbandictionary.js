@@ -1,4 +1,4 @@
-import { sanitize } from '#utils/sanitize.js';
+import { sanitize } from "#utils/sanitize.js";
 
 /**
  * Process Urban Dictionary from Cheerio readout
@@ -6,19 +6,19 @@ import { sanitize } from '#utils/sanitize.js';
  * @returns {{ type: 'text' | 'error', content: String}}
  */
 export function urbandictionary($) {
-  const definition = $('.def-panel');
-  const phrase = definition.find('.def-header > .word').first().text();
-  const meaning = definition.find('.meaning').html();
+  const definition = $(".def-panel");
+  const phrase = definition.find(".def-header > .word").first().text();
+  const meaning = definition.find(".meaning").html();
 
-  if (phrase && meaning) {
+  if (phrase && meaning) 
     return {
-      type: 'text',
-      content: `<b>${phrase}</b> is ${sanitize(meaning)}`,
+      type: "text",
+      content: `<b>${phrase}</b> is ${sanitize(meaning)}`
     };
-  }
+  
 
   return {
-    type: 'error',
-    content: '',
+    type: "error",
+    content: ""
   };
 }

@@ -2,8 +2,8 @@
  * Provides default headers for a HTTP request
  */
 export const defaultHeaders = {
-  Accept: 'application/json,*/*',
-  'User-Agent': 'Teknologi Umum <teknologi.umum@gmail.com>',
+  Accept: "application/json,*/*",
+  "User-Agent": "Teknologi Umum Bot <teknologi.umum@gmail.com>"
 };
 
 /**
@@ -11,7 +11,8 @@ export const defaultHeaders = {
  * @param {string} url - Raw URL from duckduckgo
  * @return {string} Clean and valid URL
  */
-export const cleanURL = (url) => url.replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, '').replace(/&rut=.*$/, '');
+export const cleanURL = (url) =>
+  url.replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, "").replace(/&rut=.*$/, "");
 
 /**
  * Fetch result from DuckDuckGo
@@ -20,15 +21,15 @@ export const cleanURL = (url) => url.replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, 
  * @return {Promise<import('got').Response>} Result
  */
 export const fetchDDG = async (got, query) => {
-  const response = await got.get('https://html.duckduckgo.com/html/', {
+  const response = await got.get("https://html.duckduckgo.com/html/", {
     searchParams: {
       kp: 1, // safe search // 1: strict | -1: moderate | 2: off
-      q: query,
+      q: query
     },
     headers: {
-      Accept: 'text/html',
+      Accept: "text/html"
     },
-    responseType: 'text',
+    responseType: "text"
   });
 
   return response;

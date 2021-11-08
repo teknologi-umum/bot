@@ -11,7 +11,7 @@
  * @property {String=} actions
  */
 
-import { Logtail } from '@logtail/node';
+import { Logtail } from "@logtail/node";
 
 export class Logger {
   /**
@@ -28,13 +28,13 @@ export class Logger {
    * @return {Promise<Object>}
    */
   async log(data) {
-    if (!data) {
-      return Promise.reject('`data` should not be empty');
-    }
+    if (!data) 
+      return Promise.reject("`data` should not be empty");
+    
 
-    if (!this.token || process.env.NODE_ENV !== 'production') {
+    if (!this.token || process.env.NODE_ENV !== "production") 
       return {};
-    }
+    
 
     const logtail = new Logtail(this.token);
     const response = await logtail.info(data.command, { ...data });
@@ -47,17 +47,19 @@ export class Logger {
    * @param {FullConfig} additionalData
    * @return {Promise<Object>}
    */
-  async fromContext(context, command = '', additionalData = {}) {
-    return await this.log({
+  async fromContext(context, command = "", additionalData = {}) {
+    const logged = await this.log({
       chatID: context.chat.id,
       userID: context.from.id,
-      message: context.message?.text ?? '',
+      message: context.message?.text ?? "",
       updateType: context.updateType,
       chatType: context.chat.type,
       command,
-      ...additionalData,
+      ...additionalData
     });
+
+    return logged;
   }
 }
 
-export const logger = new Logger(String(process.env?.LOGTAIL_TOKEN || ''));
+export const logger = new Logger(String(process.env?.LOGTAIL_TOKEN || ""));

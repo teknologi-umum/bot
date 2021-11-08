@@ -1,10 +1,10 @@
-import got from 'got';
-import { defaultHeaders } from '../../utils/http.js';
+import got from "got";
+import { defaultHeaders } from "#utils/http.js";
 
 // use object so it will stay O(1) when indexing
 const VALID_LANGUAGES = {
   abap: true,
-  'actionscript-3': true,
+  "actionscript-3": true,
   ada: true,
   apache: true,
   apex: true,
@@ -24,23 +24,23 @@ const VALID_LANGUAGES = {
   cpp: true,
   crystal: true,
   csharp: true,
-  'c#': true,
+  "c#": true,
   css: true,
   d: true,
   dart: true,
   diff: true,
   docker: true,
-  'dream-maker': true,
+  "dream-maker": true,
   elixir: true,
   elm: true,
   erb: true,
   erlang: true,
   fish: true,
   fsharp: true,
-  'f#': true,
+  "f#": true,
   gherkin: true,
-  'git-commit': true,
-  'git-rebase': true,
+  "git-commit": true,
+  "git-rebase": true,
   gnuplot: true,
   go: true,
   graphql: true,
@@ -57,7 +57,7 @@ const VALID_LANGUAGES = {
   java: true,
   javascript: true,
   js: true,
-  'jinja-html': true,
+  "jinja-html": true,
   json: true,
   jsonc: true,
   jsonnet: true,
@@ -81,9 +81,9 @@ const VALID_LANGUAGES = {
   nginx: true,
   nim: true,
   nix: true,
-  'objective-c': true,
+  "objective-c": true,
   objc: true,
-  'objective-cpp': true,
+  "objective-cpp": true,
   ocaml: true,
   pascal: true,
   perl: true,
@@ -125,12 +125,12 @@ const VALID_LANGUAGES = {
   solidity: true,
   sparql: true,
   sql: true,
-  'ssh-config': true,
+  "ssh-config": true,
   stylus: true,
   styl: true,
   svelte: true,
   swift: true,
-  'system-verilog': true,
+  "system-verilog": true,
   tcl: true,
   tex: true,
   toml: true,
@@ -144,47 +144,47 @@ const VALID_LANGUAGES = {
   verilog: true,
   vhdl: true,
   viml: true,
-  'vue-html': true,
+  "vue-html": true,
   vue: true,
   wasm: true,
   wenyan: true,
   文言: true,
   xml: true,
   xsl: true,
-  yaml: true,
+  yaml: true
 };
 
 export const ERR_INVALID_LANGUAGE =
-  'Invalid language\\! [See here](https://github.com/teknologi-umum/bot/blob/f7e145bcf419206b82e8ccd4528b19701bd6ea42/src/services/snap/utils.js#L5-L155) for a valid list of languages\\.';
+  "Invalid language\\! [See here](https://github.com/teknologi-umum/bot/blob/f7e145bcf419206b82e8ccd4528b19701bd6ea42/src/services/snap/utils.js#L5-L155) for a valid list of languages\\.";
 
 export async function generateImage(code, lang) {
-  if (!code) return Promise.reject('Code must be supplied\\!');
-  if (lang && !VALID_LANGUAGES[lang]) {
+  if (!code) return Promise.reject("Code must be supplied\\!");
+  if (lang && !VALID_LANGUAGES[lang]) 
     return Promise.reject(ERR_INVALID_LANGUAGE);
-  }
+  
 
-  const linenr = code.split('\n').length;
-  const { body } = await got.post('https://teknologi-umum-graphene.fly.dev/api', {
+  const linenr = code.split("\n").length;
+  const { body } = await got.post("https://graphene.teknologiumum.com/api", {
     headers: defaultHeaders,
     json: {
-      code: code.replace(/^\s+|\s+$/g, ''),
+      code: code.replace(/^\s+|\s+$/g, ""),
       lang,
-      theme: 'github-dark',
+      theme: "github-dark",
       upscale: 3,
       lineNumber: linenr > 10,
       border: {
-        thickness: 20,
-      },
+        thickness: 20
+      }
     },
-    responseType: 'buffer',
+    responseType: "buffer",
     timeout: {
-      request: 30_000,
+      request: 30_000
     },
     retry: {
       limit: 3,
-      methods: ['POST'],
-      statusCodes: [429, 500, 502, 503, 504],
-    },
+      methods: ["POST"],
+      statusCodes: [429, 500, 502, 503, 504]
+    }
   });
 
   return body;

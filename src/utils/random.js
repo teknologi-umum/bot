@@ -1,4 +1,4 @@
-import { randomNumber, shuffle } from 'carret';
+import { randomNumber, shuffle } from "carret";
 
 /**
  * Shuffle the array with carret, then return the result.

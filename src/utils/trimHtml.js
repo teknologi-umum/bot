@@ -1,4 +1,4 @@
-import * as cheerio from 'cheerio';
+import * as cheerio from "cheerio";
 
 /**
  * Find closest number, higher than needle, from an array
@@ -10,11 +10,11 @@ const closest = (needle, haystack) => {
   return haystack.length < 1
     ? haystack.at(-1) // we like bliding ej, Array.prototype.at is only available from 16.6.0
     : haystack.reduce((curr, acc) => {
-        const aDiff = Math.abs(curr - needle);
-        const bDiff = Math.abs(acc - needle);
+      const aDiff = Math.abs(curr - needle);
+      const bDiff = Math.abs(acc - needle);
 
-        return bDiff < aDiff ? acc : curr;
-      }, 0);
+      return bDiff < aDiff ? acc : curr;
+    }, 0);
 };
 
 /**
@@ -29,11 +29,11 @@ export const trimHtml = (max, content) => {
   const $ = cheerio.load(`<div>${content}</div>`, {
     xml: {
       withStartIndices: true,
-      withEndIndices: true,
-    },
+      withEndIndices: true
+    }
   });
 
-  const endIndices = $('div')
+  const endIndices = $("div")
     .children()
     .get()
     .map((el) => el.endIndex + 1);

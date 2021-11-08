@@ -1,6 +1,6 @@
-import { logger } from '#utils/logger/logtail.js';
-import { isBigGroup } from '#utils/home.js';
-import { getRandomQuote } from './utils.js';
+import { logger } from "#utils/logger/logtail.js";
+import { isBigGroup } from "#utils/home.js";
+import { getRandomQuote } from "./utils.js";
 
 /**
  * Send daily quote.
@@ -15,10 +15,10 @@ async function handleCommand(context) {
   const message = await getRandomQuote();
 
   await context.telegram.sendMessage(chatId, message, {
-    parse_mode: 'HTML',
-    disable_web_page_preview: true,
+    parse_mode: "HTML",
+    disable_web_page_preview: true
   });
-  await logger.fromContext(context, 'quote', { sendText: message });
+  await logger.fromContext(context, "quote", { sendText: message });
 }
 
 /**
@@ -27,12 +27,12 @@ async function handleCommand(context) {
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot) {
-  bot.command('quote', handleCommand);
+  bot.command("quote", handleCommand);
 
   return [
     {
-      command: 'quote',
-      description: 'Get random quote from great people.',
-    },
+      command: "quote",
+      description: "Get random quote from great people."
+    }
   ];
 }
