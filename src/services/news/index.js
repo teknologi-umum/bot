@@ -1,7 +1,7 @@
 import got from "got";
 import { renderTemplate } from "#utils/template.js";
 import { SingleValueCache } from "#utils/cache.js";
-import { logger } from "#utils/logger/logtail";
+import { logger } from "#utils/logger/logtail.js";
 
 // cache TTL : 30 minutes
 const cacheTtl = 30 * 60 * 1000;

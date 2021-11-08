@@ -66,7 +66,10 @@ async function main() {
         chat_type: context.message.chat.type,
         chat_username: context.message.chat.username,
         text: context.message.text,
-        update_type: context.updateType
+        update_type: context.updateType,
+        isReplyTo: context.message?.reply_to_message.id !== undefined,
+        replyToText: context.message?.reply_to_message.text,
+        caption: context.message?.caption
       });
       scope.setContext("from", {
         from_id: context.message.from.id,
