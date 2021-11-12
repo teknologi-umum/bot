@@ -61,6 +61,16 @@ async function search(context, mongo) {
   // Trim to certain length
   items = items.slice(0, SEARCH_LIMIT + BEST);
 
+  if (items.length === 0) {
+    const sentMessage = await context.telegram.sendMessage(
+      context.message.chat.id,
+      `No result was found for <b>${query}</b>`,
+      { parse_mode: "HTML", disable_web_page_preview: true}
+    );
+    await logger.fromContext(context, "search", { sendText: sentMessage.text });
+    return;
+  }
+
   const sentMessage = await context.telegram.sendMessage(
     context.message.chat.id,
     renderTemplate("search/search.template.hbs", {
