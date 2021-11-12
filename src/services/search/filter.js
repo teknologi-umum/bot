@@ -9,7 +9,7 @@ const wordSchema = new mongoose.Schema(
 
 /**
  * Only output clean array or search results
- * @param {Array<{href: string, title: string}>} search
+ * @param {Array<{href: string, title: string, snippet: string}>} search
  * @param {import('mongoose').Connection} mongo
  * @returns {Promise<Array<{href: string, text: string}>>}
  */
@@ -18,14 +18,15 @@ export async function cleanFilter(search, mongo) {
   const tempAggregate = [];
 
   for (let i = 0; i < search.length; i++) {
-    const { href, title } = search[i];
-    const textArray = title.split(/[^A-Z\d]/gi);
+    const { href, title, snippet } = search[i];
+    const textArray = title.split(/[^A-Za-z\d]/g);
     const url = new URL(href);
     const urlArray = [
       url.hostname.replace(/www[A-Z\d]*\./i, ""),
       ...url.pathname.split("/")
     ];
-    tempAggregate.push(...textArray, ...urlArray);
+    const snippetArray = snippet.split(/[^A-Za-z\d]/g);
+    tempAggregate.push(...textArray, ...urlArray, ...snippetArray);
   }
 
   const results = tempAggregate.reduce((s, w) => {
@@ -40,10 +41,11 @@ export async function cleanFilter(search, mongo) {
 
   const result = search.filter((o) => {
     for (const match of dedupeMatches) 
-      if (o.href.includes(match) || o.title.includes(match)) 
+      if (o.href.toLowerCase().includes(match) || 
+        o.title.toLowerCase().includes(match) || 
+        o.snippet.toLowerCase().includes(match)) 
         return false;
-      
-    
+        
 
     return true;
   });

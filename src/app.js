@@ -85,13 +85,15 @@ async function main() {
       return scope;
     });
     if (process.env.NODE_ENV !== "production") terminal.error(error);
-    await context.reply(
-      "Uh oh, something went wrong. Ask the devs to check their logs."
-    );
-    await logger.log({
-      message: "Uh oh, something went wrong. Ask the devs to check their logs.",
-      command: "error"
-    });
+    await Promise.all([
+      context.reply(
+        "Uh oh, something went wrong. Ask the devs to check their logs."
+      ),
+      logger.log({
+        message: "Uh oh, something went wrong. Ask the devs to check their logs.",
+        command: "error"
+      })
+    ]);
   });
 
   // For more information about what this is, please refer to:
