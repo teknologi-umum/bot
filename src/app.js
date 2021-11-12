@@ -3,6 +3,7 @@ import { Telegraf } from "telegraf";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import redis from "redis";
+import { telegrafThrottler } from "telegraf-throttler";
 
 import { sentry } from "#utils/logger/sentry.js";
 import { terminal } from "#utils/logger/terminal.js";
@@ -35,6 +36,21 @@ const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
 });
 
 async function main() {
+  bot.use(telegrafThrottler({
+    in: {
+      maxConcurrent: 5,
+      minTime: 500,
+      highWater: 25
+    },
+    group: {
+      maxConcurrent: 1,
+      minTime: 500,
+      reservoir: 20,
+      reservoirRefreshAmount: 15
+    },
+    inKey: "chat"
+  }));
+
   const commands = [
     meme.register(bot, cache),
     help.register(bot),
