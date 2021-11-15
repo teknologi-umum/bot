@@ -12,14 +12,24 @@ const rateLimiter = new RateLimiterMemory({ points: 6, duration: 60 });
 let id = 0;
 
 
-function sendLater(ctx, chatID, msg, delay) {
+function sendLater(type, ctx, chatID, msg, delay) {
   return new Promise((resolve, reject) => {
     setTimeout(async () => {
       try {
         const queue = kv.get("joke:queue");
-        kv.set("joke:queue", queue-1);
-        await ctx.telegram.sendPhoto(chatID, msg);
-        resolve();
+        kv.set("joke:queue", queue - 1);
+        switch (type) {
+        case "photo":
+          await ctx.telegram.sendPhoto(chatID, msg);
+          resolve();
+          break;
+        case "message":
+          await ctx.telegram.sendMessage(chatID, msg, { parse_mode: "HTML" });
+          resolve();
+          break;
+        default:
+          reject("Valid type (first argument) is `photo` or `message`");
+        }
       } catch (error) {
         reject(error);
       }
@@ -138,28 +148,41 @@ export function register(bot, cache) {
         sendText: `https://jokesbapak2.herokuapp.com/id/${id}`
       });
     } catch (error) {
-      if (error?.msBeforeNext)
+      if (error?.msBeforeNext) {
+        const rlMsg = `You have been rate limited. Try again in ${Math.round(error.msBeforeNext / 1000)} seconds.`;
         try {
           await context.telegram.sendMessage(
             context.message.chat.id,
-            `You have been rate limited. Try again in ${Math.round(error.msBeforeNext / 1000)} seconds.`,
+            rlMsg,
             { parse_mode: "HTML" }
           );
         } catch (e) {
           if (e?.response.error_code === 429) {
             const queue = kv.get("joke:queue");
             if (queue > 0 && queue < 10) {
-              sendLater(context, context.message.chat.id, `https://jokesbapak2.herokuapp.com/id/${id}`, 0);
-              kv.set("joke:queue", queue+1);
+              sendLater("message", context, context.message.chat.id, rlMsg, 0);
+              kv.set("joke:queue", queue + 1);
               return;
             }
 
-            sendLater(context, context.message.chat.id, `https://jokesbapak2.herokuapp.com/id/${id}`, e.response.parameters.retry_after);
-            kv.set("joke:queue", queue+1);
+            sendLater("message", context, context.message.chat.id, rlMsg, e.response.parameters.retry_after);
+            kv.set("joke:queue", queue + 1);
           }
           return;
         }
+        throw error;
+      } else if (error.on.method === "sendMessage") {
+        const queue = kv.get("joke:queue");
+        if (queue > 0 && queue < 10) {
+          sendLater("photo", context, context.message.chat.id, `https://jokesbapak2.herokuapp.com/id/${id}`, 0);
+          kv.set("joke:queue", queue + 1);
+          return;
+        }
 
+        sendLater("photo", context, context.message.chat.id, `https://jokesbapak2.herokuapp.com/id/${id}`, error.response.parameters.retry_after);
+        kv.set("joke:queue", queue + 1);
+        return;
+      }
 
       throw error;
     }
