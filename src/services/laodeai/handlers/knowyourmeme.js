@@ -15,12 +15,12 @@ export function knowyourmeme($) {
       return $(el).html();
     })
     .toArray();
-  if (output && output.length > 1) 
+  if (output && output.length > 1)
     return {
       type: "text",
       content: sanitize(output.join("\n")).trim().replace(/\r\n/g, "\n")
     };
-  
+
   return {
     type: "error",
     content: ""

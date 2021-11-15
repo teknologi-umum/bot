@@ -27,12 +27,12 @@ export async function resolveStocks(source) {
     // 2 stockCodes: 5000ms delay
     // 3 stockCodes: 2500ms delay
     /* eslint-disable no-await-in-loop */
-    if (i > 0) 
+    if (i > 0)
       await new Promise((resolve) =>
         setTimeout(resolve, 5000 / (stockCodes.size - 1))
       );
     /* eslint-enable no-await-in-loop */
-    
+
     /* eslint-disable no-await-in-loop */
     const stock = await fetchStock(stockCode);
     /* eslint-enable no-await-in-loop */
@@ -48,18 +48,18 @@ export async function resolveStocks(source) {
     const stockCode = cashtag.substring(1);
     const stock = stockByCode[stockCode];
 
-    if (property === undefined) 
+    if (property === undefined)
       // no property specified, replace to close
       source = source.replaceAll(query, `(${stock.close})`);
-    else if (stock[property] === undefined) 
+    else if (stock[property] === undefined)
       // invalid property
       throw `Saham tidak memiliki property ${property}`;
-    else if (typeof stock[property] === "string") 
+    else if (typeof stock[property] === "string")
       source = source.replaceAll(
         query,
         `("${stock[property].replaceAll("\"", "\\\"")}")`
       );
-    else 
+    else
       source = source.replaceAll(query, `(${stock[property]})`);
   }
 
@@ -88,10 +88,10 @@ export async function resolveCryptoCurrencies(source) {
     // 1 symbol: no delay
     // 2 symbols or more: 1000ms delay
     /* eslint-disable no-await-in-loop */
-    if (i > 0) 
+    if (i > 0)
       await new Promise((resolve) => setTimeout(resolve, 1000));
     /* eslint-enable no-await-in-loop */
-    
+
     /* eslint-disable no-await-in-loop */
     const rate = await fetchCryptoCurrency(symbol);
     /* eslint-enable no-await-in-loop */
@@ -107,18 +107,18 @@ export async function resolveCryptoCurrencies(source) {
     const symbol = cashtag.substring(1);
     const rate = rateBySymbol[symbol];
 
-    if (property === undefined) 
+    if (property === undefined)
       // no property specified, replace to last
       source = source.replaceAll(query, `(${rate.last})`);
-    else if (rate[property] === undefined) 
+    else if (rate[property] === undefined)
       // invalid property
       throw `Crypto tidak memiliki property ${property}`;
-    else if (typeof rate[property] === "string") 
+    else if (typeof rate[property] === "string")
       source = source.replaceAll(
         query,
         `("${rate[property].replaceAll("\"", "\\\"")}")`
       );
-    else 
+    else
       source = source.replaceAll(query, `(${rate[property]})`);
   }
 
@@ -133,9 +133,9 @@ export async function resolveCurrencyRates(source) {
 
   // pair: USDIDR
   const pairs = new Set();
-  for (const cashtag of cashtags) 
+  for (const cashtag of cashtags)
     pairs.add(cashtag.substring(1));
-  
+
 
   // resolve rates
   const pairsWithRate = await Promise.all(
@@ -144,9 +144,9 @@ export async function resolveCurrencyRates(source) {
       return [pair, rate];
     })
   );
-  for (const [pair, rate] of pairsWithRate) 
+  for (const [pair, rate] of pairsWithRate)
     source = source.replaceAll("$" + pair, `(${rate})`);
-  
+
 
   return source;
 }

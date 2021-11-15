@@ -7,23 +7,23 @@ import { sanitize } from "#utils/sanitize.js";
  */
 export function gist($) {
   const markdownOutput = $(".gist-content .file-box .markdown-body").html();
-  if (markdownOutput) 
+  if (markdownOutput)
     return {
       type: "text",
       content: sanitize(markdownOutput).replace(/\r\n/g, "\n")
     };
-  
+
 
   const codeOutput = $(".gist-content .file-box .highlight .blob-code")
     .map((_, el) => $(el).text())
     .toArray()
     .join("\n");
-  if (codeOutput) 
+  if (codeOutput)
     return {
       type: "image",
       content: codeOutput.replace(/\r\n/g, "\n")
     };
-  
+
 
   return {
     type: "error",

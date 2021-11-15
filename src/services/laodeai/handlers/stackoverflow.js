@@ -13,12 +13,12 @@ export function stackoverflow($) {
     .first()
     .text();
 
-  if (acceptedCode && acceptedCode.match(/\n/g).length > 2) 
+  if (acceptedCode && acceptedCode.match(/\n/g).length > 2)
     return {
       type: "image",
       content: acceptedCode.replace(/\r\n/g, "\n")
     };
-  
+
 
   const acceptedText = $(
     ".answer .post-layout .answercell .s-prose",
@@ -26,12 +26,12 @@ export function stackoverflow($) {
   )
     .first()
     .html();
-  if (acceptedText) 
+  if (acceptedText)
     return {
       type: "text",
       content: sanitize(acceptedText).replace(/\r\n/g, "\n")
     };
-  
+
 
   return {
     type: "error",

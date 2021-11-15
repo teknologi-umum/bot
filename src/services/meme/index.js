@@ -99,7 +99,7 @@ export function register(bot, cache) {
             }
           }
         );
-  
+
         await redis.SETEX(
           "jokes:total",
           60 * 60 * 12,
@@ -107,9 +107,9 @@ export function register(bot, cache) {
         );
         total = Number.parseInt(body.message);
       }
-  
+
       const id = randomNumber(0, total);
-  
+
       await context.telegram.sendPhoto(
         context.message.chat.id,
         `https://jokesbapak2.herokuapp.com/id/${id}`

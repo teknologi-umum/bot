@@ -14,13 +14,13 @@ export async function fetchCryptoCurrency(cryptoSymbol) {
     }
   );
 
-  if (statusCode !== 200) 
+  if (statusCode !== 200)
     throw `Gagal mendapatkan data crypto ${cryptoSymbol}`;
-  
 
-  if (body.error_description !== undefined) 
+
+  if (body.error_description !== undefined)
     throw body.error_description;
-  
+
 
   return {
     last: parseFloat(body.ticker.last),

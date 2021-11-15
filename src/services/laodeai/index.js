@@ -105,9 +105,9 @@ async function sendImage(result, context) {
 function sendText(result, context, trim) {
   const limit = 800;
   let content = sanitize(result.content);
-  if (trim && content.length > limit) 
+  if (trim && content.length > limit)
     content = `${trimHtml(limit, content)}...\n\nSee more on: ${result.url}`;
-  
+
 
   // no await, see https://eslint.org/docs/rules/no-return-await
   return context.telegram.sendMessage(context.message.chat.id, content, {
@@ -150,9 +150,9 @@ async function goThroughURLs(validSources) {
     });
     /* eslint-enable no-await-in-loop */
 
-    if (statusCode !== 200) 
+    if (statusCode !== 200)
       continue;
-    
+
 
     const urlResult = {
       url: url.href,
@@ -160,10 +160,10 @@ async function goThroughURLs(validSources) {
     };
 
     if (urlResult.type === "error") {
-      if (i === validSources.length - 1) 
+      if (i === validSources.length - 1)
         // Just give up man
         return { type: "error" };
-      
+
       continue;
     } else {
       return urlResult;

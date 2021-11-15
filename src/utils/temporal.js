@@ -19,9 +19,9 @@ export class Temporal {
    * @returns {Boolean}
    */
   compare(dateToCompare, unit) {
-    if (!dateToCompare || !(dateToCompare instanceof Date)) 
+    if (!dateToCompare || !(dateToCompare instanceof Date))
       throw new TypeError("Come on bro, niat ga sih?");
-    
+
 
     switch (unit) {
     case "month": {
@@ -67,11 +67,11 @@ export class Temporal {
       typeof timezone !== "string" ||
       typeof withTime !== "boolean" ||
       typeof withDay !== "boolean"
-    ) 
+    )
       throw new TypeError(
         "locale, timezone, withTime, or withDay was given with a wrong type"
       );
-    
+
 
     const intl = new Intl.DateTimeFormat(locale, {
       dateStyle: withDay ? "full" : "long",
@@ -91,9 +91,9 @@ export class Temporal {
    * @returns {Date}
    */
   add(duration, unit) {
-    if (typeof duration !== "number") 
+    if (typeof duration !== "number")
       throw new Error("duration must be a type of number");
-    
+
 
     switch (unit) {
     case "month": {
@@ -138,9 +138,9 @@ export class Temporal {
    * @private
    */
   #getWeek(date) {
-    if (!date || !(date instanceof Date)) 
+    if (!date || !(date instanceof Date))
       throw new Error("*face palms*");
-    
+
 
     const firstJanuary = new Date(new Date().getFullYear(), 0, 1);
     return Math.ceil(

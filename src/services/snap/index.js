@@ -72,7 +72,7 @@ async function snap(context) {
         });
       }
     }
-    
+
     return Promise.resolve();
   } catch (err) {
     // Handle specific error message

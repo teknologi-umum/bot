@@ -14,9 +14,9 @@ export async function fetchStock(stockCode) {
     }
   );
 
-  if (statusCode !== 200) 
+  if (statusCode !== 200)
     throw `Gagal mendapatkan data saham ${stockCode}`;
-  
+
 
   const $ = cheerio.load(body);
   const name = $("#CONTENT h3").text();

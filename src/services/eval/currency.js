@@ -17,9 +17,9 @@ async function getCurrencyDictionary() {
       }
     );
 
-    if (statusCode !== 200) 
+    if (statusCode !== 200)
       throw "Gagal mendapatkan data forex";
-    
+
 
     return body.reduce((currencyBySymbol, currency) => {
       currencyBySymbol[currency.name] = currency;

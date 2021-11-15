@@ -46,13 +46,13 @@ export function isAllowed(ast, locals = []) {
       isAllowed(expression, locals)
     );
   case "Identifier":
-    if (allowedBuiltInObjects.has(ast.name) || locals.includes(ast.name)) 
+    if (allowedBuiltInObjects.has(ast.name) || locals.includes(ast.name))
       return true;
-    else 
+    else
       throw `Tidak boleh mengakses ${ast.name}`;
-      
+
   case "CallExpression":
-    if (ast.callee.type === "MemberExpression") 
+    if (ast.callee.type === "MemberExpression")
       switch (ast.callee.property.name) {
       // Allow arrow function expression only in higher order functions
       case "every":
@@ -69,17 +69,17 @@ export function isAllowed(ast, locals = []) {
         return (
           isAllowed(ast.callee, locals) &&
               ast.arguments.every((arg) => {
-                if (arg.type === "ArrowFunctionExpression") 
+                if (arg.type === "ArrowFunctionExpression")
                   return isAllowed(arg.body, [
                     ...locals,
                     ...arg.params.map((param) => param.name)
                   ]);
-                else 
+                else
                   return isAllowed(arg, locals);
               })
         );
       }
-      
+
     return (
       isAllowed(ast.callee, locals) &&
         ast.arguments.every((arg) => isAllowed(arg, locals))
@@ -102,25 +102,25 @@ export function isAllowed(ast, locals = []) {
       throw `Tidak boleh mengakses property ${ast.property.name}`;
     }
 
-    if (ast.object.type === "Identifier") 
-      if (allowedBuiltInObjects.has(ast.object.name)) 
-        if (allowedProperties.has(ast.property.name)) 
+    if (ast.object.type === "Identifier")
+      if (allowedBuiltInObjects.has(ast.object.name))
+        if (allowedProperties.has(ast.property.name))
           return true;
-        else 
+        else
           throw `Tidak boleh mengakses ${ast.object.name}.${ast.property.name}`;
-          
-      else if (locals.includes(ast.object.name)) 
+
+      else if (locals.includes(ast.object.name))
         return true;
-      else 
+      else
         throw `Tidak boleh mengakses ${ast.object.name}`;
-        
-    else 
-    if (allowedProperties.has(ast.property.name)) 
+
+    else
+    if (allowedProperties.has(ast.property.name))
       return isAllowed(ast.object, locals);
-    else 
+    else
       throw `Tidak boleh mengakses ${ast.property.name}`;
-        
-      
+
+
   default:
     throw `Tidak boleh mengevaluasi ${ast.type}`;
   }
@@ -129,7 +129,7 @@ export function isAllowed(ast, locals = []) {
 export async function safeEval(source, superpowers = []) {
   try {
     /* eslint-disable no-await-in-loop */
-    for (const superpower of superpowers) 
+    for (const superpower of superpowers)
       source = await superpower(source);
     /* eslint-enable no-await-in-loop */
   } catch (err) {
@@ -142,23 +142,23 @@ export async function safeEval(source, superpowers = []) {
     return `Error: ${err.description} at ${err.lineNumber}:${err.index}`;
   }
   try {
-    if (isAllowed(ast)) 
+    if (isAllowed(ast))
       // eslint-disable-next-line no-eval
       return JSON.stringify(eval(source), (name, val) => {
         switch (typeof val) {
         case "number":
-          if (isNaN(val) || !isFinite(val)) 
+          if (isNaN(val) || !isFinite(val))
             return val.toString();
-          else 
+          else
             return val;
-            
+
         case "bigint":
           return val.toString() + "n";
         default:
           return val;
         }
       });
-    else 
+    else
       return "Tidak bisa mengevaluasi code";
   } catch (err) {
     return err;
