@@ -5,8 +5,28 @@ import redisClient from "#utils/redis.js";
 import { isBigGroup } from "#utils/home.js";
 import { logger } from "#utils/logger/logtail.js";
 import { RateLimiterMemory } from "rate-limiter-flexible";
+import { kv } from "#utils/kv.js";
 
 const rateLimiter = new RateLimiterMemory({ points: 6, duration: 60 });
+
+let id = 0;
+
+
+function sendLater(ctx, chatID, msg, delay) {
+  return new Promise((resolve, reject) => {
+    setTimeout(async () => {
+      try {
+        const queue = kv.get("joke:queue");
+        kv.set("joke:queue", queue-1);
+        await ctx.telegram.sendPhoto(chatID, msg);
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    }, delay);
+  });
+}
+
 
 /**
  * Send memes..
@@ -92,10 +112,10 @@ export function register(bot, cache) {
             headers: defaultHeaders,
             responseType: "json",
             timeout: {
-              request: 10_000
+              request: 5_000
             },
             retry: {
-              limit: 3
+              limit: 1
             }
           }
         );
@@ -108,7 +128,7 @@ export function register(bot, cache) {
         total = Number.parseInt(body.message);
       }
 
-      const id = randomNumber(0, total);
+      id = randomNumber(0, total);
 
       await context.telegram.sendPhoto(
         context.message.chat.id,
@@ -118,14 +138,28 @@ export function register(bot, cache) {
         sendText: `https://jokesbapak2.herokuapp.com/id/${id}`
       });
     } catch (error) {
-      if (error?.msBeforeNext) {
-        await context.telegram.sendMessage(
-          context.message.chat.id,
-          `You have been rate limited. Try again in ${Math.round(error.msBeforeNext / 1000)} seconds.`,
-          { parse_mode: "HTML" }
-        );
-        return;
-      }
+      if (error?.msBeforeNext)
+        try {
+          await context.telegram.sendMessage(
+            context.message.chat.id,
+            `You have been rate limited. Try again in ${Math.round(error.msBeforeNext / 1000)} seconds.`,
+            { parse_mode: "HTML" }
+          );
+        } catch (e) {
+          if (e?.response.error_code === 429) {
+            const queue = kv.get("joke:queue");
+            if (queue > 0 && queue < 10) {
+              sendLater(context, context.message.chat.id, `https://jokesbapak2.herokuapp.com/id/${id}`, 0);
+              kv.set("joke:queue", queue+1);
+              return;
+            }
+
+            sendLater(context, context.message.chat.id, `https://jokesbapak2.herokuapp.com/id/${id}`, e.response.parameters.retry_after);
+            kv.set("joke:queue", queue+1);
+          }
+          return;
+        }
+
 
       throw error;
     }
