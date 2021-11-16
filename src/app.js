@@ -35,6 +35,34 @@ const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
 });
 
 async function main() {
+  const MAX = 28;
+  const TIME_LIMIT = 60 * 1000; // 60 seconds
+  let time = Date.now();
+  let counter = 0;
+  let isWarned = false;
+  bot.use(async (context, next) => {
+    if (counter < MAX) {
+      counter++;
+      if (Date.now() - time >= TIME_LIMIT) {
+        isWarned = false;
+        time = Date.now();
+      }
+      await next();
+    } else {
+      if (!isWarned) {
+        isWarned = true;
+        await context.telegram.sendMessage(
+          context.message.chat.id,
+          "Yaelah om, spam mulu, dahlah cape gw."
+        );
+      }
+      if (Date.now() - time >= TIME_LIMIT) {
+        counter = 0;
+        time = Date.now();
+      }
+    }
+  });
+
   const commands = [
     meme.register(bot, cache),
     help.register(bot),
@@ -90,7 +118,8 @@ async function main() {
         "Uh oh, something went wrong. Ask the devs to check their logs."
       ),
       logger.log({
-        message: "Uh oh, something went wrong. Ask the devs to check their logs.",
+        message:
+          "Uh oh, something went wrong. Ask the devs to check their logs.",
         command: "error"
       })
     ]);
