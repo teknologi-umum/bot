@@ -5,8 +5,6 @@
 {{#each dukun as d, index}}
 {{index}}. {{ [d.firstName, d.lastName].join(' ') }} ({{ d.points }} poin)\n
 {{/each}}
-
-{{#if others > 0 }}
-\n
+{{#if others > 0 }}\n
 dan {{ others }} dukun lainnya..
 {{/if}}
