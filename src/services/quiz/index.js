@@ -26,50 +26,13 @@ const pollSchema = new mongoose.Schema(
 );
 
 /**
- *
- * @param {import('telegraf').Context<import('telegraf/typings/core/types/typegram').Update>} context
- * @param {import('mongoose').Connection} mongo
- * @param {import('redis').RedisClient} cache
- * @returns {Promise<void>}
+ * 
+ * @param {import('telegraf').Context<import('telegraf/typings/core/types/typegram').Update>} context 
+ * @param {import('redis').RedisClient}} cache 
+ * @param {import('mongoose').Model} Poll 
  */
-async function quiz(context, mongo, cache) {
-  if (!isHomeGroup(context)) return;
-
-  const redis = redisClient(cache);
-  const currentTime = new Temporal(new Date());
+async function pickQuiz(context, cache, Poll) {
   const chatID = context.message.chat.id;
-
-  if (context.message.chat.type === "private") {
-    await context.telegram.sendMessage(
-      chatID,
-      "Quiz is only available for groups",
-      { parse_mode: "HTML" }
-    );
-    await logger.fromContext(context, "quiz", {
-      sendText: "Quiz is only available for groups"
-    });
-    return;
-  }
-
-  const Poll = mongo.model("Poll", pollSchema, "quiz");
-
-  // Check if today's quiz is already posted.
-  const quizByChatID = await redis.HGETALL(`quiz:${String(chatID)}`);
-
-  if (quizByChatID && currentTime.compare(new Date(quizByChatID.date), "day")) {
-    context.telegram.sendMessage(
-      chatID,
-      "You can't request another new quiz for today. Wait for tomorrow, then ask a new one &#x1F61A",
-      {
-        parse_mode: "HTML"
-      }
-    );
-    await logger.fromContext(context, "quiz", {
-      sendText: "You can't request another new quiz for today. Wait for tomorrow, then ask a new one &#x1F61A"
-    });
-    return;
-  }
-
   const quizes = await Poll.find({ posted: false });
   const pickQuiz = quizes[randomNumber(0, quizes.length - 1)];
 
@@ -142,10 +105,69 @@ async function quiz(context, mongo, cache) {
   }
 
   await Poll.findByIdAndUpdate(pickQuiz["_id"], { posted: true });
+}
+
+/**
+ *
+ * @param {import('telegraf').Context<import('telegraf/typings/core/types/typegram').Update>} context
+ * @param {import('mongoose').Connection} mongo
+ * @param {import('redis').RedisClient} cache
+ * @returns {Promise<void>}
+ */
+async function quiz(context, mongo, cache) {
+  if (!isHomeGroup(context)) return;
+
+  const redis = redisClient(cache);
+  const currentTime = new Temporal(new Date());
+  const chatID = context.message.chat.id;
+
+  if (context.message.chat.type === "private") {
+    await context.telegram.sendMessage(
+      chatID,
+      "Quiz is only available for groups",
+      { parse_mode: "HTML" }
+    );
+    await logger.fromContext(context, "quiz", {
+      sendText: "Quiz is only available for groups"
+    });
+    return;
+  }
+
+  const Poll = mongo.model("Poll", pollSchema, "quiz");
+
+  // Check if today's quiz is already posted.
+  const quizByChatID = await redis.HGETALL(`quiz:${String(chatID)}`);
+
+  // Hit the limit
+  if (quizByChatID && 
+      currentTime.compare(new Date(quizByChatID.date), "day")) 
+    if (quizByChatID.count === 2) {
+      context.telegram.sendMessage(
+        chatID,
+        "You can't request another new quiz for today. Wait for tomorrow, then ask a new one &#x1F61A",
+        {
+          parse_mode: "HTML"
+        }
+      );
+      await logger.fromContext(context, "quiz", {
+        sendText: "You can't request another new quiz for today. Wait for tomorrow, then ask a new one &#x1F61A"
+      });
+      return;
+    } else if (quizByChatID.count === 1) {
+      await pickQuiz(context, cache, Poll);
+      await redis.HINCRBY(`quiz:${String(chatID)}`, "count", 1);
+      return;
+    }
+  
+
+  await pickQuiz(context, cache, Poll);
+  
   await redis.HSET(
     `quiz:${String(chatID)}`,
     "date",
-    currentTime.date.toISOString()
+    currentTime.date.toISOString(),
+    "count",
+    0
   );
 }
 

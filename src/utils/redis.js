@@ -396,6 +396,23 @@ function redisClient(client) {
           return resolve(reply);
         });
       });
+    },
+    /**
+     * Increments the number stored at field in the hash stored at key by increment. 
+     * If key does not exist, a new key holding a hash is created. If field does not exist the value is set to 0 before the operation is performed.
+     * @param {String} key 
+     * @param {String} field 
+     * @param {String} incr 
+     * @returns {Promise<Number>}
+     * @see Documentation https://redis.io/commands/hincrby
+     */
+    HINCRBY(key, field, incr) {
+      return new Promise((resolve, reject) => {
+        client.HINCRBY(key, field, incr, (err, reply) => {
+          if (err) return reject(err);
+          return resolve(reply);
+        });
+      });
     }
   };
 }
