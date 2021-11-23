@@ -3,10 +3,8 @@
 <b>Paguyuban Dukun Jason Wihardja</b>\n\n
 
 {{#each dukun as d, index}}
-{{index}}. {{ [d.firstName, d.lastName].join(' ') }} ({{ d.points }} poin)\n
+{{index + 1}}. {{ [d.firstName, d.lastName].join(' ') }} ({{ d.points }} poin)\n
 {{/each}}
-
 {{#if others > 0 }}
-\n
 dan {{ others }} dukun lainnya..
 {{/if}}
