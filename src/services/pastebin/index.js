@@ -95,10 +95,5 @@ async function pastebin(context) {
 export function register(bot) {
   bot.command("pastebin", pastebin);
 
-  return [
-    {
-      command: "pastebin",
-      description: "Put your paste into Polarite"
-    }
-  ];
+  return [];
 }
