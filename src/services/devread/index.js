@@ -36,7 +36,7 @@ async function devRead(context, cache) {
       const items = randomArray(JSON.parse(queryData), 3);
       const read = items
         .map(({ title, body, url }) =>
-          renderTemplate("blog/blog.template.hbs", { title, body, url })
+          renderTemplate("devread/devread.template.hbs", { title, body, url })
         )
         .join("\n");
       await context.telegram.sendMessage(context.message.chat.id, read, {
