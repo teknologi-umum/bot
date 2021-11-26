@@ -6,7 +6,10 @@ class KV {
     return this.store[key] || "";
   }
   set(key, value) {
-    this.store[key] = value;
+    if (value === null || value === "")
+      delete this.store[key];
+    else
+      this.store[key] = value;
   }
 }
 
