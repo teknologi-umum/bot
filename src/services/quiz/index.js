@@ -73,8 +73,9 @@ async function quiz(context, mongo, cache) {
   const quizes = await Poll.find({ posted: false });
   const pickQuiz = quizes[randomNumber(0, quizes.length - 1)];
 
-  if (pickQuiz?.code)
+  if (pickQuiz?.code) {
     await context.telegram.sendPhoto(chatID, pickQuiz.code);
+  }
 
 
   const question =
@@ -82,11 +83,13 @@ async function quiz(context, mongo, cache) {
       ? `${pickQuiz.question.substring(0, 20)}... (question above)`
       : pickQuiz.question;
 
-  if (pickQuiz.question.length > 200)
-    // Send the question as a separate message
+  if (pickQuiz.question.length > 200) {
+  // Send the question as a separate message
+
     await context.telegram.sendMessage(chatID, sanitize(pickQuiz.question), {
       parse_mode: "HTML"
     });
+  }
 
 
   if (pickQuiz.type === "quiz") {
@@ -108,13 +111,14 @@ async function quiz(context, mongo, cache) {
     });
 
     // Pin the message if it's a supergroup type
-    if (context.message.chat.type === "supergroup")
+    if (context.message.chat.type === "supergroup") {
       await poll(
         context,
         cache,
         { question, type: pickQuiz.type },
         response.message_id
       );
+    }
   } else if (pickQuiz.type === "survey") {
     const response = await context.telegram.sendPoll(
       chatID,
@@ -132,13 +136,14 @@ async function quiz(context, mongo, cache) {
     });
 
     // Pin the message if it's a supergroup type
-    if (context.message.chat.type === "supergroup")
+    if (context.message.chat.type === "supergroup") {
       await poll(
         context,
         cache,
         { question, type: pickQuiz.type },
         response.message_id
       );
+    }
   }
 
   await Poll.findByIdAndUpdate(pickQuiz["_id"], { posted: true });

@@ -10,11 +10,12 @@ export function urbandictionary($) {
   const phrase = definition.find(".def-header > .word").first().text();
   const meaning = definition.find(".meaning").html();
 
-  if (phrase && meaning)
+  if (phrase && meaning) {
     return {
       type: "text",
       content: `<b>${phrase}</b> is ${sanitize(meaning)}`
     };
+  }
 
 
   return {

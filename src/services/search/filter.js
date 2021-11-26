@@ -40,11 +40,11 @@ export async function cleanFilter(search, mongo) {
   const dedupeMatches = matches.map((m) => m.value);
 
   const result = search.filter((o) => {
-    for (const match of dedupeMatches)
+    for (const match of dedupeMatches) {
       if (o.href.toLowerCase().includes(match) ||
         o.title.toLowerCase().includes(match) ||
-        o.snippet.toLowerCase().includes(match))
-        return false;
+        o.snippet.toLowerCase().includes(match)) {return false;}
+    }
 
 
     return true;

@@ -3,8 +3,9 @@ import cheerio from "cheerio";
 
 export async function fetchStock(stockCode) {
   if (typeof stockCode !== "string") throw "Kode saham harus berupa string";
-  if (!/^[A-Z]{4}(?:-[A-Z][A-Z\d]{0,2})?$/.test(stockCode))
+  if (!/^[A-Z]{4}(?:-[A-Z][A-Z\d]{0,2})?$/.test(stockCode)) {
     throw `Kode saham ${stockCode} tidak valid`;
+  }
 
   const { statusCode, body } = await got.get(
     `https://www.duniainvestasi.com/bei/summaries/${stockCode}`,
@@ -14,8 +15,9 @@ export async function fetchStock(stockCode) {
     }
   );
 
-  if (statusCode !== 200)
+  if (statusCode !== 200) {
     throw `Gagal mendapatkan data saham ${stockCode}`;
+  }
 
 
   const $ = cheerio.load(body);

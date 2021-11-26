@@ -119,12 +119,13 @@ export function register(bot, cache) {
         sendText: `https://jokesbapak2.herokuapp.com/id/${id}`
       });
     } catch (error) {
-      if (error?.msBeforeNext)
+      if (error?.msBeforeNext) {
         await context.telegram.sendMessage(
           context.message.chat.id,
           `You have been rate limited. Try again in ${Math.round(error.msBeforeNext / 1000)} seconds.`,
           { parse_mode: "HTML" }
         );
+      }
 
       throw error;
     }

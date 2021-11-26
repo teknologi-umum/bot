@@ -41,8 +41,9 @@ const dukunSchema = new mongoose.Schema(
 async function fetchUpstream(dukunModel, redis, updatedData) {
   const allDukun = await dukunModel.find({}, null, { sort: { points: -1 } });
   await redis.MSET("dukun:all", JSON.stringify(allDukun));
-  if (updatedData.master)
+  if (updatedData.master) {
     await redis.MSET("dukun:master:points", updatedData.points);
+  }
 }
 
 /**
@@ -106,13 +107,11 @@ async function dukun(context, mongo, cache) {
     if (argument.startsWith("+")) {
       point = Math.abs(Number.parseInt(argument.replace("-", "")));
       // Maximum point addition is 10
-      if (point > 10)
-        point = 10;
+      if (point > 10) point = 10;
     } else if (argument.startsWith("-")) {
       point = Math.abs(Number.parseInt(argument.replace("-", ""))) * -1;
       // Maximum point subtraction is 10
-      if (point < -10)
-        point = -10;
+      if (point < -10) point = -10;
     } else {
       // No argument was given, +1 by default
       point = 1;
@@ -173,9 +172,10 @@ async function dukun(context, mongo, cache) {
     const submittedDukun =
       dukunDataParsed?.find((d) => d.userID === replyMessage.from.id)?.points ??
       0;
-    if (submittedDukun + point >= dukunMasterPoints)
-      // Only may increment up to dukunMasterPoint - 1
+    if (submittedDukun + point >= dukunMasterPoints) {
+    // Only may increment up to dukunMasterPoint - 1
       point = point - (submittedDukun + point - dukunMasterPoints) - 1;
+    }
 
 
     // Add dukun point
