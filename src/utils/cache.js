@@ -6,8 +6,9 @@ export function Semaphore() {
     let release;
     const promise = new Promise((resolve) => release = resolve);
     queue.push({ promise, release });
-    if (promiseQueue.length > 0)
+    if (promiseQueue.length > 0) {
       await Promise.all(promiseQueue);
+    }
   };
 
   this.release = function() {

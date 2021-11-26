@@ -54,10 +54,5 @@ async function define(context) {
 export function register(bot) {
   bot.command("blidingej", define);
 
-  return [
-    {
-      command: "blidingej",
-      description: "Define bliding ej"
-    }
-  ];
+  return [];
 }

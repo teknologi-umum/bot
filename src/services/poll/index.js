@@ -31,20 +31,22 @@ export async function poll(context, cache, poll, pollID) {
 
     lastMessageContent = JSON.parse(content);
 
-    if (!lastMessageContent || !currentTime.compare(new Date(date), "day"))
+    if (!lastMessageContent || !currentTime.compare(new Date(date), "day")) {
       lastMessageContent = { survey: [], quiz: [] };
+    }
   }
 
-  if (poll.type === "regular")
+  if (poll.type === "regular") {
     lastMessageContent.survey.push({
       id: pollID,
       text: poll.question.split(/\n/)[0]
     });
-  else if (poll.type === "quiz")
+  } else if (poll.type === "quiz") {
     lastMessageContent.quiz.push({
       id: pollID,
       text: poll.question.split(/\n/)[0]
     });
+  }
 
 
   const chat = await context.getChat();

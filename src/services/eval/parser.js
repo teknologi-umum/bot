@@ -11,10 +11,12 @@ export function isAllowed(ast, locals = []) {
   case "ExpressionStatement":
     return isAllowed(ast.expression, locals);
   case "NewExpression":
-    if (ast.callee.type !== "Identifier")
+    if (ast.callee.type !== "Identifier") {
       throw "New expression hanya boleh menggunakan symbol yang jelas";
-    if (!allowedBuiltInObjects.has(ast.callee.name))
+    }
+    if (!allowedBuiltInObjects.has(ast.callee.name)) {
       throw `Tidak boleh new ${ast.callee.name}`;
+    }
     return true;
   case "BinaryExpression":
   case "LogicalExpression":
@@ -30,8 +32,9 @@ export function isAllowed(ast, locals = []) {
   case "ObjectExpression":
     return ast.properties.every((prop) => {
       if (prop.method) throw "Tidak boleh membuat function di dalam object";
-      if (prop.computed)
+      if (prop.computed) {
         throw "Tidak boleh membuat property menggunakan accessor";
+      }
       return isAllowed(prop.value);
     });
   case "ArrayExpression":
@@ -46,13 +49,14 @@ export function isAllowed(ast, locals = []) {
       isAllowed(expression, locals)
     );
   case "Identifier":
-    if (allowedBuiltInObjects.has(ast.name) || locals.includes(ast.name))
+    if (allowedBuiltInObjects.has(ast.name) || locals.includes(ast.name)) {
       return true;
-    else
+    } else {
       throw `Tidak boleh mengakses ${ast.name}`;
+    }
 
   case "CallExpression":
-    if (ast.callee.type === "MemberExpression")
+    if (ast.callee.type === "MemberExpression") {
       switch (ast.callee.property.name) {
       // Allow arrow function expression only in higher order functions
       case "every":
@@ -69,16 +73,16 @@ export function isAllowed(ast, locals = []) {
         return (
           isAllowed(ast.callee, locals) &&
               ast.arguments.every((arg) => {
-                if (arg.type === "ArrowFunctionExpression")
+                if (arg.type === "ArrowFunctionExpression") {
                   return isAllowed(arg.body, [
                     ...locals,
                     ...arg.params.map((param) => param.name)
                   ]);
-                else
-                  return isAllowed(arg, locals);
+                } else {return isAllowed(arg, locals);}
               })
         );
       }
+    }
 
     return (
       isAllowed(ast.callee, locals) &&
@@ -86,10 +90,12 @@ export function isAllowed(ast, locals = []) {
     );
   case "MemberExpression":
     // No obfuscated code
-    if (ast.computed)
+    if (ast.computed) {
       throw "Tidak boleh mengevaluasi ComputedMemberExpression";
-    if (ast.property.type !== "Identifier")
+    }
+    if (ast.property.type !== "Identifier") {
       throw `Tidak boleh mengakses property dengan ${ast.property.type}`;
+    }
 
     // No meta programming
     switch (ast.property.name) {
@@ -102,23 +108,24 @@ export function isAllowed(ast, locals = []) {
       throw `Tidak boleh mengakses property ${ast.property.name}`;
     }
 
-    if (ast.object.type === "Identifier")
-      if (allowedBuiltInObjects.has(ast.object.name))
-        if (allowedProperties.has(ast.property.name))
+    if (ast.object.type === "Identifier") {
+      if (allowedBuiltInObjects.has(ast.object.name)) {
+        if (allowedProperties.has(ast.property.name)) {
           return true;
-        else
+        } else {
           throw `Tidak boleh mengakses ${ast.object.name}.${ast.property.name}`;
-
-      else if (locals.includes(ast.object.name))
+        }
+      } else if (locals.includes(ast.object.name)) {
         return true;
-      else
+      } else {
         throw `Tidak boleh mengakses ${ast.object.name}`;
-
-    else
-    if (allowedProperties.has(ast.property.name))
+      }
+    } else
+    if (allowedProperties.has(ast.property.name)) {
       return isAllowed(ast.object, locals);
-    else
+    } else {
       throw `Tidak boleh mengakses ${ast.property.name}`;
+    }
 
 
   default:
@@ -129,8 +136,9 @@ export function isAllowed(ast, locals = []) {
 export async function safeEval(source, superpowers = []) {
   try {
     /* eslint-disable no-await-in-loop */
-    for (const superpower of superpowers)
+    for (const superpower of superpowers) {
       source = await superpower(source);
+    }
     /* eslint-enable no-await-in-loop */
   } catch (err) {
     return err;
@@ -142,15 +150,18 @@ export async function safeEval(source, superpowers = []) {
     return `Error: ${err.description} at ${err.lineNumber}:${err.index}`;
   }
   try {
-    if (isAllowed(ast))
+    if (isAllowed(ast)) {
+    // eslint-disable-next-line no-eval
+
       // eslint-disable-next-line no-eval
       return JSON.stringify(eval(source), (name, val) => {
         switch (typeof val) {
         case "number":
-          if (isNaN(val) || !isFinite(val))
+          if (isNaN(val) || !isFinite(val)) {
             return val.toString();
-          else
+          } else {
             return val;
+          }
 
         case "bigint":
           return val.toString() + "n";
@@ -158,8 +169,7 @@ export async function safeEval(source, superpowers = []) {
           return val;
         }
       });
-    else
-      return "Tidak bisa mengevaluasi code";
+    } else {return "Tidak bisa mengevaluasi code";}
   } catch (err) {
     return err;
   }

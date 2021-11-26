@@ -12,8 +12,9 @@ export const PASTEBIN_FILE_TOO_BIG =
  * @returns {Promise<String>} URL
  */
 export async function makeRequest(text) {
-  if (sizeInBytes(text) >= 1024 * 1024 * 5)
+  if (sizeInBytes(text) >= 1024 * 1024 * 5) {
     return PASTEBIN_FILE_TOO_BIG;
+  }
 
 
   const { body } = await got.post("https://teknologi-umum-polarite.fly.dev/", {
@@ -95,10 +96,5 @@ async function pastebin(context) {
 export function register(bot) {
   bot.command("pastebin", pastebin);
 
-  return [
-    {
-      command: "pastebin",
-      description: "Put your paste into Polarite"
-    }
-  ];
+  return [];
 }

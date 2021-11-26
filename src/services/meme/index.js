@@ -2,7 +2,7 @@ import got from "got";
 import { randomNumber } from "carret";
 import { defaultHeaders } from "#utils/http.js";
 import redisClient from "#utils/redis.js";
-import { isBigGroup } from "#utils/home.js";
+import { isBigGroup, isHomeGroup } from "#utils/home.js";
 import { logger } from "#utils/logger/logtail.js";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 
@@ -81,6 +81,7 @@ export function register(bot, cache) {
     try {
       const bigGroup = await isBigGroup(context);
       if (bigGroup) return;
+      if (isHomeGroup(context)) return;
 
       await rateLimiter.consume(context.from.id, 1);
       let total = await redis.GET("jokes:total");
@@ -92,10 +93,10 @@ export function register(bot, cache) {
             headers: defaultHeaders,
             responseType: "json",
             timeout: {
-              request: 10_000
+              request: 5_000
             },
             retry: {
-              limit: 3
+              limit: 1
             }
           }
         );
@@ -124,7 +125,6 @@ export function register(bot, cache) {
           `You have been rate limited. Try again in ${Math.round(error.msBeforeNext / 1000)} seconds.`,
           { parse_mode: "HTML" }
         );
-        return;
       }
 
       throw error;

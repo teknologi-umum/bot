@@ -15,7 +15,7 @@ export function wikipedia($) {
     .slice(0, 3)
     .join("\n");
 
-  if (paragraphs)
+  if (paragraphs) {
     return {
       type: "text",
       content: sanitize(paragraphs)
@@ -23,6 +23,7 @@ export function wikipedia($) {
         .replace(/\r\n/g, "\n")
         .trim()
     };
+  }
 
   return {
     type: "error",

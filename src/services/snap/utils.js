@@ -159,8 +159,9 @@ export const ERR_INVALID_LANGUAGE =
 
 export async function generateImage(code, lang) {
   if (!code) return Promise.reject("Code must be supplied\\!");
-  if (lang && !VALID_LANGUAGES[lang])
+  if (lang && !VALID_LANGUAGES[lang]) {
     return Promise.reject(ERR_INVALID_LANGUAGE);
+  }
 
 
   const linenr = code.split("\n").length;
