@@ -19,6 +19,7 @@ import { bonappetit } from "./handlers/bonappetit.js";
 import { cookingNytimes } from "./handlers/cooking_nytimes.js";
 import { caniuse } from "./handlers/caniuse.js";
 import { zeroclick } from "./handlers/zeroclick.js";
+import { manpage } from "./handlers/manpage.js";
 
 // list of handlers, also used to filter valid sites
 const VALID_SOURCES = {
@@ -72,7 +73,8 @@ const VALID_SOURCES = {
   "urbandictionary.com": urbandictionary,
   "bonappetit.com": bonappetit,
   "cooking.nytimes.com": cookingNytimes,
-  "caniuse.com": caniuse
+  "caniuse.com": caniuse,
+  "man7.org": manpage
 };
 
 /**

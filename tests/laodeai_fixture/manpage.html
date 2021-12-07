@@ -1,0 +1,429 @@
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>stdio.h(0p) - Linux manual page</title>
+    <link rel="stylesheet" type="text/css" href="../../../style.css" title="style" />
+    <link rel="stylesheet" type="text/css" href="../style.css" title="style" />
+</head>
+
+<body>
+
+<div class="page-top"><a id="top_of_page"></a></div>
+<!--%%%TOP_BAR%%%-->
+    <div class="nav-bar">
+        <table class="nav-table">
+            <tr>
+                <td class="nav-cell">
+                    <p class="nav-text">
+                        <a href="../../../index.html">man7.org</a> &gt; Linux &gt; <a href="../index.html">man-pages</a>
+                    </p>
+                </td>
+                <td class="training-cell">
+                    <p class="training-text"><a class="training-link" href="http://man7.org/training/">Linux/UNIX system programming training</a></p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+<hr class="nav-end" />
+
+<!--%%%PAGE_START%%%-->
+<h1>stdio.h(0p) &mdash; Linux manual page</h1>
+
+
+<table class="sec-table">
+<tr>
+    <td>
+        <p class="section-dir">
+<a href="#PROLOG">PROLOG</a> | <a href="#NAME">NAME</a> | <a href="#SYNOPSIS">SYNOPSIS</a> | <a href="#DESCRIPTION">DESCRIPTION</a> | <a href="#APPLICATION_USAGE">APPLICATION&nbsp;USAGE</a> | <a href="#RATIONALE">RATIONALE</a> | <a href="#FUTURE_DIRECTIONS">FUTURE&nbsp;DIRECTIONS</a> | <a href="#SEE_ALSO">SEE&nbsp;ALSO</a> | <a href="#COPYRIGHT">COPYRIGHT</a>
+        </p>
+    </td>
+</tr>
+<tr>
+    <td class="search-box">
+        <div class="man-search-box">
+
+            <form method="get" action="https://www.google.com/search">
+                <fieldset class="man-search">
+                    <input type="text" name="q" size="10" maxlength="255" value="" />
+                    <input type="hidden" name="sitesearch" value="man7.org/linux/man-pages" />
+                    <input type="submit" name="sa" value="Search online pages" />
+                </fieldset>
+            </form>
+
+        </div>
+    </td>
+    <td> </td>
+</tr>
+</table>
+
+<!--%%%TEXT_START%%%-->
+<pre>
+<span class="headline">stdio.h(0P)             POSIX Programmer's Manual            stdio.h(0P)</span>
+</pre>
+<h2><a id="PROLOG" href="#PROLOG"></a>PROLOG  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       This manual page is part of the POSIX Programmer's Manual.  The
+       Linux implementation of this interface may differ (consult the
+       corresponding Linux manual page for details of Linux behavior),
+       or the interface may not be implemented on Linux.
+</pre>
+<h2><a id="NAME" href="#NAME"></a>NAME  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       stdio.h — standard buffered input/output
+</pre>
+<h2><a id="SYNOPSIS" href="#SYNOPSIS"></a>SYNOPSIS  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       #include &lt;stdio.h&gt;
+</pre>
+<h2><a id="DESCRIPTION" href="#DESCRIPTION"></a>DESCRIPTION  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       Some of the functionality described on this reference page
+       extends the ISO C standard. Applications shall define the
+       appropriate feature test macro (see the System Interfaces volume
+       of POSIX.1‐2017, <i>Section 2.2</i>, <i>The Compilation Environment</i>) to
+       enable the visibility of these symbols in this header.
+
+       The <i>&lt;stdio.h&gt;</i> header shall define the following data types
+       through <b>typedef</b>:
+
+       <b>FILE          </b>A structure containing information about a file.
+
+       <b>fpos_t        </b>A non-array type containing all information needed
+                     to specify uniquely every position within a file.
+
+       <b>off_t         </b>As described in <i>&lt;sys/types.h&gt;</i>.
+
+       <b>size_t        </b>As described in <i>&lt;stddef.h&gt;</i>.
+
+       <b>ssize_t       </b>As described in <i>&lt;sys/types.h&gt;</i>.
+
+       <b>va_list       </b>As described in <i>&lt;stdarg.h&gt;</i>.
+
+       The <i>&lt;stdio.h&gt;</i> header shall define the following macros which
+       shall expand to integer constant expressions:
+
+       BUFSIZ        Size of <i>&lt;stdio.h&gt;</i> buffers.  This shall expand to a
+                     positive value.
+
+       L_ctermid     Maximum size of character array to hold <i>ctermid</i>()
+                     output.
+
+       L_tmpnam      Maximum size of character array to hold <i>tmpnam</i>()
+                     output.
+
+       The <i>&lt;stdio.h&gt;</i> header shall define the following macros which
+       shall expand to integer constant expressions with distinct
+       values:
+
+       _IOFBF        Input/output fully buffered.
+
+       _IOLBF        Input/output line buffered.
+
+       _IONBF        Input/output unbuffered.
+
+       The <i>&lt;stdio.h&gt;</i> header shall define the following macros which
+       shall expand to integer constant expressions with distinct
+       values:
+
+       SEEK_CUR      Seek relative to current position.
+
+       SEEK_END      Seek relative to end-of-file.
+
+       SEEK_SET      Seek relative to start-of-file.
+
+       The <i>&lt;stdio.h&gt;</i> header shall define the following macros which
+       shall expand to integer constant expressions denoting
+       implementation limits:
+
+       {FILENAME_MAX}
+                     Maximum size in bytes of the longest pathname that
+                     the implementation guarantees can be opened.
+
+       {FOPEN_MAX}   Number of streams which the implementation
+                     guarantees can be open simultaneously. The value is
+                     at least eight.
+
+       {TMP_MAX}     Minimum number of unique filenames generated by
+                     <i>tmpnam</i>().  Maximum number of times an application
+                     can call <i>tmpnam</i>() reliably. The value of {TMP_MAX}
+                     is at least 25.
+
+                     On XSI-conformant systems, the value of {TMP_MAX}
+                     is at least 10000.
+
+       The <i>&lt;stdio.h&gt;</i> header shall define the following macro which shall
+       expand to an integer constant expression with type <b>int </b>and a
+       negative value:
+
+       EOF           End-of-file return value.
+
+       The <i>&lt;stdio.h&gt;</i> header shall define NULL as described in
+       <i>&lt;stddef.h&gt;</i>.
+
+       The <i>&lt;stdio.h&gt;</i> header shall define the following macro which shall
+       expand to a string constant:
+
+       P_tmpdir      Default directory prefix for <i>tempnam</i>().
+
+       The <i>&lt;stdio.h&gt;</i> header shall define the following macros which
+       shall expand to expressions of type ``pointer to <b>FILE</b>'' that
+       point to the <b>FILE </b>objects associated, respectively, with the
+       standard error, input, and output streams:
+
+       <i>stderr</i>        Standard error output stream.
+
+       <i>stdin</i>         Standard input stream.
+
+       <i>stdout</i>        Standard output stream.
+
+       The following shall be declared as functions and may also be
+       defined as macros. Function prototypes shall be provided.
+
+           void     clearerr(FILE *);
+           char    *ctermid(char *);
+           int      dprintf(int, const char *restrict, ...)
+           int      fclose(FILE *);
+           FILE    *fdopen(int, const char *);
+           int      feof(FILE *);
+           int      ferror(FILE *);
+           int      fflush(FILE *);
+           int      fgetc(FILE *);
+           int      fgetpos(FILE *restrict, fpos_t *restrict);
+           char    *fgets(char *restrict, int, FILE *restrict);
+           int      fileno(FILE *);
+           void     flockfile(FILE *);
+           FILE    *fmemopen(void *restrict, size_t, const char *restrict);
+           FILE    *fopen(const char *restrict, const char *restrict);
+           int      fprintf(FILE *restrict, const char *restrict, ...);
+           int      fputc(int, FILE *);
+           int      fputs(const char *restrict, FILE *restrict);
+           size_t   fread(void *restrict, size_t, size_t, FILE *restrict);
+           FILE    *freopen(const char *restrict, const char *restrict,
+                        FILE *restrict);
+           int      fscanf(FILE *restrict, const char *restrict, ...);
+           int      fseek(FILE *, long, int);
+           int      fseeko(FILE *, off_t, int);
+           int      fsetpos(FILE *, const fpos_t *);
+           long     ftell(FILE *);
+           off_t    ftello(FILE *);
+           int      ftrylockfile(FILE *);
+           void     funlockfile(FILE *);
+           size_t   fwrite(const void *restrict, size_t, size_t, FILE *restrict);
+           int      getc(FILE *);
+           int      getchar(void);
+           int      getc_unlocked(FILE *);
+           int      getchar_unlocked(void);
+           ssize_t  getdelim(char **restrict, size_t *restrict, int,
+                        FILE *restrict);
+           ssize_t  getline(char **restrict, size_t *restrict, FILE *restrict);
+           char    *gets(char *);
+           FILE    *open_memstream(char **, size_t *);
+           int      pclose(FILE *);
+           void     perror(const char *);
+           FILE    *popen(const char *, const char *);
+           int      printf(const char *restrict, ...);
+           int      putc(int, FILE *);
+           int      putchar(int);
+           int      putc_unlocked(int, FILE *);
+           int      putchar_unlocked(int);
+           int      puts(const char *);
+           int      remove(const char *);
+           int      rename(const char *, const char *);
+           int      renameat(int, const char *, int, const char *);
+           void     rewind(FILE *);
+           int      scanf(const char *restrict, ...);
+           void     setbuf(FILE *restrict, char *restrict);
+           int      setvbuf(FILE *restrict, char *restrict, int, size_t);
+           int      snprintf(char *restrict, size_t, const char *restrict, ...);
+           int      sprintf(char *restrict, const char *restrict, ...);
+           int      sscanf(const char *restrict, const char *restrict, ...);
+           char    *tempnam(const char *, const char *);
+           FILE    *tmpfile(void);
+           char    *tmpnam(char *);
+           int      ungetc(int, FILE *);
+           int      vdprintf(int, const char *restrict, va_list);
+           int      vfprintf(FILE *restrict, const char *restrict, va_list);
+           int      vfscanf(FILE *restrict, const char *restrict, va_list);
+           int      vprintf(const char *restrict, va_list);
+           int      vscanf(const char *restrict, va_list);
+           int      vsnprintf(char *restrict, size_t, const char *restrict,
+                        va_list);
+           int      vsprintf(char *restrict, const char *restrict, va_list);
+           int      vsscanf(const char *restrict, const char *restrict, va_list);
+
+       Inclusion of the <i>&lt;stdio.h&gt;</i> header may also make visible all
+       symbols from <i>&lt;stddef.h&gt;</i>.
+
+       <i>The following sections are informative.</i>
+</pre>
+<h2><a id="APPLICATION_USAGE" href="#APPLICATION_USAGE"></a>APPLICATION USAGE  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       Since standard I/O streams may use an underlying file descriptor
+       to access the file associated with a stream, application
+       developers need to be aware that {FOPEN_MAX} streams may not be
+       available if file descriptors are being used to access files that
+       are not associated with streams.
+</pre>
+<h2><a id="RATIONALE" href="#RATIONALE"></a>RATIONALE  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       There is a conflict between the ISO C standard and the POSIX
+       definition of the {TMP_MAX} macro that is addressed by
+       ISO/IEC 9899:1999 standard, Defect Report 336. The POSIX standard
+       is in alignment with the public record of the response to the
+       Defect Report.  This change has not yet been published as part of
+       the ISO C standard.
+</pre>
+<h2><a id="FUTURE_DIRECTIONS" href="#FUTURE_DIRECTIONS"></a>FUTURE DIRECTIONS  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       None.
+</pre>
+<h2><a id="SEE_ALSO" href="#SEE_ALSO"></a>SEE ALSO  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       <a href="../man0/stdarg.h.0p.html">stdarg.h(0p)</a>, <a href="../man0/stddef.h.0p.html">stddef.h(0p)</a>, <a href="../man0/sys_types.h.0p.html">sys_types.h(0p)</a>
+
+       The System Interfaces volume of POSIX.1‐2017, <i>Section 2.2</i>, <i>The</i>
+       <i>Compilation Environment</i>, <a href="../man3/clearerr.3p.html">clearerr(3p)</a>, <a href="../man3/ctermid.3p.html">ctermid(3p)</a>, <a href="../man3/fclose.3p.html">fclose(3p)</a>,
+       <a href="../man3/fdopen.3p.html">fdopen(3p)</a>, <a href="../man3/feof.3p.html">feof(3p)</a>, <a href="../man3/ferror.3p.html">ferror(3p)</a>, <a href="../man3/fflush.3p.html">fflush(3p)</a>, <a href="../man3/fgetc.3p.html">fgetc(3p)</a>,
+       <a href="../man3/fgetpos.3p.html">fgetpos(3p)</a>, <a href="../man3/fgets.3p.html">fgets(3p)</a>, <a href="../man3/fileno.3p.html">fileno(3p)</a>, <a href="../man3/flockfile.3p.html">flockfile(3p)</a>, <a href="../man3/fmemopen.3p.html">fmemopen(3p)</a>,
+       <a href="../man3/fopen.3p.html">fopen(3p)</a>, <a href="../man3/fprintf.3p.html">fprintf(3p)</a>, <a href="../man3/fputc.3p.html">fputc(3p)</a>, <a href="../man3/fputs.3p.html">fputs(3p)</a>, <a href="../man3/fread.3p.html">fread(3p)</a>,
+       <a href="../man3/freopen.3p.html">freopen(3p)</a>, <a href="../man3/fscanf.3p.html">fscanf(3p)</a>, <a href="../man3/fseek.3p.html">fseek(3p)</a>, <a href="../man3/fsetpos.3p.html">fsetpos(3p)</a>, <a href="../man3/ftell.3p.html">ftell(3p)</a>,
+       <a href="../man3/fwrite.3p.html">fwrite(3p)</a>, <a href="../man3/getc.3p.html">getc(3p)</a>, <a href="../man3/getchar.3p.html">getchar(3p)</a>, <a href="../man3/getc_unlocked.3p.html">getc_unlocked(3p)</a>,
+       <a href="../man3/getdelim.3p.html">getdelim(3p)</a>, <a href="../man3/getopt.3p.html">getopt(3p)</a>, <a href="../man3/gets.3p.html">gets(3p)</a>, <a href="../man3/open_memstream.3p.html">open_memstream(3p)</a>,
+       <a href="../man3/pclose.3p.html">pclose(3p)</a>, <a href="../man3/perror.3p.html">perror(3p)</a>, <a href="../man3/popen.3p.html">popen(3p)</a>, <a href="../man3/putc.3p.html">putc(3p)</a>, <a href="../man3/putchar.3p.html">putchar(3p)</a>,
+       <a href="../man3/puts.3p.html">puts(3p)</a>, <a href="../man3/remove.3p.html">remove(3p)</a>, <a href="../man3/rename.3p.html">rename(3p)</a>, <a href="../man3/rewind.3p.html">rewind(3p)</a>, <a href="../man3/setbuf.3p.html">setbuf(3p)</a>,
+       <a href="../man3/setvbuf.3p.html">setvbuf(3p)</a>, <a href="../man3/stdin.3p.html">stdin(3p)</a>, <a href="../man3/system.3p.html">system(3p)</a>, <a href="../man3/tempnam.3p.html">tempnam(3p)</a>, <a href="../man3/tmpfile.3p.html">tmpfile(3p)</a>,
+       <a href="../man3/tmpnam.3p.html">tmpnam(3p)</a>, <a href="../man3/ungetc.3p.html">ungetc(3p)</a>, <a href="../man3/vfprintf.3p.html">vfprintf(3p)</a>, <a href="../man3/vfscanf.3p.html">vfscanf(3p)</a>
+</pre>
+<h2><a id="COPYRIGHT" href="#COPYRIGHT"></a>COPYRIGHT  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       Portions of this text are reprinted and reproduced in electronic
+       form from IEEE Std 1003.1-2017, Standard for Information
+       Technology -- Portable Operating System Interface (POSIX), The
+       Open Group Base Specifications Issue 7, 2018 Edition, Copyright
+       (C) 2018 by the Institute of Electrical and Electronics
+       Engineers, Inc and The Open Group.  In the event of any
+       discrepancy between this version and the original IEEE and The
+       Open Group Standard, the original IEEE and The Open Group
+       Standard is the referee document. The original Standard can be
+       obtained online at <a href="http://www.opengroup.org/unix/online.html">http://www.opengroup.org/unix/online.html</a> .
+
+       Any typographical or formatting errors that appear in this page
+       are most likely to have been introduced during the conversion of
+       the source files to man page format. To report such errors, see
+       <a href="https://www.kernel.org/doc/man-pages/reporting_bugs.html">https://www.kernel.org/doc/man-pages/reporting_bugs.html</a> .
+
+<span class="footline">IEEE/The Open Group               2017                       stdio.h(0P)</span>
+</pre>
+
+<hr class="end-man-text" />
+<p>Pages that refer to this page:
+    <a href="../man0/fcntl.h.0p.html">fcntl.h(0p)</a>,&nbsp;
+    <a href="../man0/float.h.0p.html">float.h(0p)</a>,&nbsp;
+    <a href="../man0/limits.h.0p.html">limits.h(0p)</a>,&nbsp;
+    <a href="../man0/unistd.h.0p.html">unistd.h(0p)</a>,&nbsp;
+    <a href="../man0/wchar.h.0p.html">wchar.h(0p)</a>,&nbsp;
+    <a href="../man0/wctype.h.0p.html">wctype.h(0p)</a>,&nbsp;
+    <a href="../man3/btowc.3p.html">btowc(3p)</a>,&nbsp;
+    <a href="../man3/clearerr.3p.html">clearerr(3p)</a>,&nbsp;
+    <a href="../man3/ctermid.3p.html">ctermid(3p)</a>,&nbsp;
+    <a href="../man3/fclose.3p.html">fclose(3p)</a>,&nbsp;
+    <a href="../man3/fdopen.3p.html">fdopen(3p)</a>,&nbsp;
+    <a href="../man3/feof.3p.html">feof(3p)</a>,&nbsp;
+    <a href="../man3/ferror.3p.html">ferror(3p)</a>,&nbsp;
+    <a href="../man3/fflush.3p.html">fflush(3p)</a>,&nbsp;
+    <a href="../man3/fgetc.3p.html">fgetc(3p)</a>,&nbsp;
+    <a href="../man3/fgetpos.3p.html">fgetpos(3p)</a>,&nbsp;
+    <a href="../man3/fgets.3p.html">fgets(3p)</a>,&nbsp;
+    <a href="../man3/fgetwc.3p.html">fgetwc(3p)</a>,&nbsp;
+    <a href="../man3/fgetws.3p.html">fgetws(3p)</a>,&nbsp;
+    <a href="../man3/fileno.3p.html">fileno(3p)</a>,&nbsp;
+    <a href="../man3/flockfile.3p.html">flockfile(3p)</a>,&nbsp;
+    <a href="../man3/fmemopen.3p.html">fmemopen(3p)</a>,&nbsp;
+    <a href="../man3/fopen.3p.html">fopen(3p)</a>,&nbsp;
+    <a href="../man3/fprintf.3p.html">fprintf(3p)</a>,&nbsp;
+    <a href="../man3/fputc.3p.html">fputc(3p)</a>,&nbsp;
+    <a href="../man3/fputs.3p.html">fputs(3p)</a>,&nbsp;
+    <a href="../man3/fputwc.3p.html">fputwc(3p)</a>,&nbsp;
+    <a href="../man3/fputws.3p.html">fputws(3p)</a>,&nbsp;
+    <a href="../man3/fread.3p.html">fread(3p)</a>,&nbsp;
+    <a href="../man3/freopen.3p.html">freopen(3p)</a>,&nbsp;
+    <a href="../man3/fscanf.3p.html">fscanf(3p)</a>,&nbsp;
+    <a href="../man3/fseek.3p.html">fseek(3p)</a>,&nbsp;
+    <a href="../man3/fsetpos.3p.html">fsetpos(3p)</a>,&nbsp;
+    <a href="../man3/ftell.3p.html">ftell(3p)</a>,&nbsp;
+    <a href="../man3/fwide.3p.html">fwide(3p)</a>,&nbsp;
+    <a href="../man3/fwprintf.3p.html">fwprintf(3p)</a>,&nbsp;
+    <a href="../man3/fwrite.3p.html">fwrite(3p)</a>,&nbsp;
+    <a href="../man3/fwscanf.3p.html">fwscanf(3p)</a>,&nbsp;
+    <a href="../man3/getc.3p.html">getc(3p)</a>,&nbsp;
+    <a href="../man3/getchar.3p.html">getchar(3p)</a>,&nbsp;
+    <a href="../man3/getc_unlocked.3p.html">getc_unlocked(3p)</a>,&nbsp;
+    <a href="../man3/getdelim.3p.html">getdelim(3p)</a>,&nbsp;
+    <a href="../man3/gets.3p.html">gets(3p)</a>,&nbsp;
+    <a href="../man3/getwc.3p.html">getwc(3p)</a>,&nbsp;
+    <a href="../man3/isalnum.3p.html">isalnum(3p)</a>,&nbsp;
+    <a href="../man3/isalpha.3p.html">isalpha(3p)</a>,&nbsp;
+    <a href="../man3/iswalnum.3p.html">iswalnum(3p)</a>,&nbsp;
+    <a href="../man3/open_memstream.3p.html">open_memstream(3p)</a>,&nbsp;
+    <a href="../man3/pclose.3p.html">pclose(3p)</a>,&nbsp;
+    <a href="../man3/perror.3p.html">perror(3p)</a>,&nbsp;
+    <a href="../man3/popen.3p.html">popen(3p)</a>,&nbsp;
+    <a href="../man3/putc.3p.html">putc(3p)</a>,&nbsp;
+    <a href="../man3/putchar.3p.html">putchar(3p)</a>,&nbsp;
+    <a href="../man3/puts.3p.html">puts(3p)</a>,&nbsp;
+    <a href="../man3/putwc.3p.html">putwc(3p)</a>,&nbsp;
+    <a href="../man3/remove.3p.html">remove(3p)</a>,&nbsp;
+    <a href="../man3/rename.3p.html">rename(3p)</a>,&nbsp;
+    <a href="../man3/rewind.3p.html">rewind(3p)</a>,&nbsp;
+    <a href="../man3/setbuf.3p.html">setbuf(3p)</a>,&nbsp;
+    <a href="../man3/setvbuf.3p.html">setvbuf(3p)</a>,&nbsp;
+    <a href="../man3/sqrt.3p.html">sqrt(3p)</a>,&nbsp;
+    <a href="../man3/stdin.3p.html">stdin(3p)</a>,&nbsp;
+    <a href="../man3/tempnam.3p.html">tempnam(3p)</a>,&nbsp;
+    <a href="../man3/tmpfile.3p.html">tmpfile(3p)</a>,&nbsp;
+    <a href="../man3/tmpnam.3p.html">tmpnam(3p)</a>,&nbsp;
+    <a href="../man3/ungetc.3p.html">ungetc(3p)</a>,&nbsp;
+    <a href="../man3/ungetwc.3p.html">ungetwc(3p)</a>,&nbsp;
+    <a href="../man3/vfprintf.3p.html">vfprintf(3p)</a>,&nbsp;
+    <a href="../man3/vfscanf.3p.html">vfscanf(3p)</a>,&nbsp;
+    <a href="../man3/vfwprintf.3p.html">vfwprintf(3p)</a>,&nbsp;
+    <a href="../man3/vfwscanf.3p.html">vfwscanf(3p)</a>,&nbsp;
+    <a href="../man3/wctob.3p.html">wctob(3p)</a>
+</p>
+<hr/>
+
+
+<hr class="start-footer" />
+
+<div class="footer">
+
+<table class="colophon-table">
+    <tr>
+    <td class="pub-info">
+        <p>
+            HTML rendering created 2021-08-27
+            by <a href="https://man7.org/mtk/index.html">Michael Kerrisk</a>,
+            author of
+            <a href="https://man7.org/tlpi/"><em>The Linux Programming Interface</em></a>,
+            maintainer of the
+            <a href="https://www.kernel.org/doc/man-pages/">Linux <em>man-pages</em> project</a>.
+        </p>
+        <p>
+            For details of in-depth
+            <strong>Linux/UNIX system programming training courses</strong>
+            that I teach, look <a href="https://man7.org/training/">here</a>.
+        </p>
+        <p>
+            Hosting by <a href="https://www.jambit.com/index_en.html">jambit GmbH</a>.
+        </p>
+    </td>
+    <td class="colophon-divider">
+    </td>
+    <td class="tlpi-cover">
+        <a href="https://man7.org/tlpi/"><img src="https://man7.org/tlpi/cover/TLPI-front-cover-vsmall.png" alt="Cover of TLPI" /></a>
+    </td>
+    </tr>
+</table>
+
+</div>
+
+<hr class="end-footer" />
+
+</body>
+</html>
