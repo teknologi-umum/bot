@@ -16,6 +16,7 @@ import { bonappetit } from "#services/laodeai/handlers/bonappetit.js";
 import { cookingNytimes } from "#services/laodeai/handlers/cooking_nytimes.js";
 import { zeroclick } from "#services/laodeai/handlers/zeroclick.js";
 import { caniuse } from "#services/laodeai/handlers/caniuse.js";
+import { manpage } from "#services/laodeai/handlers/manpage.js";
 
 const readFile = (path) =>
   readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), path), {
@@ -250,6 +251,22 @@ test("should be able to parse caniuse output", () => {
 test("should return error on empty caniuse html", () => {
   const html = cheerio.load("<body></body>");
   const output = caniuse(html);
+
+  assert.equal(output, { type: "error", content: "" });
+});
+
+test("should be able to parse manpage output", () => {
+  const file = readFile("./laodeai_fixture/manpage.html");
+  const html = cheerio.load(file);
+  const output = manpage(html);
+
+  assert.equal(output.type, "text");
+  assert.fixture(output.content, readFile("./laodeai_snapshot/manpage"));
+});
+
+test("should return error on empty manpage html", () => {
+  const html = cheerio.load("<body></body>");
+  const output = manpage(html);
 
   assert.equal(output, { type: "error", content: "" });
 });
