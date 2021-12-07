@@ -271,4 +271,13 @@ test("should return error on empty manpage html", () => {
   assert.equal(output, { type: "error", content: "" });
 });
 
+test("should be able to parse esolangs output", () => {
+  const file = readFile("./laodeai_fixture/esolangs.html");
+  const html = cheerio.load(file);
+  const output = wikipedia(html);
+
+  assert.equal(output.type, "text");
+  assert.fixture(output.content, readFile("./laodeai_snapshot/esolangs"));
+});
+
 test.run();

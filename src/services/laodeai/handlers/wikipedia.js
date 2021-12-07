@@ -7,7 +7,7 @@ import { sanitize } from "#utils/sanitize.js";
  */
 export function wikipedia($) {
   const paragraphs = $(
-    "#bodyContent .mw-body-content .mw-parser-output p",
+    ".mw-body-content .mw-parser-output p",
     ".mw-body"
   )
     .map((_, el) => $(el).html())
@@ -21,7 +21,7 @@ export function wikipedia($) {
       content: sanitize(paragraphs)
         .replace(/\[(\d+|update)\]/g, "")
         .replace(/\r\n/g, "\n")
-        .trim()
+        .trim() + "\n"
     };
   }
 

@@ -26,6 +26,8 @@ const VALID_SOURCES = {
   "stackoverflow.com": stackoverflow,
   "gist.github.com": gist,
   "en.wikipedia.org": wikipedia,
+  "id.wikipedia.org": wikipedia,
+  "simple.wikipedia.org": wikipedia,
   "wikihow.com": wikihow,
   "foodnetwork.com": foodnetwork,
   "serverfault.com": stackexchange,
