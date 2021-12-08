@@ -11,14 +11,29 @@
  * @property {String=} actions
  */
 
+export interface FullConfig {
+  chatID: string
+  userID: string
+  message: string
+  // TODO: might need to refactor this one
+  updateType?: "callback_query" | "channel_post" | "chat_member" | "chosen_inline_result" | "edited_channel_post" | "edited_message" | "inline_query" | "message" | "my_chat_member" | "pre_checkout_query" | "poll_answer" | "poll" | "shipping_query"
+  chatType?: "channel" | "private" | "group" | "supergroup"
+  command?: string
+  sendText?: string
+  httpRequestUrl?: string
+  actions?: string
+}
+
 import { Logtail } from "@logtail/node";
+import { Context } from "telegraf";
 
 export class Logger {
+  token: string;
   /**
    *
    * @param {String} token Loggly Token
    */
-  constructor(token) {
+  constructor(token: string) {
     this.token = token;
   }
 
@@ -27,7 +42,7 @@ export class Logger {
    * @param {FullConfig} data
    * @return {Promise<Object>}
    */
-  async log(data) {
+  async log(data: FullConfig) {
     if (!data) {
       return Promise.reject("`data` should not be empty");
     }
@@ -49,13 +64,14 @@ export class Logger {
    * @param {FullConfig} additionalData
    * @return {Promise<Object>}
    */
-  async fromContext(context, command = "", additionalData = {}) {
+  async fromContext(context: Context, command = "", additionalData = {}) {
     const logged = await this.log({
-      chatID: context.chat.id,
-      userID: context.from.id,
+      chatID: String(context.chat?.id) ?? "",
+      userID: String(context.from?.id) ?? "",
+      // TODO: add generic type on telegraf.Context to open up message.text
       message: context.message?.text ?? "",
       updateType: context.updateType,
-      chatType: context.chat.type,
+      chatType: context.chat?.type,
       command,
       ...additionalData
     });

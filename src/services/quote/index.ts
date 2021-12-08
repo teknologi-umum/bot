@@ -1,6 +1,7 @@
 import { logger } from "#utils/logger/logtail.js";
 import { isBigGroup } from "#utils/home.js";
 import { getRandomQuote } from "./utils.js";
+import { Telegraf } from "telegraf";
 
 /**
  * Send daily quote.
@@ -26,7 +27,7 @@ async function handleCommand(context) {
  * @param {import('telegraf').Telegraf} bot
  * @returns {{command: String, description: String}[]}
  */
-export function register(bot) {
+export function register(bot: Telegraf) {
   bot.command("quote", handleCommand);
 
   return [

@@ -3,7 +3,7 @@ import { stderr, stdout } from "process";
 import kleur from "kleur";
 
 export const terminal = {
-  log(message) {
+  log(message: any): void {
     const insp = inspect(message);
     stdout.write(
       `${kleur.gray(
@@ -11,7 +11,7 @@ export const terminal = {
       )} ${kleur.white(insp.slice(1, insp.length-1))}\n`
     );
   },
-  warn(message) {
+  warn(message: any): void {
     const insp = inspect(message);
     stdout.write(
       `${kleur.gray(
@@ -19,7 +19,7 @@ export const terminal = {
       )} ${kleur.yellow(insp.slice(1, insp.length-1))}\n`
     );
   },
-  error(message) {
+  error(message: any): void {
     const insp = inspect(message);
     stderr.write(
       `${kleur.gray(
@@ -27,7 +27,7 @@ export const terminal = {
       )} ${kleur.red(insp.slice(1, insp.length-1))}\n`
     );
   },
-  info(message) {
+  info(message: any): void {
     const insp = inspect(message);
     stdout.write(
       `${kleur.gray(
@@ -35,7 +35,7 @@ export const terminal = {
       )} ${kleur.blue(insp.slice(1, insp.length-1))}\n`
     );
   },
-  success(message) {
+  success(message: any): void {
     const insp = inspect(message);
     stdout.write(
       `${kleur.gray(

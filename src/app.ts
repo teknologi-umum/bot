@@ -4,31 +4,31 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import redis from "redis";
 
-import { sentry } from "#utils/logger/sentry.js";
-import { terminal } from "#utils/logger/terminal.js";
-import { logger } from "#utils/logger/logtail.js";
-import { pathTo } from "#utils/path.js";
+import { sentry } from "#utils/logger/sentry";
+import { terminal } from "#utils/logger/terminal";
+import { logger } from "#utils/logger/logtail";
+import { pathTo } from "#utils/path";
 
-import * as poll from "./services/poll/index.js";
-import * as meme from "./services/meme/index.js";
-import * as help from "./services/help/index.js";
-import * as quote from "./services/quote/index.js";
-import * as covid from "./services/covid/index.js";
-import * as snap from "./services/snap/index.js";
-import * as blidingej from "./services/bliding-ej/index.js";
-import * as evalBot from "./services/eval/index.js";
-import * as blog from "./services/devread/index.js";
-import * as quiz from "./services/quiz/index.js";
-import * as search from "./services/search/index.js";
-import * as dukun from "./services/dukun/index.js";
-import * as laodeai from "./services/laodeai/index.js";
-import * as analytics from "./services/analytics/index.js";
-import * as pastebin from "./services/pastebin/index.js";
-import * as news from "./services/news/index.js";
+import * as poll from "./services/poll/index";
+import * as meme from "./services/meme/index";
+import * as help from "./services/help/index";
+import * as quote from "./services/quote/index";
+import * as covid from "./services/covid/index";
+import * as snap from "./services/snap/index";
+import * as blidingej from "./services/bliding-ej/index";
+import * as evalBot from "./services/eval/index";
+import * as blog from "./services/devread/index";
+import * as quiz from "./services/quiz/index";
+import * as search from "./services/search/index";
+import * as dukun from "./services/dukun/index";
+import * as laodeai from "./services/laodeai/index";
+import * as analytics from "./services/analytics/index";
+import * as pastebin from "./services/pastebin/index";
+import * as news from "./services/news/index";
 
 dotenv.config({ path: pathTo(import.meta.url, "../.env") });
 
-const bot = new Telegraf(process.env.BOT_TOKEN);
+const bot = new Telegraf(String(process.env.BOT_TOKEN));
 const cache = redis.createClient(String(process.env.REDIS_URL));
 const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
   useNewUrlParser: true
@@ -111,7 +111,7 @@ async function main() {
 
 main();
 
-function terminate(caller) {
+function terminate(caller: string) {
   const t = Date.now();
   mongo.close((err) => {
     err && terminal.error(err);
