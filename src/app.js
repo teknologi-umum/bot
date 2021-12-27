@@ -36,7 +36,7 @@ const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
 
 async function main() {
   bot.use((ctx, next) => {
-    if (ctx.from.username === "@Channel_Bot") {
+    if (ctx.from.id === "136817688") {
       return;
     }
 
