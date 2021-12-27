@@ -35,6 +35,14 @@ const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
 });
 
 async function main() {
+  bot.use((ctx, next) => {
+    if (ctx.from.username === "@Channel_Bot") {
+      return;
+    }
+
+    next();
+  });
+
   const commands = [
     meme.register(bot, cache),
     help.register(bot),
