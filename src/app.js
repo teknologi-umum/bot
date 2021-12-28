@@ -36,7 +36,7 @@ const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
 
 async function main() {
   bot.use((ctx, next) => {
-    if (ctx.from.id === "136817688") {
+    if (ctx.from.id === 136817688 || ctx.from.is_bot) {
       return;
     }
 
@@ -94,7 +94,8 @@ async function main() {
     });
     if (process.env.NODE_ENV !== "production") terminal.error(error);
     await Promise.all([
-      context.reply(
+      context.telegram.sendMessage(
+        context.chat.id,
         "Uh oh, something went wrong. Ask the devs to check their logs."
       ),
       logger.log({
