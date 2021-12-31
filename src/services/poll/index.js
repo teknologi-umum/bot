@@ -1,22 +1,20 @@
 import { logger } from "#utils/logger/logtail.js";
 import { isHomeGroup } from "#utils/home.js";
-import redisClient from "#utils/redis.js";
 import { Temporal } from "#utils/temporal.js";
 
 /**
  * Process poll created by user to not
  * @param {import('telegraf').Context<import('telegraf/typings/core/types/typegram').Update>} context
- * @param {import('redis').RedisClient} cache
+ * @param {import('redis').RedisClientType} cache
  * @param {any} poll Telegram Poll object
  * @param {any} pollID Telegram ID to poll
  * @returns {Promise<void>}
  */
 export async function poll(context, cache, poll, pollID) {
-  const redis = redisClient(cache);
   const currentTime = new Temporal(new Date());
 
   // If this is empty, this could be a null value. So this can't be directly destructured.
-  const pollByGroup = await redis.HGETALL(
+  const pollByGroup = await cache.HGETALL(
     `poll:${String(context.message.chat.id)}`
   );
 
@@ -84,7 +82,7 @@ export async function poll(context, cache, poll, pollID) {
           disable_web_page_preview: true
         }
       ),
-      redis.HSET(
+      cache.HSET(
         `poll:${String(context.message.chat.id)}`,
         "content",
         JSON.stringify(lastMessageContent)
@@ -112,7 +110,7 @@ export async function poll(context, cache, poll, pollID) {
       actions: `Message sent: ${response.message_id}`,
       sendText: preformatMessage
     }),
-    redis.HSET(
+    cache.HSET(
       `poll:${String(context.message.chat.id)}`,
       "id",
       String(response.message_id),
@@ -136,7 +134,7 @@ export async function poll(context, cache, poll, pollID) {
 /**
  * Send help to user when needed.
  * @param {import('telegraf').Telegraf} bot
- * @param {import('redis').RedisClient} cache
+ * @param {import('redis').RedisClientType} cache
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, cache) {

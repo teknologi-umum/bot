@@ -35,6 +35,7 @@ const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
 });
 
 async function main() {
+  await cache.connect();
   bot.use((ctx, next) => {
     if (ctx.from.id === 136817688 || ctx.from.is_bot) {
       return;

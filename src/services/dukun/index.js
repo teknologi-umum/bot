@@ -50,7 +50,7 @@ async function fetchUpstream(dukunModel, redis, updatedData) {
  *
  * @param {import('telegraf').Context<import('telegraf/typings/core/types/typegram').Update>} context
  * @param {import('mongoose').Connection} mongo
- * @param {import('redis').RedisClient} cache
+ * @param {import('redis').RedisClientType} cache
  * @returns {Promise<void>}
  */
 async function dukun(context, mongo, cache) {
@@ -247,7 +247,7 @@ async function dukun(context, mongo, cache) {
  *
  * @param {import('telegraf').Telegraf} bot
  * @param {import('mongoose').Connection} mongo
- * @param {import('redis').RedisClient} cache
+ * @param {import('redis').RedisClientType} cache
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, mongo, cache) {

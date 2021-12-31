@@ -1,7 +1,6 @@
 import got from "got";
 import { randomNumber } from "carret";
 import { defaultHeaders } from "#utils/http.js";
-import redisClient from "#utils/redis.js";
 import { isBigGroup, isHomeGroup } from "#utils/home.js";
 import { logger } from "#utils/logger/logtail.js";
 import { RateLimiterMemory } from "rate-limiter-flexible";
@@ -11,11 +10,11 @@ const rateLimiter = new RateLimiterMemory({ points: 6, duration: 60 });
 /**
  * Send memes..
  * @param {import('telegraf').Telegraf} bot
- * @param {import('redis').RedisClient} cache
+ * @param {import('redis').RedisClientType} cache
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, cache) {
-  const redis = redisClient(cache);
+  // const redis = redisClient(cache);
 
   bot.command("hilih", async (context) => {
     const bigGroup = await isBigGroup(context);
@@ -84,7 +83,7 @@ export function register(bot, cache) {
       if (isHomeGroup(context)) return;
 
       await rateLimiter.consume(context.from.id, 1);
-      let total = await redis.GET("jokes:total");
+      let total = await cache.GET("jokes:total");
 
       if (!total) {
         const { body } = await got.get(
@@ -101,7 +100,7 @@ export function register(bot, cache) {
           }
         );
 
-        await redis.SETEX(
+        await cache.SETEX(
           "jokes:total",
           60 * 60 * 12,
           Number.parseInt(body.message)
