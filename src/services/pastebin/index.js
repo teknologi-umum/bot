@@ -2,6 +2,7 @@ import got from "got";
 import { logger } from "#utils/logger/logtail.js";
 import { defaultHeaders } from "#utils/http.js";
 import { sizeInBytes } from "#utils/size.js";
+import { terminal } from "#utils/logger/terminal.js";
 
 export const PASTEBIN_FILE_TOO_BIG =
   "Can't create pastebin. Text is bigger than 5 MB";
@@ -73,17 +74,25 @@ async function pastebin(context) {
 
   if (!isPrivateChat) {
     // Pastebin message
-    await context.deleteMessage(context.message.message_id);
-    await logger.fromContext(context, "pastebin", {
-      actions: `Deleted chat id ${context.message.message_id}`
-    });
-
+    await Promise.all([
+      context.deleteMessage(context.message.message_id),
+      logger.fromContext(context, "pastebin", {
+        actions: `Deleted a message with id ${context.message.message_id}`
+      })
+    ]);
     if (isOwner) {
-      // Target message to pastebin
-      await context.deleteMessage(replyMessage.message_id);
-      await logger.fromContext(context, "pastebin", {
-        actions: `Deleted chat id ${context.message.message_id}`
-      });
+      try {
+        // Target message to pastebin
+        await Promise.all([
+          context.deleteMessage(replyMessage.message_id),
+          logger.fromContext(context, "pastebin", {
+            actions: `Deleted a message with id ${replyMessage.message_id}`
+          })
+        ]);
+      } catch (e) {
+        // Drop the error.
+        terminal.log(e);
+      }
     }
   }
 }

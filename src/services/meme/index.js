@@ -1,22 +1,16 @@
 import got from "got";
 import { randomNumber } from "carret";
 import { defaultHeaders } from "#utils/http.js";
-import redisClient from "#utils/redis.js";
 import { isBigGroup, isHomeGroup } from "#utils/home.js";
 import { logger } from "#utils/logger/logtail.js";
-import { RateLimiterMemory } from "rate-limiter-flexible";
-
-const rateLimiter = new RateLimiterMemory({ points: 6, duration: 60 });
 
 /**
  * Send memes..
  * @param {import('telegraf').Telegraf} bot
- * @param {import('redis').RedisClient} cache
+ * @param {import('redis').RedisClientType} cache
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, cache) {
-  const redis = redisClient(cache);
-
   bot.command("hilih", async (context) => {
     const bigGroup = await isBigGroup(context);
     if (bigGroup) return;
@@ -78,57 +72,43 @@ export function register(bot, cache) {
   });
 
   bot.command("joke", async (context) => {
-    try {
-      const bigGroup = await isBigGroup(context);
-      if (bigGroup) return;
-      if (isHomeGroup(context)) return;
+    const bigGroup = await isBigGroup(context);
+    if (bigGroup) return;
+    if (isHomeGroup(context)) return;
 
-      await rateLimiter.consume(context.from.id, 1);
-      let total = await redis.GET("jokes:total");
-
-      if (!total) {
-        const { body } = await got.get(
-          "https://jokesbapak2.herokuapp.com/total",
-          {
-            headers: defaultHeaders,
-            responseType: "json",
-            timeout: {
-              request: 5_000
-            },
-            retry: {
-              limit: 1
-            }
+    let total = await cache.GET("jokes:total");
+    if (!total) {
+      const { body } = await got.get(
+        "https://jokesbapak2.herokuapp.com/total",
+        {
+          headers: defaultHeaders,
+          responseType: "json",
+          timeout: {
+            request: 5_000
+          },
+          retry: {
+            limit: 1
           }
-        );
-
-        await redis.SETEX(
-          "jokes:total",
-          60 * 60 * 12,
-          Number.parseInt(body.message)
-        );
-        total = Number.parseInt(body.message);
-      }
-
-      const id = randomNumber(0, total);
-
-      await context.telegram.sendPhoto(
-        context.message.chat.id,
-        `https://jokesbapak2.herokuapp.com/id/${id}`
+        }
       );
-      await logger.fromContext(context, "joke", {
-        sendText: `https://jokesbapak2.herokuapp.com/id/${id}`
-      });
-    } catch (error) {
-      if (error?.msBeforeNext) {
-        await context.telegram.sendMessage(
-          context.message.chat.id,
-          `You have been rate limited. Try again in ${Math.round(error.msBeforeNext / 1000)} seconds.`,
-          { parse_mode: "HTML" }
-        );
-      }
 
-      throw error;
+      await cache.SETEX(
+        "jokes:total",
+        60 * 60 * 12,
+        String(body.message)
+      );
+      total = Number.parseInt(body.message);
     }
+
+    const id = randomNumber(0, Number.parseInt(total));
+
+    await context.telegram.sendPhoto(
+      context.message.chat.id,
+      `https://jokesbapak2.herokuapp.com/id/${id}`
+    );
+    await logger.fromContext(context, "joke", {
+      sendText: `https://jokesbapak2.herokuapp.com/id/${id}`
+    });
   });
 
   return [

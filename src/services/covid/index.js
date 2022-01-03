@@ -1,6 +1,5 @@
 import got from "got";
 import { renderTemplate } from "#utils/template.js";
-import redisClient from "#utils/redis.js";
 import { getCommandArgs } from "#utils/command.js";
 import { defaultHeaders } from "#utils/http.js";
 import { Temporal } from "#utils/temporal.js";
@@ -9,10 +8,10 @@ import { logger } from "#utils/logger/logtail.js";
 /**
  * Send covid information.
  * @param {import('telegraf').Context} context
+ * @param {import('redis').RedisClientType} cache
  * @returns {Promise<void>}
  */
 async function covid(context, cache) {
-  const redis = redisClient(cache);
   const chatId = context.message.chat.id;
   const country = getCommandArgs("covid", context);
 
@@ -82,7 +81,7 @@ async function covid(context, cache) {
     return Promise.resolve();
   }
 
-  const [getGlobalData] = await redis.MGET("covid:global");
+  const [getGlobalData] = await cache.MGET(["covid:global"]);
 
   if (getGlobalData) {
     await context.telegram.sendMessage(chatId, getGlobalData, {
@@ -131,7 +130,7 @@ async function covid(context, cache) {
     context.telegram.sendMessage(chatId, preformatMessage, {
       parse_mode: "HTML"
     }),
-    redis.SETEX("covid:global", 60 * 60 * 6, preformatMessage)
+    cache.SETEX("covid:global", 60 * 60 * 6, preformatMessage)
   ]).then(async () => {
     await logger.fromContext(context, "covid", { sendText: preformatMessage });
   });
@@ -142,7 +141,7 @@ async function covid(context, cache) {
 /**
  * Send covid information.
  * @param {import('telegraf').Telegraf} bot
- * @param {import('redis').RedisClient} cache
+ * @param {import('redis').RedisClientType} cache
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, cache) {

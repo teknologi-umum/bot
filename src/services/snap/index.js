@@ -1,5 +1,6 @@
 import { getCommandArgs } from "#utils/command.js";
 import { logger } from "#utils/logger/logtail.js";
+import { terminal } from "#utils/logger/terminal.js";
 import { makeRequest, PASTEBIN_FILE_TOO_BIG } from "../pastebin/index.js";
 import { ERR_INVALID_LANGUAGE, generateImage } from "./utils.js";
 
@@ -39,37 +40,48 @@ async function snap(context) {
       code.substring(0, 3000),
       lang.split(" ")[0]
     );
-    await context.telegram.sendPhoto(
-      context.message.chat.id,
-      { source: image },
-      {
-        caption: `${isOwner ? "" : mentionUser + " "}${
-          fullCode === PASTEBIN_FILE_TOO_BIG
-            ? "Code is bigger than 512 KB, please upload the complete code yourself."
-            : fullCode
-              ? `Full code on: ${fullCode}`
-              : ""
-        }`,
-        reply_to_message_id: !isOwner && replyMessage.message_id
-      }
-    );
-    await logger.fromContext(context, "snap", {
-      sendText: code,
-      actions: "Sent a photo"
-    });
+    await Promise.all([
+      context.telegram.sendPhoto(
+        context.message.chat.id,
+        { source: image },
+        {
+          caption: `${isOwner ? "" : mentionUser + " "}${
+            fullCode === PASTEBIN_FILE_TOO_BIG
+              ? "Code is bigger than 512 KB, please upload the complete code yourself."
+              : fullCode
+                ? `Full code on: ${fullCode}`
+                : ""
+          }`,
+          reply_to_message_id: !isOwner && replyMessage.message_id
+        }
+      ),
+      logger.fromContext(context, "snap", {
+        sendText: code,
+        actions: "Sent a photo"
+      })
+    ]);
 
     if (!isPrivateChat) {
       // Snap message
-      await context.deleteMessage(context.message.message_id);
-      await logger.fromContext(context, "snap", {
-        actions: `Deleted a message with id ${context.message.message_id}`
-      });
+      await Promise.all([
+        context.deleteMessage(context.message.message_id),
+        logger.fromContext(context, "snap", {
+          actions: `Deleted a message with id ${context.message.message_id}`
+        })
+      ]);
       if (isOwner) {
-        // Target message to snap
-        await context.deleteMessage(replyMessage.message_id);
-        await logger.fromContext(context, "snap", {
-          actions: `Deleted a message with id ${replyMessage.message_id}`
-        });
+        try {
+          // Target message to snap
+          await Promise.all([
+            context.deleteMessage(replyMessage.message_id),
+            logger.fromContext(context, "snap", {
+              actions: `Deleted a message with id ${replyMessage.message_id}`
+            })
+          ]);
+        } catch (e) {
+          // Drop the error.
+          terminal.log(e);
+        }
       }
     }
 
@@ -77,10 +89,12 @@ async function snap(context) {
   } catch (err) {
     // Handle specific error message
     if (err === ERR_INVALID_LANGUAGE) {
-      await context.telegram.sendMessage(context.message.chat.id, err, {
-        parse_mode: "MarkdownV2"
-      });
-      await logger.fromContext(context, "snap", { sendText: err });
+      await Promise.all([
+        context.telegram.sendMessage(context.message.chat.id, err, {
+          parse_mode: "MarkdownV2"
+        }),
+        logger.fromContext(context, "snap", { sendText: err })
+      ]);
       return Promise.resolve();
     }
     return Promise.reject(err);

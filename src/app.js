@@ -35,6 +35,12 @@ const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
 });
 
 async function main() {
+  await cache.connect();
+  const cachePing = await cache.ping();
+  terminal.info(`Cache ping: ${cachePing}`);
+
+  mongo.on("connected", () => terminal.info("MongoDB connected"));
+
   bot.use((ctx, next) => {
     if (ctx.from.id === 136817688 || ctx.from.is_bot) {
       return;
@@ -67,42 +73,46 @@ async function main() {
   bot.telegram.setMyCommands(commands);
 
   bot.catch(async (error, context) => {
-    sentry.captureException(error, (scope) => {
-      scope.setContext("chat", {
-        chat_id: context.message.chat.id,
-        chat_title: context.message.chat.title,
-        chat_type: context.message.chat.type,
-        chat_username: context.message.chat.username,
-        text: context.message.text,
-        update_type: context.updateType,
-        isReplyTo: context.message?.reply_to_message.id !== undefined,
-        replyToText: context.message?.reply_to_message.text,
-        caption: context.message?.caption
+    try {
+      sentry.captureException(error, (scope) => {
+        scope.setContext("chat", {
+          chat_id: context.message.chat.id,
+          chat_title: context.message.chat.title,
+          chat_type: context.message.chat.type,
+          chat_username: context.message.chat.username,
+          text: context.message.text,
+          update_type: context.updateType,
+          isReplyTo: context.message?.reply_to_message.id !== undefined,
+          replyToText: context.message?.reply_to_message.text,
+          caption: context.message?.caption
+        });
+        scope.setContext("from", {
+          from_id: context.message.from.id,
+          from_username: context.message.from.username,
+          is_bot: context.message.from.is_bot,
+          from_name: `${context.message.from.first_name} ${context.message.from.last_name}`
+        });
+        scope.setTags({
+          chat_id: context.message.chat.id,
+          from_id: context.message.from.id,
+          from_username: context.message.from.username
+        });
+        return scope;
       });
-      scope.setContext("from", {
-        from_id: context.message.from.id,
-        from_username: context.message.from.username,
-        is_bot: context.message.from.is_bot,
-        from_name: `${context.message.from.first_name} ${context.message.from.last_name}`
-      });
-      scope.setTags({
-        chat_id: context.message.chat.id,
-        from_id: context.message.from.id,
-        from_username: context.message.from.username
-      });
-      return scope;
-    });
-    if (process.env.NODE_ENV !== "production") terminal.error(error);
-    await Promise.all([
-      context.telegram.sendMessage(
-        context.chat.id,
-        "Uh oh, something went wrong. Ask the devs to check their logs."
-      ),
-      logger.log({
-        message: "Uh oh, something went wrong. Ask the devs to check their logs.",
-        command: "error"
-      })
-    ]);
+      if (process.env.NODE_ENV !== "production") terminal.error(error);
+      await Promise.all([
+        context.telegram.sendMessage(
+          context.chat.id,
+          "Uh oh, something went wrong. Ask the devs to check their logs."
+        ),
+        logger.log({
+          message: "Uh oh, something went wrong. Ask the devs to check their logs.",
+          command: "error"
+        })
+      ]);
+    } catch (e) {
+      terminal.error(e);
+    }
   });
 
   // For more information about what this is, please refer to:

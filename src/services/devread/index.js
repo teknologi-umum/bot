@@ -1,5 +1,4 @@
 import { getTheDevRead } from "./request.js";
-import redisClient from "#utils/redis.js";
 import { randomArray } from "#utils/random.js";
 import { renderTemplate } from "#utils/template.js";
 import { getCommandArgs } from "#utils/command.js";
@@ -10,11 +9,10 @@ const WHITELIST = ["javascript", "php", "go", "c", "typescript", "python"];
 /**
  * Send help to user when needed.
  * @param {import('telegraf').Context} context
+ * @param {import('redis').RedisClientType} cache
  * @returns {Promise<void>}
  */
 async function devRead(context, cache) {
-  const redis = redisClient(cache);
-
   const query = getCommandArgs("devread", context);
 
   if (!query) {
@@ -28,7 +26,7 @@ async function devRead(context, cache) {
 
   if (WHITELIST.includes(query.toLowerCase())) {
     // Check if the data exists in redis
-    const [queryData] = await redis.MGET([
+    const [queryData] = await cache.MGET([
       `devread:${encodeURI(query.toLowerCase())}`
     ]);
 
@@ -60,7 +58,7 @@ async function devRead(context, cache) {
   const items = randomArray(data, 3);
   const read = items
     .map((x) =>
-      renderTemplate("blog/blog.template.hbs", {
+      renderTemplate("devread/devread.template.hbs", {
         title: x?.title ?? "",
         body: x?.body ?? "",
         url: x?.url ?? ""
@@ -87,7 +85,7 @@ async function devRead(context, cache) {
       : body,
     url
   }));
-  await redis.SETEX(
+  await cache.SETEX(
     `devread:${encodeURI(query.toLowerCase())}`,
     60 * 60 * 6,
     JSON.stringify(filteredData)

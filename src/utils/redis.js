@@ -5,7 +5,7 @@
 
 /**
  *
- * @param {import('redis').RedisClient} client
+ * @param {import('redis').RedisClientType} client
  * @returns
  */
 function redisClient(client) {

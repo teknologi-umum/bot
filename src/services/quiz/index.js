@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { randomNumber } from "carret";
-import redisClient from "#utils/redis.js";
 import { poll } from "../poll/index.js";
 import { isHomeGroup } from "#utils/home.js";
 import { Temporal } from "#utils/temporal.js";
@@ -29,13 +28,12 @@ const pollSchema = new mongoose.Schema(
  *
  * @param {import('telegraf').Context<import('telegraf/typings/core/types/typegram').Update>} context
  * @param {import('mongoose').Connection} mongo
- * @param {import('redis').RedisClient} cache
+ * @param {import('redis').RedisClientType} cache
  * @returns {Promise<void>}
  */
 async function quiz(context, mongo, cache) {
   if (!isHomeGroup(context)) return;
 
-  const redis = redisClient(cache);
   const currentTime = new Temporal(new Date());
   const chatID = context.message.chat.id;
 
@@ -54,10 +52,10 @@ async function quiz(context, mongo, cache) {
   const Poll = mongo.model("Poll", pollSchema, "quiz");
 
   // Check if today's quiz is already posted.
-  const quizByChatID = await redis.HGETALL(`quiz:${String(chatID)}`);
+  const quizByChatID = await cache.HGETALL(`quiz:${String(chatID)}`);
 
   if (quizByChatID && currentTime.compare(new Date(quizByChatID.date), "day")) {
-    context.telegram.sendMessage(
+    await context.telegram.sendMessage(
       chatID,
       "You can't request another new quiz for today. Wait for tomorrow, then ask a new one &#x1F61A",
       {
@@ -147,7 +145,7 @@ async function quiz(context, mongo, cache) {
   }
 
   await Poll.findByIdAndUpdate(pickQuiz["_id"], { posted: true });
-  await redis.HSET(
+  await cache.HSET(
     `quiz:${String(chatID)}`,
     "date",
     currentTime.date.toISOString()
@@ -158,7 +156,7 @@ async function quiz(context, mongo, cache) {
  *
  * @param {import('telegraf').Telegraf} bot
  * @param {import('mongoose').Connection} mongo
- * @param {import('redis').RedisClient} cache
+ * @param {import('redis').RedisClientType} cache
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, mongo, cache) {

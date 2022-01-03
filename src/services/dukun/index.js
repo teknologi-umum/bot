@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { getCommandArgs } from "#utils/command.js";
-import redisClient from "#utils/redis.js";
 import { renderTemplate } from "#utils/template.js";
 import { logger } from "#utils/logger/logtail.js";
 
@@ -34,15 +33,15 @@ const dukunSchema = new mongoose.Schema(
 /**
  * Fetch upstream data, thhen store to cache.
  * @param {import('mongoose').Model} dukunModel
- * @param {import('#utils/redis.js').default} redis - This type is wrong atm. Might fix this later.
+ * @param {import('redis').RedisClientType} redis - This type is wrong atm. Might fix this later.
  * @param {Dukun} updatedData
  * @returns {Promise<void>}
  */
 async function fetchUpstream(dukunModel, redis, updatedData) {
   const allDukun = await dukunModel.find({}, null, { sort: { points: -1 } });
-  await redis.MSET("dukun:all", JSON.stringify(allDukun));
+  await redis.SET("dukun:all", JSON.stringify(allDukun));
   if (updatedData.master) {
-    await redis.MSET("dukun:master:points", updatedData.points);
+    await redis.SET("dukun:master:points", String(updatedData.points));
   }
 }
 
@@ -50,7 +49,7 @@ async function fetchUpstream(dukunModel, redis, updatedData) {
  *
  * @param {import('telegraf').Context<import('telegraf/typings/core/types/typegram').Update>} context
  * @param {import('mongoose').Connection} mongo
- * @param {import('redis').RedisClient} cache
+ * @param {import('redis').RedisClientType} cache
  * @returns {Promise<void>}
  */
 async function dukun(context, mongo, cache) {
@@ -63,11 +62,10 @@ async function dukun(context, mongo, cache) {
     return;
   }
 
-  const redis = redisClient(cache);
   const argument = getCommandArgs("dukun", context);
 
   const Dukun = mongo.model("Dukun", dukunSchema, "dukun");
-  const dukunData = await redis.GET("dukun:all");
+  const dukunData = await cache.GET("dukun:all");
   /**  @type {Dukun[]} */
   const dukunDataParsed = JSON.parse(dukunData);
 
@@ -75,29 +73,42 @@ async function dukun(context, mongo, cache) {
     const replyMessage = context.message.reply_to_message;
     const isOwner = context.message.from.id === replyMessage.from.id;
     if (isOwner) {
-      await context.reply(
-        "Poin dukun hanya bisa diberikan oleh orang lain. Najis banget dah self-claimed🙄"
-      );
-      await logger.fromContext(context, "dukun", {
-        sendText:
+      await Promise.all([
+        context.reply(
           "Poin dukun hanya bisa diberikan oleh orang lain. Najis banget dah self-claimed🙄"
-      });
+        ),
+        logger.fromContext(context, "dukun", {
+          sendText:
+            "Poin dukun hanya bisa diberikan oleh orang lain. Najis banget dah self-claimed🙄"
+        })
+      ]);
       return;
     }
 
-    let [dukunMasterID, dukunMasterPoints] = await redis.MGET(
+    if (replyMessage.from.id === 136817688 || replyMessage.from.is_bot) {
+      await Promise.all([
+        context.reply(
+          "Cuma boleh buat orang-orang yang tidak fiktif."
+        ),
+        logger.fromContext(context, "dukun", {
+          sendText:
+          "Cuma boleh buat orang-orang yang tidak fiktif."
+        })
+      ]);
+      return;
+    }
+
+    let [dukunMasterID, dukunMasterPoints] = await cache.MGET([
       "dukun:master:id",
       "dukun:master:points"
-    );
+    ]);
     if (!dukunMasterID || !dukunMasterPoints) {
       /** @type {Dukun} */
       const dukunMaster = await Dukun.findOne({ master: true });
-      await redis.MSET(
-        "dukun:master:id",
-        dukunMaster.userID,
-        "dukun:master:points",
-        dukunMaster.points
-      );
+      await cache.MSET([
+        ["dukun:master:id", String(dukunMaster.userID)],
+        ["dukun:master:points", String(dukunMaster.points)]
+      ]);
       dukunMasterID = dukunMaster.userID;
       dukunMasterPoints = dukunMaster.points;
     }
@@ -161,7 +172,7 @@ async function dukun(context, mongo, cache) {
         { parse_mode: "HTML" }
       );
 
-      await fetchUpstream(Dukun, redis, updatedData);
+      await fetchUpstream(Dukun, cache, updatedData);
       await logger.fromContext(context, "dukun", {
         sendText: sentMessage.text
       });
@@ -172,9 +183,9 @@ async function dukun(context, mongo, cache) {
     const submittedDukun =
       dukunDataParsed?.find((d) => d.userID === replyMessage.from.id)?.points ??
       0;
-    if (submittedDukun + point >= dukunMasterPoints) {
+    if (submittedDukun + point >= Number.parseInt(dukunMasterPoints)) {
     // Only may increment up to dukunMasterPoint - 1
-      point = point - (submittedDukun + point - dukunMasterPoints) - 1;
+      point = point - (submittedDukun + point - Number.parseInt(dukunMasterPoints)) - 1;
     }
 
 
@@ -213,14 +224,15 @@ async function dukun(context, mongo, cache) {
       { parse_mode: "HTML" }
     );
 
-    await fetchUpstream(Dukun, redis, updatedData);
+    await fetchUpstream(Dukun, cache, updatedData);
     await logger.fromContext(context, "dukun", { sendText: sentMessage.text });
     return;
   }
 
   // Dukun leaderboard LOL.
   if (!dukunData) {
-    await context.reply(
+    await context.telegram.sendMessage(
+      context.chat.id,
       "No dukun data available. Try to ngedukun and ask someone to reply your message with /dukun +1. Jangan lupa dipasang sesajennya.",
       { parse_mode: "HTML" }
     );
@@ -247,7 +259,7 @@ async function dukun(context, mongo, cache) {
  *
  * @param {import('telegraf').Telegraf} bot
  * @param {import('mongoose').Connection} mongo
- * @param {import('redis').RedisClient} cache
+ * @param {import('redis').RedisClientType} cache
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, mongo, cache) {
