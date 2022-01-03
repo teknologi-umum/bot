@@ -29,7 +29,7 @@ import * as news from "./services/news/index.js";
 dotenv.config({ path: pathTo(import.meta.url, "../.env") });
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
-const cache = redis.createClient(String(process.env.REDIS_URL));
+const cache = redis.createClient({ url: String(process.env.REDIS_URL) });
 const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
   useNewUrlParser: true
 });
