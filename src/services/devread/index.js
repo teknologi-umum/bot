@@ -58,7 +58,7 @@ async function devRead(context, cache) {
   const items = randomArray(data, 3);
   const read = items
     .map((x) =>
-      renderTemplate("blog/blog.template.hbs", {
+      renderTemplate("devread/devread.template.hbs", {
         title: x?.title ?? "",
         body: x?.body ?? "",
         url: x?.url ?? ""

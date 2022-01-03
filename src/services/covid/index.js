@@ -81,7 +81,7 @@ async function covid(context, cache) {
     return Promise.resolve();
   }
 
-  const [getGlobalData] = await cache.MGET("covid:global");
+  const [getGlobalData] = await cache.MGET(["covid:global"]);
 
   if (getGlobalData) {
     await context.telegram.sendMessage(chatId, getGlobalData, {
