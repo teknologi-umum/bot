@@ -41,6 +41,14 @@ async function main() {
 
   mongo.on("connected", () => terminal.info("MongoDB connected"));
 
+  bot.use((ctx, next) => {
+    if (ctx.from.id === 136817688 || ctx.from.is_bot) {
+      return;
+    }
+
+    next();
+  });
+
   const commands = [
     meme.register(bot, cache),
     help.register(bot),
