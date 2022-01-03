@@ -73,13 +73,28 @@ async function dukun(context, mongo, cache) {
     const replyMessage = context.message.reply_to_message;
     const isOwner = context.message.from.id === replyMessage.from.id;
     if (isOwner) {
-      await context.reply(
-        "Poin dukun hanya bisa diberikan oleh orang lain. Najis banget dah self-claimed🙄"
-      );
-      await logger.fromContext(context, "dukun", {
-        sendText:
+      await Promise.all([
+        context.reply(
           "Poin dukun hanya bisa diberikan oleh orang lain. Najis banget dah self-claimed🙄"
-      });
+        ),
+        logger.fromContext(context, "dukun", {
+          sendText:
+            "Poin dukun hanya bisa diberikan oleh orang lain. Najis banget dah self-claimed🙄"
+        })
+      ]);
+      return;
+    }
+
+    if (replyMessage.from.id === 136817688 || replyMessage.from.is_bot) {
+      await Promise.all([
+        context.reply(
+          "Cuma boleh buat orang-orang yang tidak fiktif."
+        ),
+        logger.fromContext(context, "dukun", {
+          sendText:
+          "Cuma boleh buat orang-orang yang tidak fiktif."
+        })
+      ]);
       return;
     }
 
