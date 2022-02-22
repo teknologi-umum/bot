@@ -33,15 +33,22 @@ const dukunSchema = new mongoose.Schema(
 /**
  * Fetch upstream data, thhen store to cache.
  * @param {import('mongoose').Model} dukunModel
- * @param {import('redis').RedisClientType} redis - This type is wrong atm. Might fix this later.
+ * @param {import('@teknologi-umum/nedb-promises')} cache - This type is wrong atm. Might fix this later.
  * @param {Dukun} updatedData
  * @returns {Promise<void>}
  */
-async function fetchUpstream(dukunModel, redis, updatedData) {
+async function fetchUpstream(dukunModel, cache, updatedData) {
   const allDukun = await dukunModel.find({}, null, { sort: { points: -1 } });
-  await redis.SET("dukun:all", JSON.stringify(allDukun));
+  await cache.update(
+    { key: "dukun:all" }, 
+    {
+      key: "dukun:all", 
+      value: JSON.stringify(allDukun) 
+    }, 
+    { upsert: true }
+  );
   if (updatedData.master) {
-    await redis.SET("dukun:master:points", String(updatedData.points));
+    await cache.update({ key:"dukun:master:points" }, { key:"dukun:master:points", value: String(updatedData.points) }, { upsert: true });
   }
 }
 
@@ -49,7 +56,7 @@ async function fetchUpstream(dukunModel, redis, updatedData) {
  *
  * @param {import('telegraf').Context<import('telegraf/typings/core/types/typegram').Update>} context
  * @param {import('mongoose').Connection} mongo
- * @param {import('redis').RedisClientType} cache
+ * @param {import('@teknologi-umum/nedb-promises')} cache
  * @returns {Promise<void>}
  */
 async function dukun(context, mongo, cache) {
@@ -105,10 +112,16 @@ async function dukun(context, mongo, cache) {
     if (!dukunMasterID || !dukunMasterPoints) {
       /** @type {Dukun} */
       const dukunMaster = await Dukun.findOne({ master: true });
-      await cache.MSET([
-        ["dukun:master:id", String(dukunMaster.userID)],
-        ["dukun:master:points", String(dukunMaster.points)]
-      ]);
+      await cache.update(
+        { key: "dukun:master:id" }, 
+        { key: "dukun:master:id", value: String(dukunMaster.userID) }, 
+        { upsert: true }
+      );
+      await cache.update(
+        { key: "dukun:master:points" }, 
+        { key: "dukun:master:points", value: String(dukunMaster.points) }, 
+        { upsert: true }
+      );
       dukunMasterID = dukunMaster.userID;
       dukunMasterPoints = dukunMaster.points;
     }
@@ -259,7 +272,7 @@ async function dukun(context, mongo, cache) {
  *
  * @param {import('telegraf').Telegraf} bot
  * @param {import('mongoose').Connection} mongo
- * @param {import('redis').RedisClientType} cache
+ * @param {import('@teknologi-umum/nedb-promises')} cache
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, mongo, cache) {

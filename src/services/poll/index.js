@@ -5,7 +5,7 @@ import { Temporal } from "#utils/temporal.js";
 /**
  * Process poll created by user to not
  * @param {import('telegraf').Context<import('telegraf/typings/core/types/typegram').Update>} context
- * @param {import('redis').RedisClientType} cache
+ * @param {import('@teknologi-umum/nedb-promises')} cache
  * @param {any} poll Telegram Poll object
  * @param {any} pollID Telegram ID to poll
  * @returns {Promise<void>}
@@ -14,10 +14,7 @@ export async function poll(context, cache, poll, pollID) {
   const currentTime = new Temporal(new Date());
 
   // If this is empty, this could be a null value. So this can't be directly destructured.
-  const [content, date] = await Promise.all([
-    cache.HGET(`poll:${String(context.message.chat.id)}`, "content"),
-    cache.HGET(`poll:${String(context.message.chat.id)}`, "date")
-  ]);
+  const { content, date } = await cache.findOne({ key: `poll:${String(context.message.chat.id)}` });
 
   /** @type {{ survey: Array<{id: String, text: String}>, quiz: Array<{id: String, text: String}>}} lastMessageContent */
   let lastMessageContent;
@@ -69,7 +66,7 @@ export async function poll(context, cache, poll, pollID) {
     date &&
     currentTime.compare(new Date(date), "day")
   ) {
-    const id = await cache.HGET(`poll:${String(context.message.chat.id)}`, "id");
+    const { id } = await cache.findOne({ key: `poll:${String(context.message.chat.id)}` });
     // append to existing message
     await Promise.allSettled([
       context.telegram.editMessageText(
@@ -82,10 +79,13 @@ export async function poll(context, cache, poll, pollID) {
           disable_web_page_preview: true
         }
       ),
-      cache.HSET(
-        `poll:${String(context.message.chat.id)}`,
-        "content",
-        JSON.stringify(lastMessageContent)
+      cache.update(
+        { key: `poll:${String(context.message.chat.id)}` },
+        { 
+          key: `poll:${String(context.message.chat.id)}`,
+          content: JSON.stringify(lastMessageContent)
+        },
+        { upsert: true }
       ),
       logger.fromContext(context, "poll", {
         actions: `Edited a message: ${Number(id)}`,
@@ -110,13 +110,15 @@ export async function poll(context, cache, poll, pollID) {
       actions: `Message sent: ${response.message_id}`,
       sendText: preformatMessage
     }),
-    cache.HSET(
-      `poll:${String(context.message.chat.id)}`,
-      [
-        ["id", String(response.message_id)],
-        ["content", JSON.stringify(lastMessageContent)],
-        ["date", currentTime.date.toISOString()]
-      ]
+    cache.update(
+      { key: `poll:${String(context.message.chat.id)}` },
+      {
+        key: `poll:${String(context.message.chat.id)}`,
+        id: String(response.message_id),
+        content: JSON.stringify(lastMessageContent),
+        date: currentTime.date.toISOString()
+      },
+      { upsert: true }
     ),
     context.telegram.pinChatMessage(
       context.message.chat.id,
@@ -133,7 +135,7 @@ export async function poll(context, cache, poll, pollID) {
 /**
  * Send help to user when needed.
  * @param {import('telegraf').Telegraf} bot
- * @param {import('redis').RedisClientType} cache
+ * @param {import('@teknologi-umum/nedb-promises')} cache
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, cache) {

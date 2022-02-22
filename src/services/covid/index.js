@@ -8,7 +8,7 @@ import { logger } from "#utils/logger/logtail.js";
 /**
  * Send covid information.
  * @param {import('telegraf').Context} context
- * @param {import('redis').RedisClientType} cache
+ * @param {import('@teknologi-umum/nedb-promises')} cache
  * @returns {Promise<void>}
  */
 async function covid(context, cache) {
@@ -81,13 +81,13 @@ async function covid(context, cache) {
     return Promise.resolve();
   }
 
-  const [getGlobalData] = await cache.MGET(["covid:global"]);
+  const getGlobalData = await cache.findOne({ key: "covid:global" });
 
-  if (getGlobalData) {
-    await context.telegram.sendMessage(chatId, getGlobalData, {
+  if (getGlobalData && getGlobalData?.ttl < Date.now()) {
+    await context.telegram.sendMessage(chatId, getGlobalData.value, {
       parse_mode: "HTML"
     });
-    await logger.fromContext(context, "covid", { sendText: getGlobalData });
+    await logger.fromContext(context, "covid", { sendText: getGlobalData.value });
     return Promise.resolve();
   }
 
@@ -130,7 +130,7 @@ async function covid(context, cache) {
     context.telegram.sendMessage(chatId, preformatMessage, {
       parse_mode: "HTML"
     }),
-    cache.SETEX("covid:global", 60 * 60 * 6, preformatMessage)
+    cache.update({ key: "covid:global" }, { value: preformatMessage, ttl: Date.now() + 1000 * 60 * 60 * 6 }, { upsert: true })
   ]).then(async () => {
     await logger.fromContext(context, "covid", { sendText: preformatMessage });
   });
@@ -141,7 +141,7 @@ async function covid(context, cache) {
 /**
  * Send covid information.
  * @param {import('telegraf').Telegraf} bot
- * @param {import('redis').RedisClientType} cache
+ * @param {import('@teknologi-umum/nedb-promises')} cache
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, cache) {
