@@ -20,9 +20,9 @@ const pollSchema = new mongoose.Schema(
  * @param {any} pollID Telegram ID to poll
  * @returns {Promise<void>}
  */
-export async function poll(context, cache, poll, pollID) {
+export async function poll(context, mongo, cache, poll, pollID) {
   const currentTime = new Temporal(new Date());
-  const Poll = mongoose.model("Poll", pollSchema, "poll");
+  const Poll = mongo.model("Poll", pollSchema, "poll");
 
   // If this is empty, this could be a null value. So this can't be directly destructured.
   let { content, date } = await cache.findOne({ key: `poll:${String(context.message.chat.id)}` });

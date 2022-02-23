@@ -50,7 +50,7 @@ async function main() {
     help.register(bot),
     quote.register(bot),
     covid.register(bot, cache),
-    poll.register(bot, cache),
+    poll.register(bot, mongo, cache),
     snap.register(bot),
     blidingej.register(bot),
     evalBot.register(bot),
