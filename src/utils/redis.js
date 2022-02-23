@@ -5,6 +5,7 @@
 
 /**
  *
+ * @deprecated Just use regular Redis module
  * @param {import('redis').RedisClientType} client
  * @returns
  */

@@ -28,7 +28,7 @@ const pollSchema = new mongoose.Schema(
  *
  * @param {import('telegraf').Context<import('telegraf/typings/core/types/typegram').Update>} context
  * @param {import('mongoose').Connection} mongo
- * @param {import('redis').RedisClientType} cache
+ * @param {import('@teknologi-umum/nedb-promises')} cache
  * @returns {Promise<void>}
  */
 async function quiz(context, mongo, cache) {
@@ -52,7 +52,7 @@ async function quiz(context, mongo, cache) {
   const Poll = mongo.model("Poll", pollSchema, "quiz");
 
   // Check if today's quiz is already posted.
-  const quizByChatID = await cache.HGETALL(`quiz:${String(chatID)}`);
+  const { value: quizByChatID } = await cache.findOne({ key: `quiz:${String(chatID)}` });
 
   if (quizByChatID && currentTime.compare(new Date(quizByChatID.date), "day")) {
     await context.telegram.sendMessage(
@@ -145,10 +145,14 @@ async function quiz(context, mongo, cache) {
   }
 
   await Poll.findByIdAndUpdate(pickQuiz["_id"], { posted: true });
-  await cache.HSET(
-    `quiz:${String(chatID)}`,
-    "date",
-    currentTime.date.toISOString()
+  await cache.update(
+    { key: `quiz:${String(chatID)}` },
+    { 
+      value: {
+        date: currentTime.date.toISOString()
+      }
+    },
+    { upsert: true }
   );
 }
 
@@ -156,7 +160,7 @@ async function quiz(context, mongo, cache) {
  *
  * @param {import('telegraf').Telegraf} bot
  * @param {import('mongoose').Connection} mongo
- * @param {import('redis').RedisClientType} cache
+ * @param {import('@teknologi-umum/nedb-promises')} cache
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, mongo, cache) {

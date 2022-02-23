@@ -9,7 +9,7 @@ const WHITELIST = ["javascript", "php", "go", "c", "typescript", "python"];
 /**
  * Send help to user when needed.
  * @param {import('telegraf').Context} context
- * @param {import('redis').RedisClientType} cache
+ * @param {import('@teknologi-umum/nedb-promises')} cache
  * @returns {Promise<void>}
  */
 async function devRead(context, cache) {
@@ -26,11 +26,9 @@ async function devRead(context, cache) {
 
   if (WHITELIST.includes(query.toLowerCase())) {
     // Check if the data exists in redis
-    const [queryData] = await cache.MGET([
-      `devread:${encodeURI(query.toLowerCase())}`
-    ]);
+    const { value: queryData, ttl } = await cache.findOne({ key: `devread:${encodeURI(query.toLowerCase())}` });
 
-    if (queryData) {
+    if (queryData && ttl < Date.now()) {
       const items = randomArray(JSON.parse(queryData), 3);
       const read = items
         .map(({ title, body, url }) =>
@@ -85,11 +83,15 @@ async function devRead(context, cache) {
       : body,
     url
   }));
-  await cache.SETEX(
-    `devread:${encodeURI(query.toLowerCase())}`,
-    60 * 60 * 6,
-    JSON.stringify(filteredData)
-  );
+
+  await cache.update({
+    key: `devread:${encodeURI(query.toLowerCase())}`
+  },
+  {
+    ttl: Date.now() + 1000 * 60 * 60 * 6,
+    value: JSON.stringify(filteredData)
+  },
+  {upsert: true});
   await logger.fromContext(context, "devread", { sendText: read || "" });
 }
 

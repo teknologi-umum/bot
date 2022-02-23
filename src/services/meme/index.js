@@ -7,7 +7,7 @@ import { logger } from "#utils/logger/logtail.js";
 /**
  * Send memes..
  * @param {import('telegraf').Telegraf} bot
- * @param {import('redis').RedisClientType} cache
+ * @param {import('@teknologi-umum/nedb-promises')} cache
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, cache) {
@@ -76,8 +76,9 @@ export function register(bot, cache) {
     if (bigGroup) return;
     if (isHomeGroup(context)) return;
 
-    let total = await cache.GET("jokes:total");
-    if (!total) {
+    const cached = await cache.findOne({ key: "jokes:total" });
+    let total = cached.total;
+    if (!total || cached?.ttl < Date.now()) {
       const { body } = await got.get(
         "https://jokesbapak2.herokuapp.com/total",
         {
@@ -92,11 +93,16 @@ export function register(bot, cache) {
         }
       );
 
-      await cache.SETEX(
-        "jokes:total",
-        60 * 60 * 12,
-        String(body.message)
+      await cache.update(
+        { key: "jokes:total" },
+        {
+          key: "jokes:total",
+          total: String(body.message),
+          ttl: Date.now() + 1000 * 60 * 60 * 12
+        },
+        { upsert: true }
       );
+
       total = Number.parseInt(body.message);
     }
 

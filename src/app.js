@@ -2,7 +2,7 @@ import { memoryUsage } from "process";
 import { Telegraf } from "telegraf";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import redis from "redis";
+import Datastore from "@teknologi-umum/nedb-promises";
 
 import { sentry } from "#utils/logger/sentry.js";
 import { terminal } from "#utils/logger/terminal.js";
@@ -29,7 +29,7 @@ import * as news from "./services/news/index.js";
 dotenv.config({ path: pathTo(import.meta.url, "../.env") });
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
-const cache = redis.createClient({ url: String(process.env.REDIS_URL) });
+const cache = Datastore.create();
 const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
   useNewUrlParser: true
 });
@@ -135,7 +135,6 @@ function terminate(caller) {
   mongo.close((err) => {
     err && terminal.error(err);
   });
-  cache.QUIT();
   bot.stop(caller);
   terminal.info(`${caller}: ${Date.now() - t}ms`);
 }
