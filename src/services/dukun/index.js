@@ -48,7 +48,15 @@ async function fetchUpstream(dukunModel, cache, updatedData) {
     { upsert: true }
   );
   if (updatedData.master) {
-    await cache.update({ key:"dukun:master:points" }, { key:"dukun:master:points", value: String(updatedData.points) }, { upsert: true });
+    await cache.update(
+      { key:"dukun:master" }, 
+      { 
+        key:"dukun:master",
+        id: String(updatedData.userID), 
+        points: String(updatedData.points) 
+      }, 
+      { upsert: true }
+    );
   }
 }
 
@@ -72,7 +80,7 @@ async function dukun(context, mongo, cache) {
   const argument = getCommandArgs("dukun", context);
 
   const Dukun = mongo.model("Dukun", dukunSchema, "dukun");
-  const dukunData = await cache.GET("dukun:all");
+  const { value: dukunData } = await cache.findOne({ key: "dukun:all" });
   /**  @type {Dukun[]} */
   const dukunDataParsed = JSON.parse(dukunData);
 
@@ -105,21 +113,17 @@ async function dukun(context, mongo, cache) {
       return;
     }
 
-    let [dukunMasterID, dukunMasterPoints] = await cache.MGET([
-      "dukun:master:id",
-      "dukun:master:points"
-    ]);
+    let { id: dukunMasterID, points: dukunMasterPoints } = await cache.findOne({ key: "dukun:master" });
     if (!dukunMasterID || !dukunMasterPoints) {
       /** @type {Dukun} */
       const dukunMaster = await Dukun.findOne({ master: true });
       await cache.update(
-        { key: "dukun:master:id" }, 
-        { key: "dukun:master:id", value: String(dukunMaster.userID) }, 
-        { upsert: true }
-      );
-      await cache.update(
-        { key: "dukun:master:points" }, 
-        { key: "dukun:master:points", value: String(dukunMaster.points) }, 
+        { key: "dukun:master" },
+        { 
+          key: "dukun:master", 
+          id: String(dukunMaster.userID),
+          points: String(dukunMaster.points)
+        }, 
         { upsert: true }
       );
       dukunMasterID = dukunMaster.userID;
