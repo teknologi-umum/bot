@@ -1,10 +1,20 @@
 import { logger } from "#utils/logger/logtail.js";
 import { isHomeGroup } from "#utils/home.js";
 import { Temporal } from "#utils/temporal.js";
+import mongoose from "mongoose";
+
+const pollSchema = new mongoose.Schema(
+  {
+    content: String,
+    createdAt: String
+  },
+  { collection: "poll" }
+);
 
 /**
  * Process poll created by user to not
  * @param {import('telegraf').Context<import('telegraf/typings/core/types/typegram').Update>} context
+ * @param {import('mongoose').Connection} mongo
  * @param {import('@teknologi-umum/nedb-promises')} cache
  * @param {any} poll Telegram Poll object
  * @param {any} pollID Telegram ID to poll
@@ -12,10 +22,19 @@ import { Temporal } from "#utils/temporal.js";
  */
 export async function poll(context, cache, poll, pollID) {
   const currentTime = new Temporal(new Date());
+  const Poll = mongoose.model("Poll", pollSchema, "poll");
 
   // If this is empty, this could be a null value. So this can't be directly destructured.
-  const { content, date } = await cache.findOne({ key: `poll:${String(context.message.chat.id)}` });
+  let { content, date } = await cache.findOne({ key: `poll:${String(context.message.chat.id)}` });
 
+  if (!content && !date) {
+    // If cache is empty, let's find out from the database
+    const document = await Poll.findOne({ createdAt:  currentTime.formatDate() });
+    if (document && document?.createdAt === currentTime.formatDate()) {
+      content = document.content;
+      date = document.createdAt;
+    }
+  }
   /** @type {{ survey: Array<{id: String, text: String}>, quiz: Array<{id: String, text: String}>}} lastMessageContent */
   let lastMessageContent;
 
@@ -79,6 +98,10 @@ export async function poll(context, cache, poll, pollID) {
           disable_web_page_preview: true
         }
       ),
+      Poll.updateOne(
+        { createdAt: currentTime.formatDate() }, 
+        { content: JSON.stringify(lastMessageContent) }
+      ),
       cache.update(
         { key: `poll:${String(context.message.chat.id)}` },
         { 
@@ -110,6 +133,10 @@ export async function poll(context, cache, poll, pollID) {
       actions: `Message sent: ${response.message_id}`,
       sendText: preformatMessage
     }),
+    Poll.create({
+      content: JSON.stringify(lastMessageContent),
+      createdAt: currentTime.formatDate()
+    }),
     cache.update(
       { key: `poll:${String(context.message.chat.id)}` },
       {
@@ -135,16 +162,18 @@ export async function poll(context, cache, poll, pollID) {
 /**
  * Send help to user when needed.
  * @param {import('telegraf').Telegraf} bot
+ * @param {import('mongoose').Connection} mongo
  * @param {import('@teknologi-umum/nedb-promises')} cache
  * @returns {{command: String, description: String}[]}
  */
-export function register(bot, cache) {
+export function register(bot, mongo, cache) {
   bot.on("message", async (context, next) => {
     // Only works on supergroup
     if (context.message?.poll && context.message?.chat?.type === "supergroup") {
       if (!isHomeGroup(context)) return Promise.resolve();
       await poll(
         context,
+        mongo,
         cache,
         context.message.poll,
         context.message.message_id
