@@ -35,10 +35,6 @@ const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
 });
 
 async function main() {
-  await cache.connect();
-  const cachePing = await cache.ping();
-  terminal.info(`Cache ping: ${cachePing}`);
-
   mongo.on("connected", () => terminal.info("MongoDB connected"));
 
   bot.use((ctx, next) => {
