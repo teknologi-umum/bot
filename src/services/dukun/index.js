@@ -80,9 +80,9 @@ async function dukun(context, mongo, cache) {
   const argument = getCommandArgs("dukun", context);
 
   const Dukun = mongo.model("Dukun", dukunSchema, "dukun");
-  const { value: dukunData } = await cache.findOne({ key: "dukun:all" });
+  const dukunData = await cache.findOne({ key: "dukun:all" });
   /**  @type {Dukun[]} */
-  const dukunDataParsed = JSON.parse(dukunData);
+  const dukunDataParsed = JSON.parse(dukunData?.value);
 
   if (context.message.reply_to_message) {
     const replyMessage = context.message.reply_to_message;
@@ -247,7 +247,7 @@ async function dukun(context, mongo, cache) {
   }
 
   // Dukun leaderboard LOL.
-  if (!dukunData) {
+  if (!dukunData?.value) {
     await context.telegram.sendMessage(
       context.chat.id,
       "No dukun data available. Try to ngedukun and ask someone to reply your message with /dukun +1. Jangan lupa dipasang sesajennya.",
