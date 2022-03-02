@@ -9,8 +9,11 @@ import { compile } from "tempura";
  * @return {Promise<string>}
  */
 export function renderTemplate(path, data) {
-  const template = readFileSync(resolve("src", "services", path), {
-    encoding: "utf8"
-  });
+  if (path === null || path === undefined) {
+    throw TypeError("Path is required!");
+  }
+
+  const templatePath = resolve("src", "services", path);
+  const template = readFileSync(templatePath, { encoding: "utf8" });
   return compile(template)(data);
 }

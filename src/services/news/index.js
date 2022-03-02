@@ -3,11 +3,10 @@ import { renderTemplate } from "#utils/template.js";
 import { SingleValueCache } from "#utils/cache.js";
 import { logger } from "#utils/logger/logtail.js";
 
-// cache TTL : 30 minutes
-const cacheTtl = 30 * 60 * 1000;
+const MAX_NEWS_COUNT = 15;
+const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
-// value cache
-const cache = new SingleValueCache(cacheTtl);
+const cache = new SingleValueCache(CACHE_TTL);
 
 /**
  * Send news..
@@ -25,7 +24,7 @@ async function news(context) {
     );
     return {
       newsList: body.data
-        .slice(0, 15)
+        .slice(0, MAX_NEWS_COUNT)
         .map(({ title, link, contentSnippet }) => ({
           title,
           link,

@@ -1,14 +1,14 @@
 import got from "got";
-import { logger } from "#utils/logger/logtail.js";
-import { defaultHeaders } from "#utils/http.js";
+import { DEFAULT_HEADERS } from "#utils/http.js";
 import { sizeInBytes } from "#utils/size.js";
 import { terminal } from "#utils/logger/terminal.js";
+import { logger } from "#utils/logger/index.js";
 
 export const PASTEBIN_FILE_TOO_BIG =
   "Can't create pastebin. Text is bigger than 5 MB";
 
 /**
- *
+ * makeRequest is a function to make a request to Polarite.
  * @param {String} text
  * @returns {Promise<String>} URL
  */
@@ -17,11 +17,10 @@ export async function makeRequest(text) {
     return PASTEBIN_FILE_TOO_BIG;
   }
 
-
   const { body } = await got.post("https://teknologi-umum-polarite.fly.dev/", {
     body: text,
     headers: {
-      ...defaultHeaders,
+      ...DEFAULT_HEADERS,
       "Content-Type": "text/plain",
       Authorization: "Teknologi Umum Bot <teknologi.umum@gmail.com>"
     },

@@ -3,23 +3,25 @@ import got from "got";
 import { getCommandArgs } from "#utils/command.js";
 import { cleanURL, fetchDDG } from "#utils/http.js";
 import { sanitize } from "#utils/sanitize.js";
-import { trimHtml } from "#utils/trimHtml.js";
-import { logger } from "#utils/logger/logtail.js";
-import { generateImage } from "../snap/utils.js";
-import { makeRequest } from "../pastebin/index.js";
-import { stackoverflow } from "./handlers/stackoverflow.js";
-import { gist } from "./handlers/gist.js";
-import { wikipedia } from "./handlers/wikipedia.js";
-import { wikihow } from "./handlers/wikihow.js";
-import { stackexchange } from "./handlers/stackexchange.js";
-import { foodnetwork } from "./handlers/foodnetwork.js";
-import { knowyourmeme } from "./handlers/knowyourmeme.js";
-import { urbandictionary } from "./handlers/urbandictionary.js";
-import { bonappetit } from "./handlers/bonappetit.js";
-import { cookingNytimes } from "./handlers/cooking_nytimes.js";
-import { caniuse } from "./handlers/caniuse.js";
-import { zeroclick } from "./handlers/zeroclick.js";
-import { manpage } from "./handlers/manpage.js";
+import { trimHTML } from "#utils/trimHTML.js";
+import { logger } from "#utils/logger/index.js";
+import { generateImage } from "#services/snap/utils.js";
+import { makeRequest } from "#services/pastebin/index.js";
+import {
+  stackoverflow,
+  gist,
+  wikipedia,
+  wikihow,
+  stackexchange,
+  foodnetwork,
+  knowyourmeme,
+  urbandictionary,
+  bonappetit,
+  cookingNytimes,
+  caniuse,
+  zeroclick,
+  manpage
+} from "./handlers/index.js";
 
 // list of handlers, also used to filter valid sites
 const VALID_SOURCES = {
@@ -78,9 +80,9 @@ const VALID_SOURCES = {
   "caniuse.com": caniuse,
   "man7.org": manpage
 };
+const CONTENT_MAX_LENGTH = 800;
 
 /**
- *
  * @param {{ url: string, type: 'image' | 'text' | 'error', content: string }} result
  * @param {import('telegraf').Telegraf} context
  * @returns
@@ -107,12 +109,12 @@ async function sendImage(result, context) {
  * @returns
  */
 function sendText(result, context, trim) {
-  const limit = 800;
   let content = sanitize(result.content);
-  if (trim && content.length > limit) {
-    content = `${trimHtml(limit, content)}...\n\nSee more on: ${result.url}`;
+  if (trim && content.length > CONTENT_MAX_LENGTH) {
+    content = `${trimHTML(CONTENT_MAX_LENGTH, content)}...\n\nSee more on: ${
+      result.url
+    }`;
   }
-
 
   // no await, see https://eslint.org/docs/rules/no-return-await
   return context.telegram.sendMessage(context.message.chat.id, content, {
@@ -127,12 +129,12 @@ function sendText(result, context, trim) {
  * @returns
  */
 async function sendError(context) {
-  await context.reply("Uhh, I don't have an answer for that, sorry.");
+  const MESSAGE = "Uhh, I don't have an answer for that, sorry.";
+  await context.reply(MESSAGE);
   await logger.fromContext(context, "laodeai", {
-    sendText: "Uhh, I don't have an answer for that, sorry."
+    sendText: MESSAGE
   });
 }
-
 
 /**
  * Literally will go through URLs
@@ -142,7 +144,7 @@ async function sendError(context) {
 async function goThroughURLs(validSources) {
   for (let i = 0; i < validSources.length; i++) {
     const url = validSources[i];
-    /* eslint-disable no-await-in-loop */
+    /* eslint-disable-next-line no-await-in-loop */
     const { body, statusCode } = await got.get(url.href, {
       headers: {
         Accept: "text/html"
@@ -153,21 +155,22 @@ async function goThroughURLs(validSources) {
         request: 15_000
       }
     });
-    /* eslint-enable no-await-in-loop */
 
     if (statusCode !== 200) {
       continue;
     }
 
-
+    const cleanHostname = url.hostname.replace("www.", "");
+    const urlDOM = cheerio.load(body);
+    const parsedDOM = VALID_SOURCES[cleanHostname](urlDOM);
     const urlResult = {
       url: url.href,
-      ...VALID_SOURCES[url.hostname.replace("www.", "")](cheerio.load(body))
+      ...parsedDOM
     };
 
     if (urlResult.type === "error") {
       if (i === validSources.length - 1) {
-      // Just give up man
+        // Just give up man
         return { type: "error" };
       }
 
@@ -188,10 +191,7 @@ async function laodeai(context) {
   const query = getCommandArgs("laodeai", context);
   if (!query) return;
 
-  const { body: ddgBody, statusCode: ddgStatusCode } = await fetchDDG(
-    got,
-    query
-  );
+  const { body: ddgBody, statusCode: ddgStatusCode } = await fetchDDG(query);
 
   if (ddgStatusCode !== 200) {
     await context.reply("Error getting search result.");
@@ -203,7 +203,10 @@ async function laodeai(context) {
 
   const $ = cheerio.load(ddgBody);
   const sources = $(".web-result").get();
-  if (sources.length <= 1 && $(sources[0]).find(".no-results").get()) {
+  if (
+    sources.length <= 1 &&
+    $(sources[0]).find(".no-results").get().length !== 0
+  ) {
     await sendError(context);
     return;
   }

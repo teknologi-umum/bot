@@ -1,8 +1,16 @@
+import { logger } from "#utils/logger/index.js";
 import { getCommandArgs } from "#utils/command.js";
-import { logger } from "#utils/logger/logtail.js";
 import { terminal } from "#utils/logger/terminal.js";
-import { makeRequest, PASTEBIN_FILE_TOO_BIG } from "../pastebin/index.js";
-import { ERR_INVALID_LANGUAGE, generateImage } from "./utils.js";
+import {
+  makeRequest,
+  PASTEBIN_FILE_TOO_BIG
+} from "#services/pastebin/index.js";
+import { generateImage } from "./utils.js";
+import {
+  ERR_INVALID_LANGUAGE,
+  CODE_LENGTH_LIMIT,
+  CODE_LINES_LIMIT
+} from "./constants.js";
 
 /**
  * Snap a text code to a carbon image.
@@ -12,11 +20,13 @@ import { ERR_INVALID_LANGUAGE, generateImage } from "./utils.js";
 async function snap(context) {
   if (!context.message.reply_to_message) return Promise.resolve();
 
+  /** @type {import("telegraf/typings/core/types/typegram").Message.TextMessage} */
   const replyMessage = context.message.reply_to_message;
+  const code = replyMessage.text;
   const isOwner = context.message.from.id === replyMessage.from.id;
   const isPrivateChat = context.chat.type === "private";
 
-  if (!replyMessage.text) {
+  if (code === "") {
     await context.reply("`/snap` can only be used on plain texts", {
       parse_mode: "MarkdownV2"
     });
@@ -26,13 +36,18 @@ async function snap(context) {
     return Promise.resolve();
   }
 
-  /** @type {String} code */
-  const code = replyMessage.text;
-  const tooLong = code.length > 3000 || code.split("\n").length > 190;
-  const mentionUser = replyMessage.from.username
-    ? `@${replyMessage.from.username}`
-    : `${replyMessage.from.first_name} ${replyMessage.from?.last_name ?? ""}`;
-  const fullCode = tooLong ? await makeRequest(code) : false;
+  const {
+    username,
+    first_name: firstName,
+    last_name: lastName
+  } = replyMessage.from;
+  const mentionUser = username
+    ? `@${username}`
+    : `${firstName} ${lastName ?? ""}`;
+  const tooLong =
+    code.length > CODE_LENGTH_LIMIT ||
+    code.split("\n").length > CODE_LINES_LIMIT;
+  const fullCode = tooLong && await makeRequest(code);
 
   const lang = getCommandArgs("snap", context);
   try {

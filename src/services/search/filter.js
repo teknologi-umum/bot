@@ -45,10 +45,9 @@ export async function cleanFilter(search, mongo) {
         o.title.toLowerCase().includes(match) ||
         o.snippet.toLowerCase().includes(match)) {return false;}
     }
-
-
     return true;
   });
+  
   return result;
 }
 

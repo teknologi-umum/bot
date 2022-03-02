@@ -1,4 +1,4 @@
-import { logger } from "#utils/logger/logtail.js";
+import { logger } from "#utils/logger/index.js";
 import { isHomeGroup } from "#utils/home.js";
 import { Temporal } from "#utils/temporal.js";
 import mongoose from "mongoose";
