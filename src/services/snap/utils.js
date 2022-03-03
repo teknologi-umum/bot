@@ -1,6 +1,10 @@
 import got from "got";
 import { DEFAULT_HEADERS } from "#utils/http.js";
-import { ERR_EMPTY_CODE, ERR_INVALID_LANGUAGE, VALID_LANGUAGES } from "./constants.js";
+import {
+  ERR_EMPTY_CODE,
+  ERR_INVALID_LANGUAGE,
+  VALID_LANGUAGES
+} from "./constants.js";
 
 /**
  * generateImage is a function to generate code snippet image using Graphene.
@@ -14,7 +18,9 @@ export async function generateImage(code, lang) {
   }
 
   if (
-    (lang !== undefined || lang !== null || lang !== "") &&
+    lang !== undefined &&
+    lang !== null &&
+    lang !== "" &&
     !VALID_LANGUAGES[lang]
   ) {
     return Promise.reject(ERR_INVALID_LANGUAGE);
