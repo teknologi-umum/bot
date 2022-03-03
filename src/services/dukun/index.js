@@ -112,23 +112,21 @@ async function dukun(context, mongo, cache) {
       return;
     }
 
-    let { id: dukunMasterID, points: dukunMasterPoints } = await cache.findOne({
-      key: "dukun:master"
-    });
-    if (!dukunMasterID || !dukunMasterPoints) {
+    const dukunMaster = await cache.findOne({ key: "dukun:master" });
+    if (dukunMaster === null || dukunMaster === undefined) {
       /** @type {Dukun} */
-      const dukunMaster = await Dukun.findOne({ master: true });
+      const master = await Dukun.findOne({ master: true });
       await cache.update(
         { key: "dukun:master" },
         {
           key: "dukun:master",
-          id: String(dukunMaster.userID),
-          points: String(dukunMaster.points)
+          id: String(master.userID),
+          points: String(master.points)
         },
         { upsert: true }
       );
-      dukunMasterID = dukunMaster.userID;
-      dukunMasterPoints = dukunMaster.points;
+      dukunMaster.id = master.userID;
+      dukunMaster.points = master.points;
     }
 
     /** @type {Number} point */
@@ -157,7 +155,7 @@ async function dukun(context, mongo, cache) {
     }
 
     // Check if submitted dukun's a dukun master
-    if (dukunMasterID === String(replyMessage.from.id)) {
+    if (dukunMaster.id === String(replyMessage.from.id)) {
       // Allow insertion
       /** @type {Dukun} */
       const updatedData = await Dukun.findOneAndUpdate(
@@ -199,11 +197,11 @@ async function dukun(context, mongo, cache) {
     const submittedDukun =
       dukunDataParsed.find((d) => d.userID === replyMessage.from.id)?.points ??
       0;
-    if (submittedDukun + point >= Number.parseInt(dukunMasterPoints)) {
+    if (submittedDukun + point >= Number.parseInt(dukunMaster.points)) {
       // Only may increment up to dukunMasterPoint - 1
       point =
         point -
-        (submittedDukun + point - Number.parseInt(dukunMasterPoints)) -
+        (submittedDukun + point - Number.parseInt(dukunMaster.points)) -
         1;
     }
 
