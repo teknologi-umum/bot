@@ -7,6 +7,9 @@ import * as assert from "uvu/assert";
 import { isAllowed, safeEval } from "../src/services/eval/parser.js";
 import { resolveStocks } from "../src/services/eval/superpowers.js";
 
+// TODO: change `got` to something else before removing this
+delete BigInt.prototype.toJSON;
+
 test("should do something", async () => {
   const result = await safeEval("1+1");
   assert.equal(result, "2");
