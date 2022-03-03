@@ -84,7 +84,7 @@ async function dukun(context, mongo, cache) {
   const Dukun = mongo.model("Dukun", dukunSchema, "dukun");
   const dukunData = await cache.findOne({ key: "dukun:all" });
   /**  @type {Dukun[]} */
-  const dukunDataParsed = JSON.parse(dukunData?.value);
+  const dukunDataParsed = JSON.parse(dukunData?.value || []);
 
   if (context.message.reply_to_message) {
     const replyMessage = context.message.reply_to_message;
@@ -197,7 +197,7 @@ async function dukun(context, mongo, cache) {
 
     // Check submitted dukun's current point
     const submittedDukun =
-      dukunDataParsed?.find((d) => d.userID === replyMessage.from.id)?.points ??
+      dukunDataParsed.find((d) => d.userID === replyMessage.from.id)?.points ??
       0;
     if (submittedDukun + point >= Number.parseInt(dukunMasterPoints)) {
       // Only may increment up to dukunMasterPoint - 1
