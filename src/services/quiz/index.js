@@ -9,7 +9,7 @@ import {
   ERR_EXHAUSTED as ERR_DAILY_EMPTY,
   ERR_NOT_IN_GROUP,
   ERR_NO_QUIZ as ERR_QUIZ_EMPTY
-} from "./constants";
+} from "./constants.js";
 
 const pollSchema = new mongoose.Schema(
   {
