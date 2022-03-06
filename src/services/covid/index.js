@@ -1,9 +1,9 @@
 import got from "got";
 import { renderTemplate } from "#utils/template.js";
 import { getCommandArgs } from "#utils/command.js";
-import { defaultHeaders } from "#utils/http.js";
+import { DEFAULT_HEADERS } from "#utils/http.js";
 import { Temporal } from "#utils/temporal.js";
-import { logger } from "#utils/logger/logtail.js";
+import { logger } from "#utils/logger/index.js";
 
 /**
  * Send covid information.
@@ -24,7 +24,7 @@ async function covid(context, cache) {
         query: ""
       },
       responseType: "json",
-      headers: defaultHeaders,
+      headers: DEFAULT_HEADERS,
       throwHttpErrors: false
     });
 
@@ -49,7 +49,7 @@ async function covid(context, cache) {
     if (!body) {
       await context.telegram.sendMessage(
         chatId,
-        `Data for the <b>${body.country}</b> country is not yet available.`,
+        `Data for the <b>${country}</b> country is not yet available.`,
         {
           parse_mode: "HTML"
         }
@@ -97,7 +97,7 @@ async function covid(context, cache) {
         yesterday: "false"
       },
       responseType: "json",
-      headers: defaultHeaders
+      headers: DEFAULT_HEADERS
     })
   ).body;
 
@@ -110,7 +110,7 @@ async function covid(context, cache) {
         query: ""
       },
       responseType: "json",
-      headers: defaultHeaders
+      headers: DEFAULT_HEADERS
     })
   ).body;
 

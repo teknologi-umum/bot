@@ -1,6 +1,6 @@
 import got from "got";
 import { randomNumber } from "carret";
-import { defaultHeaders } from "#utils/http.js";
+import { DEFAULT_HEADERS } from "#utils/http.js";
 import { isBigGroup, isHomeGroup } from "#utils/home.js";
 import { logger } from "#utils/logger/logtail.js";
 
@@ -82,7 +82,7 @@ export function register(bot, cache) {
       const { body } = await got.get(
         "https://jokesbapak2.herokuapp.com/total",
         {
-          headers: defaultHeaders,
+          headers: DEFAULT_HEADERS,
           responseType: "json",
           timeout: {
             request: 5_000

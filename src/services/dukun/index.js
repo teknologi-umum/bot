@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { getCommandArgs } from "#utils/command.js";
 import { renderTemplate } from "#utils/template.js";
-import { logger } from "#utils/logger/logtail.js";
+import { logger } from "#utils/logger/index.js";
 
 /**
  * @typedef {Object} Dukun
@@ -29,9 +29,11 @@ const dukunSchema = new mongoose.Schema(
   { collection: "dukun" }
 );
 
+const MAX_POINT_INC = 10;
+const MAX_POINT_DEC = -10;
 
 /**
- * Fetch upstream data, thhen store to cache.
+ * Fetch upstream data, then store to cache.
  * @param {import('mongoose').Model} dukunModel
  * @param {import('@teknologi-umum/nedb-promises')} cache - This type is wrong atm. Might fix this later.
  * @param {Dukun} updatedData
@@ -40,21 +42,21 @@ const dukunSchema = new mongoose.Schema(
 async function fetchUpstream(dukunModel, cache, updatedData) {
   const allDukun = await dukunModel.find({}, null, { sort: { points: -1 } });
   await cache.update(
-    { key: "dukun:all" }, 
+    { key: "dukun:all" },
     {
-      key: "dukun:all", 
-      value: JSON.stringify(allDukun) 
-    }, 
+      key: "dukun:all",
+      value: JSON.stringify(allDukun)
+    },
     { upsert: true }
   );
   if (updatedData.master) {
     await cache.update(
-      { key:"dukun:master" }, 
-      { 
-        key:"dukun:master",
-        id: String(updatedData.userID), 
-        points: String(updatedData.points) 
-      }, 
+      { key: "dukun:master" },
+      {
+        key: "dukun:master",
+        id: String(updatedData.userID),
+        points: String(updatedData.points)
+      },
       { upsert: true }
     );
   }
@@ -82,64 +84,59 @@ async function dukun(context, mongo, cache) {
   const Dukun = mongo.model("Dukun", dukunSchema, "dukun");
   const dukunData = await cache.findOne({ key: "dukun:all" });
   /**  @type {Dukun[]} */
-  const dukunDataParsed = JSON.parse(dukunData?.value);
+  const dukunDataParsed = JSON.parse(dukunData?.value || []);
 
   if (context.message.reply_to_message) {
     const replyMessage = context.message.reply_to_message;
     const isOwner = context.message.from.id === replyMessage.from.id;
     if (isOwner) {
+      const MESSAGE =
+        "Poin dukun hanya bisa diberikan oleh orang lain. Najis banget dah self-claimed🙄";
       await Promise.all([
-        context.reply(
-          "Poin dukun hanya bisa diberikan oleh orang lain. Najis banget dah self-claimed🙄"
-        ),
+        context.reply(MESSAGE),
         logger.fromContext(context, "dukun", {
-          sendText:
-            "Poin dukun hanya bisa diberikan oleh orang lain. Najis banget dah self-claimed🙄"
+          sendText: MESSAGE
         })
       ]);
       return;
     }
 
     if (replyMessage.from.id === 136817688 || replyMessage.from.is_bot) {
+      const MESSAGE = "Cuma boleh buat orang-orang yang tidak fiktif.";
       await Promise.all([
-        context.reply(
-          "Cuma boleh buat orang-orang yang tidak fiktif."
-        ),
+        context.reply(MESSAGE),
         logger.fromContext(context, "dukun", {
-          sendText:
-          "Cuma boleh buat orang-orang yang tidak fiktif."
+          sendText: MESSAGE
         })
       ]);
       return;
     }
 
-    let { id: dukunMasterID, points: dukunMasterPoints } = await cache.findOne({ key: "dukun:master" });
-    if (!dukunMasterID || !dukunMasterPoints) {
+    const dukunMaster = await cache.findOne({ key: "dukun:master" });
+    if (dukunMaster === null || dukunMaster === undefined) {
       /** @type {Dukun} */
-      const dukunMaster = await Dukun.findOne({ master: true });
+      const master = await Dukun.findOne({ master: true });
       await cache.update(
         { key: "dukun:master" },
-        { 
-          key: "dukun:master", 
-          id: String(dukunMaster.userID),
-          points: String(dukunMaster.points)
-        }, 
+        {
+          key: "dukun:master",
+          id: String(master.userID),
+          points: String(master.points)
+        },
         { upsert: true }
       );
-      dukunMasterID = dukunMaster.userID;
-      dukunMasterPoints = dukunMaster.points;
+      dukunMaster.id = master.userID;
+      dukunMaster.points = master.points;
     }
 
     /** @type {Number} point */
     let point;
     if (argument.startsWith("+")) {
       point = Math.abs(Number.parseInt(argument.replace("-", "")));
-      // Maximum point addition is 10
-      if (point > 10) point = 10;
+      if (point > MAX_POINT_INC) point = MAX_POINT_INC;
     } else if (argument.startsWith("-")) {
       point = Math.abs(Number.parseInt(argument.replace("-", ""))) * -1;
-      // Maximum point subtraction is 10
-      if (point < -10) point = -10;
+      if (point < MAX_POINT_DEC) point = MAX_POINT_DEC;
     } else {
       // No argument was given, +1 by default
       point = 1;
@@ -158,7 +155,7 @@ async function dukun(context, mongo, cache) {
     }
 
     // Check if submitted dukun's a dukun master
-    if (dukunMasterID === String(replyMessage.from.id)) {
+    if (dukunMaster.id === String(replyMessage.from.id)) {
       // Allow insertion
       /** @type {Dukun} */
       const updatedData = await Dukun.findOneAndUpdate(
@@ -198,13 +195,15 @@ async function dukun(context, mongo, cache) {
 
     // Check submitted dukun's current point
     const submittedDukun =
-      dukunDataParsed?.find((d) => d.userID === replyMessage.from.id)?.points ??
+      dukunDataParsed.find((d) => d.userID === replyMessage.from.id)?.points ??
       0;
-    if (submittedDukun + point >= Number.parseInt(dukunMasterPoints)) {
-    // Only may increment up to dukunMasterPoint - 1
-      point = point - (submittedDukun + point - Number.parseInt(dukunMasterPoints)) - 1;
+    if (submittedDukun + point >= Number.parseInt(dukunMaster.points)) {
+      // Only may increment up to dukunMasterPoint - 1
+      point =
+        point -
+        (submittedDukun + point - Number.parseInt(dukunMaster.points)) -
+        1;
     }
-
 
     // Add dukun point
     /** @type {Dukun} */

@@ -4,27 +4,25 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import Datastore from "@teknologi-umum/nedb-promises";
 
-import { sentry } from "#utils/logger/sentry.js";
-import { terminal } from "#utils/logger/terminal.js";
-import { logger } from "#utils/logger/logtail.js";
+import { sentry, terminal, logger } from "#utils/logger/index.js";
 import { pathTo } from "#utils/path.js";
 
-import * as poll from "./services/poll/index.js";
-import * as meme from "./services/meme/index.js";
-import * as help from "./services/help/index.js";
-import * as quote from "./services/quote/index.js";
-import * as covid from "./services/covid/index.js";
-import * as snap from "./services/snap/index.js";
-import * as blidingej from "./services/bliding-ej/index.js";
-import * as evalBot from "./services/eval/index.js";
-import * as blog from "./services/devread/index.js";
-import * as quiz from "./services/quiz/index.js";
-import * as search from "./services/search/index.js";
-import * as dukun from "./services/dukun/index.js";
-import * as laodeai from "./services/laodeai/index.js";
-import * as analytics from "./services/analytics/index.js";
-import * as pastebin from "./services/pastebin/index.js";
-import * as news from "./services/news/index.js";
+import * as poll from "#services/poll/index.js";
+import * as meme from "#services/meme/index.js";
+import * as help from "#services/help/index.js";
+import * as quote from "#services/quote/index.js";
+import * as covid from "#services/covid/index.js";
+import * as snap from "#services/snap/index.js";
+import * as blidingej from "#services/bliding-ej/index.js";
+import * as evalBot from "#services/eval/index.js";
+import * as blog from "#services/devread/index.js";
+import * as quiz from "#services/quiz/index.js";
+import * as search from "#services/search/index.js";
+import * as dukun from "#services/dukun/index.js";
+import * as laodeai from "#services/laodeai/index.js";
+import * as analytics from "#services/analytics/index.js";
+import * as pastebin from "#services/pastebin/index.js";
+import * as news from "#services/news/index.js";
 
 dotenv.config({ path: pathTo(import.meta.url, "../.env") });
 
@@ -102,7 +100,8 @@ async function main() {
           "Uh oh, something went wrong. Ask the devs to check their logs."
         ),
         logger.log({
-          message: "Uh oh, something went wrong. Ask the devs to check their logs.",
+          message:
+            "Uh oh, something went wrong. Ask the devs to check their logs.",
           command: "error"
         })
       ]);

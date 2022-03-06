@@ -1,5 +1,7 @@
+import { Logtail } from "@logtail/node";
+
 /**
- * @typedef {Object} FullConfig
+ * @typedef {Object} LogData
  * @property {String} chatID
  * @property {String} userID
  * @property {String} message
@@ -11,20 +13,28 @@
  * @property {String=} actions
  */
 
-import { Logtail } from "@logtail/node";
-
+/**
+ * Logger is a class that provides logging utilities. It is a wrapper around the Logtail library.
+ */
 export class Logger {
   /**
    *
    * @param {String} token Loggly Token
    */
   constructor(token) {
+    if (
+      process.env.NODE_ENV === "production" &&
+      (token === null || token === undefined || token === "")
+    ) {
+      throw TypeError("Empty token is not allowed for production environment!");
+    }
+
     this.token = token;
   }
 
   /**
    * Send a log data to loggly.
-   * @param {FullConfig} data
+   * @param {LogData} data
    * @return {Promise<Object>}
    */
   async log(data) {
@@ -32,11 +42,9 @@ export class Logger {
       return Promise.reject("`data` should not be empty");
     }
 
-
     if (!this.token || process.env.NODE_ENV !== "production") {
       return {};
     }
-
 
     const logtail = new Logtail(this.token);
     const response = await logtail.info(data.command, { ...data });
@@ -46,7 +54,7 @@ export class Logger {
    * Send a log data from the given context
    * @param {import('telegraf').Context} context
    * @param {String} command
-   * @param {FullConfig} additionalData
+   * @param {LogData} additionalData
    * @return {Promise<Object>}
    */
   async fromContext(context, command = "", additionalData = {}) {

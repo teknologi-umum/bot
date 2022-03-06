@@ -1,10 +1,15 @@
 import mongoose from "mongoose";
 import { randomNumber } from "carret";
-import { poll } from "../poll/index.js";
+import { poll } from "#services/poll/index.js";
 import { isHomeGroup } from "#utils/home.js";
 import { Temporal } from "#utils/temporal.js";
-import { logger } from "#utils/logger/logtail.js";
 import { sanitize } from "#utils/sanitize.js";
+import { logger } from "#utils/logger/index.js";
+import {
+  ERR_EXHAUSTED as ERR_DAILY_EMPTY,
+  ERR_NOT_IN_GROUP,
+  ERR_NO_QUIZ as ERR_QUIZ_EMPTY
+} from "./constants";
 
 const pollSchema = new mongoose.Schema(
   {
@@ -38,74 +43,71 @@ async function quiz(context, mongo, cache) {
   const chatID = context.message.chat.id;
 
   if (context.message.chat.type === "private") {
-    await context.telegram.sendMessage(
-      chatID,
-      "Quiz is only available for groups",
-      { parse_mode: "HTML" }
-    );
-    await logger.fromContext(context, "quiz", {
-      sendText: "Quiz is only available for groups"
+    await context.telegram.sendMessage(chatID, ERR_NOT_IN_GROUP, {
+      parse_mode: "HTML"
     });
+    await logger.fromContext(context, "quiz", { sendText: ERR_NOT_IN_GROUP });
     return;
   }
 
   const Poll = mongo.model("Poll", pollSchema, "quiz");
 
   // Check if today's quiz is already posted.
-  const { value: quizByChatID } = await cache.findOne({ key: `quiz:${String(chatID)}` });
+  const { value: quizByChatID } = await cache.findOne({
+    key: `quiz:${String(chatID)}`
+  });
 
   if (quizByChatID && currentTime.compare(new Date(quizByChatID.date), "day")) {
-    await context.telegram.sendMessage(
-      chatID,
-      "You can't request another new quiz for today. Wait for tomorrow, then ask a new one &#x1F61A",
-      {
-        parse_mode: "HTML"
-      }
-    );
-    await logger.fromContext(context, "quiz", {
-      sendText: "You can't request another new quiz for today. Wait for tomorrow, then ask a new one &#x1F61A"
+    await context.telegram.sendMessage(chatID, ERR_DAILY_EMPTY, {
+      parse_mode: "HTML"
     });
+    await logger.fromContext(context, "quiz", { sendText: ERR_DAILY_EMPTY });
     return;
   }
 
-  const quizes = await Poll.find({ posted: false });
-  const pickQuiz = quizes[randomNumber(0, quizes.length - 1)];
+  const polls = await Poll.find({ posted: false });
+  if (polls.length < 1) {
+    await context.telegram.sendMessage(chatID, ERR_QUIZ_EMPTY, {
+      parse_mode: "HTML"
+    });
+    await logger.fromContext(context, "quiz", { sendText: ERR_QUIZ_EMPTY });
+    return;
+  }
+  const chosenPoll = polls[randomNumber(0, polls.length - 1)];
 
-  if (pickQuiz?.code) {
-    await context.telegram.sendPhoto(chatID, pickQuiz.code);
+  if (chosenPoll?.code) {
+    await context.telegram.sendPhoto(chatID, chosenPoll.code);
   }
 
-
   const question =
-    pickQuiz.question.length > 200
-      ? `${pickQuiz.question.substring(0, 20)}... (question above)`
-      : pickQuiz.question;
+    chosenPoll.question.length > 200
+      ? `${chosenPoll.question.substring(0, 20)}... (question above)`
+      : chosenPoll.question;
 
-  if (pickQuiz.question.length > 200) {
-  // Send the question as a separate message
+  if (chosenPoll.question.length > 200) {
+    // Send the question as a separate message
 
-    await context.telegram.sendMessage(chatID, sanitize(pickQuiz.question), {
+    await context.telegram.sendMessage(chatID, sanitize(chosenPoll.question), {
       parse_mode: "HTML"
     });
   }
 
-
-  if (pickQuiz.type === "quiz") {
+  if (chosenPoll.type === "quiz") {
     const response = await context.telegram.sendQuiz(
       chatID,
       sanitize(question),
-      pickQuiz.choices.map((o) => String(o)),
+      chosenPoll.choices.map((o) => String(o)),
       {
-        allows_multiple_answers: pickQuiz.multipleAnswer ?? false,
-        explanation: pickQuiz.explanation ?? "",
-        is_anonymous: pickQuiz.anonymous ?? false,
-        correct_option_id: pickQuiz.answer - 1
+        allows_multiple_answers: chosenPoll.multipleAnswer ?? false,
+        explanation: chosenPoll.explanation ?? "",
+        is_anonymous: chosenPoll.anonymous ?? false,
+        correct_option_id: chosenPoll.answer - 1
       }
     );
     await logger.fromContext(context, "quiz", {
       actions: `Sent a poll with id ${response.message_id}`,
-      sendText: pickQuiz?.question ?? "",
-      sendImage: pickQuiz?.code ?? ""
+      sendText: chosenPoll?.question ?? "",
+      sendImage: chosenPoll?.code ?? ""
     });
 
     // Pin the message if it's a supergroup type
@@ -113,19 +115,19 @@ async function quiz(context, mongo, cache) {
       await poll(
         context,
         cache,
-        { question, type: pickQuiz.type },
+        { question, type: chosenPoll.type },
         response.message_id
       );
     }
-  } else if (pickQuiz.type === "survey") {
+  } else if (chosenPoll.type === "survey") {
     const response = await context.telegram.sendPoll(
       chatID,
       sanitize(question),
-      pickQuiz.choices.map((o) => String(o)),
+      chosenPoll.choices.map((o) => String(o)),
       {
-        allows_multiple_answers: pickQuiz.multipleAnswer ?? false,
-        explanation: pickQuiz.explanation ?? "",
-        is_anonymous: pickQuiz.anonymous ?? false
+        allows_multiple_answers: chosenPoll.multipleAnswer ?? false,
+        explanation: chosenPoll.explanation ?? "",
+        is_anonymous: chosenPoll.anonymous ?? false
       }
     );
     await logger.fromContext(context, "quiz", {
@@ -138,16 +140,16 @@ async function quiz(context, mongo, cache) {
       await poll(
         context,
         cache,
-        { question, type: pickQuiz.type },
+        { question, type: chosenPoll.type },
         response.message_id
       );
     }
   }
 
-  await Poll.findByIdAndUpdate(pickQuiz["_id"], { posted: true });
+  await Poll.findByIdAndUpdate(chosenPoll._id, { posted: true });
   await cache.update(
     { key: `quiz:${String(chatID)}` },
-    { 
+    {
       value: {
         date: currentTime.date.toISOString()
       }

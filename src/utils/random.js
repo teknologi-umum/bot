@@ -1,19 +1,16 @@
-import { randomNumber, shuffle } from "carret";
+import { shuffle } from "carret";
 
 /**
- * Shuffle the array with carret, then return the result.
+ * shuffleArray is a function to shuffle an array with carret, then return the result.
  * @param {Array<any>} items
  * @param {Number} length
  * @returns {Array<any>}
  */
-export function randomArray(items, length) {
+export function shuffleArray(items, length) {
   if (items.length < length) return items;
 
   const shuffled = shuffle(items);
-  const result = [];
-  for (let i = 0; i < length; i++) {
-    const index = randomNumber(0, shuffled.length);
-    result.push(shuffled[index]);
-  }
+  const result = shuffled.slice(0, length);
+
   return result;
 }

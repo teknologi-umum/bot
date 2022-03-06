@@ -1,7 +1,7 @@
 import got from "got";
 import { randomNumber } from "carret";
 import * as cheerio from "cheerio";
-import { defaultHeaders } from "#utils/http.js";
+import { DEFAULT_HEADERS } from "#utils/http.js";
 import { renderTemplate } from "#utils/template.js";
 
 export function extractQuoteFromHtml(response) {
@@ -25,7 +25,7 @@ export async function fetchRandomQuote() {
   // TODO: Fetch from many resources
   const { body } = await got.get("https://jagokata.com/kata-bijak/acak.html", {
     responseType: "text",
-    headers: defaultHeaders
+    headers: DEFAULT_HEADERS
   });
   return extractQuoteFromHtml(body);
 }

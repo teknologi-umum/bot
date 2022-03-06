@@ -78,7 +78,9 @@ export function isAllowed(ast, locals = []) {
                     ...locals,
                     ...arg.params.map((param) => param.name)
                   ]);
-                } else {return isAllowed(arg, locals);}
+                } else {
+                  return isAllowed(arg, locals);
+                }
               })
         );
       }
@@ -120,13 +122,11 @@ export function isAllowed(ast, locals = []) {
       } else {
         throw `Tidak boleh mengakses ${ast.object.name}`;
       }
-    } else
-    if (allowedProperties.has(ast.property.name)) {
+    } else if (allowedProperties.has(ast.property.name)) {
       return isAllowed(ast.object, locals);
     } else {
       throw `Tidak boleh mengakses ${ast.property.name}`;
     }
-
 
   default:
     throw `Tidak boleh mengevaluasi ${ast.type}`;
@@ -151,7 +151,8 @@ export async function safeEval(source, superpowers = []) {
   }
   try {
     if (isAllowed(ast)) {
-    // eslint-disable-next-line no-eval
+      // TODO: change `got` to something else before removing this
+      delete BigInt.prototype.toJSON;
 
       // eslint-disable-next-line no-eval
       return JSON.stringify(eval(source), (name, val) => {
@@ -169,7 +170,9 @@ export async function safeEval(source, superpowers = []) {
           return val;
         }
       });
-    } else {return "Tidak bisa mengevaluasi code";}
+    } else {
+      return "Tidak bisa mengevaluasi code";
+    }
   } catch (err) {
     return err;
   }

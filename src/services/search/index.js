@@ -1,14 +1,13 @@
 import cheerio from "cheerio";
-import got from "got";
 import { renderTemplate } from "#utils/template.js";
 import { getCommandArgs } from "#utils/command.js";
 import { cleanURL, fetchDDG } from "#utils/http.js";
-import { logger } from "#utils/logger/logtail.js";
 import { sanitize } from "#utils/sanitize.js";
+import { logger } from "#utils/logger/index.js";
 import { isClean, cleanFilter } from "./filter.js";
 
 const SEARCH_LIMIT = 10;
-const BEST = 2;
+const BEST_AMOUNT = 2;
 
 /**
  * @param {import('telegraf').Telegraf} context
@@ -21,51 +20,48 @@ async function search(context, mongo) {
 
   const clean = await isClean(query, mongo);
   if (!clean) {
-    await context.reply("Keep the search clean, shall we? 😉");
-    await logger.fromContext(context, "search", {
-      sendText: "Keep the search clean, shall we? 😉"
-    });
+    const MESSAGE = "Keep the search clean, shall we? 😉";
+    await context.reply(MESSAGE);
+    await logger.fromContext(context, "search", { sendText: MESSAGE });
     return;
   }
 
-  const { body, requestUrl, statusCode } = await fetchDDG(got, query);
+  const { body, requestUrl, statusCode } = await fetchDDG(query);
   if (statusCode !== 200) {
-    await context.reply("Error getting search result.");
-    await logger.fromContext(context, "search", {
-      sendText: "Error getting search result."
-    });
+    const MESSAGE = "Error getting search result.";
+    await context.reply(MESSAGE);
+    await logger.fromContext(context, "search", { sendText: MESSAGE });
     return;
   }
 
   const $ = cheerio.load(body);
-
   let items = $(".web-result")
     .map((_, el) => {
-      const title =
-        $(el).find(".result__title > a").first().text() ||
-        "Failed to get title";
-      const href = decodeURIComponent(
-        cleanURL($(el).find(".result__title > a").first().attr("href"))
-      );
+      const title = $(el).find(".result__title > a").first();
+      const titleText = title !== "" ? title : "Title unavailable.";
+      const href = decodeURIComponent(cleanURL(title.attr("href")));
       const snippet = $(el)
         .find(".result__snippet")
         .map((_, el) => el.children.map((x) => $.html(x)).join(""))
         .get();
 
-      return { title: sanitize(title), href, snippet: sanitize(snippet) };
+      return {
+        href,
+        title: sanitize(titleText),
+        snippet: sanitize(snippet)
+      };
     })
     .get();
 
   // Safer search
   items = await cleanFilter(items, mongo);
-  // Trim to certain length
-  items = items.slice(0, SEARCH_LIMIT + BEST);
+  items = items.slice(0, SEARCH_LIMIT + BEST_AMOUNT);
 
   if (items.length === 0) {
     const sentMessage = await context.telegram.sendMessage(
       context.message.chat.id,
       `No result was found for <b>${query}</b>`,
-      { parse_mode: "HTML", disable_web_page_preview: true}
+      { parse_mode: "HTML", disable_web_page_preview: true }
     );
     await logger.fromContext(context, "search", { sendText: sentMessage.text });
     return;
@@ -77,7 +73,7 @@ async function search(context, mongo) {
       items,
       query,
       url: decodeURIComponent(requestUrl),
-      bestAmount: BEST
+      bestAmount: BEST_AMOUNT
     }),
     { parse_mode: "HTML", disable_web_page_preview: true }
   );

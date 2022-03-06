@@ -1,9 +1,17 @@
+import got from "got";
+
 /**
  * Provides default headers for a HTTP request
  */
-export const defaultHeaders = {
+export const DEFAULT_HEADERS = {
   Accept: "application/json,*/*",
   "User-Agent": "Teknologi Umum Bot <teknologi.umum@gmail.com>"
+};
+
+const DDG_SAFESEARCH_LEVEL = {
+  STRICT: 1,
+  MODERATE: -1,
+  OFF: 2
 };
 
 /**
@@ -16,14 +24,13 @@ export const cleanURL = (url) =>
 
 /**
  * Fetch result from DuckDuckGo
- * @param {import('got').Got} got - Got instance
  * @param {string} query - Your query
  * @return {Promise<import('got').Response>} Result
  */
-export const fetchDDG = async (got, query) => {
+export const fetchDDG = async (query) => {
   const response = await got.get("https://html.duckduckgo.com/html/", {
     searchParams: {
-      kp: 1, // safe search // 1: strict | -1: moderate | 2: off
+      kp: DDG_SAFESEARCH_LEVEL.STRICT,
       q: query
     },
     headers: {

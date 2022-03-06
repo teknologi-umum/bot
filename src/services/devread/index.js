@@ -1,8 +1,8 @@
 import { getTheDevRead } from "./request.js";
-import { randomArray } from "#utils/random.js";
+import { shuffleArray } from "#utils/random.js";
 import { renderTemplate } from "#utils/template.js";
 import { getCommandArgs } from "#utils/command.js";
-import { logger } from "#utils/logger/logtail.js";
+import { logger } from "#utils/logger/index.js";
 
 const WHITELIST = ["javascript", "php", "go", "c", "typescript", "python"];
 
@@ -15,7 +15,7 @@ const WHITELIST = ["javascript", "php", "go", "c", "typescript", "python"];
 async function devRead(context, cache) {
   const query = getCommandArgs("devread", context);
 
-  if (!query) {
+  if (query === "") {
     await context.telegram.sendMessage(
       context.message.chat.id,
       "Cara pakainya ketik: /devread &lt;apa yang mau kamu cari&gt;\n\nContoh: <code>/devread javascript</code>",
@@ -29,7 +29,7 @@ async function devRead(context, cache) {
     const { value: queryData, ttl } = await cache.findOne({ key: `devread:${encodeURI(query.toLowerCase())}` });
 
     if (queryData && ttl < Date.now()) {
-      const items = randomArray(JSON.parse(queryData), 3);
+      const items = shuffleArray(JSON.parse(queryData), 3);
       const read = items
         .map(({ title, body, url }) =>
           renderTemplate("devread/devread.template.hbs", { title, body, url })
@@ -53,7 +53,7 @@ async function devRead(context, cache) {
     return;
   }
 
-  const items = randomArray(data, 3);
+  const items = shuffleArray(data, 3);
   const read = items
     .map((x) =>
       renderTemplate("devread/devread.template.hbs", {

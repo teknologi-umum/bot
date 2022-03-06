@@ -4,7 +4,7 @@ import { pathTo } from "./path.js";
 dotenv.config({ path: pathTo(import.meta.url, "../../.env") });
 
 /**
- * Checks if we are in a home group or not
+ * isHomeGroup checks if we are in a home group or not
  * @param {import('telegraf').Context} context
  * @returns {boolean}
  */
@@ -13,7 +13,7 @@ export function isHomeGroup(context) {
 }
 
 /**
- * Checks if we are in a big group or not
+ * isBigGroup checks if we are in a big group or not
  * @param {import('telegraf').Context} context
  * @returns {Promise<boolean>}
  */
