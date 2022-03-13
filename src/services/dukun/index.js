@@ -83,8 +83,9 @@ async function dukun(context, mongo, cache) {
 
   const Dukun = mongo.model("Dukun", dukunSchema, "dukun");
   const dukunData = await cache.findOne({ key: "dukun:all" });
+  const data = dukunData?.value || "[]";
   /**  @type {Dukun[]} */
-  const dukunDataParsed = JSON.parse(dukunData?.value || []);
+  const dukunDataParsed = JSON.parse(data);
 
   if (context.message.reply_to_message) {
     const replyMessage = context.message.reply_to_message;
