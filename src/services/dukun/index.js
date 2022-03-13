@@ -113,7 +113,7 @@ async function dukun(context, mongo, cache) {
       return;
     }
 
-    const dukunMaster = await cache.findOne({ key: "dukun:master" });
+    let dukunMaster = await cache.findOne({ key: "dukun:master" });
     if (dukunMaster === null || dukunMaster === undefined) {
       /** @type {Dukun} */
       const master = await Dukun.findOne({ master: true });
@@ -126,6 +126,7 @@ async function dukun(context, mongo, cache) {
         },
         { upsert: true }
       );
+      dukunMaster = {};
       dukunMaster.id = master.userID;
       dukunMaster.points = master.points;
     }
