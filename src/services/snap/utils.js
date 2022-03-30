@@ -9,7 +9,7 @@ import {
 /**
  * generateImage is a function to generate code snippet image using Graphene.
  * @param {string} code The code you want to highlight
- * @param {string} lang The language for syntax highlighting. If empty, it will be auto-detected
+ * @param {string | null} lang The language for syntax highlighting. Use null to automatically detect the language.
  * @returns
  */
 export async function generateImage(code, lang) {
@@ -17,12 +17,7 @@ export async function generateImage(code, lang) {
     return Promise.reject(ERR_EMPTY_CODE);
   }
 
-  if (
-    lang !== undefined &&
-    lang !== null &&
-    lang !== "" &&
-    !VALID_LANGUAGES[lang]
-  ) {
+  if (lang !== undefined && lang !== "" && !VALID_LANGUAGES[lang]) {
     return Promise.reject(ERR_INVALID_LANGUAGE);
   }
 
@@ -32,11 +27,12 @@ export async function generateImage(code, lang) {
     json: {
       code: code.replace(/^\s+|\s+$/g, ""), // trim extranous whitespace at the end of the code
       lang,
-      theme: "github-dark",
+      theme: "github-dark-dimmed",
       upscale: 3,
       lineNumber: linenr > 10,
       border: {
-        thickness: 20
+        thickness: 20,
+        colour: "#A0ADB6"
       }
     },
     responseType: "buffer",
