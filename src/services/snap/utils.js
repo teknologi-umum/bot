@@ -17,7 +17,12 @@ export async function generateImage(code, lang) {
     return Promise.reject(ERR_EMPTY_CODE);
   }
 
-  if (lang !== undefined && lang !== "" && !VALID_LANGUAGES[lang]) {
+  if (
+    lang !== undefined &&
+    lang !== null &&
+    lang !== "" &&
+    !VALID_LANGUAGES[lang]
+  ) {
     return Promise.reject(ERR_INVALID_LANGUAGE);
   }
 
@@ -26,7 +31,7 @@ export async function generateImage(code, lang) {
     headers: DEFAULT_HEADERS,
     json: {
       code: code.replace(/^\s+|\s+$/g, ""), // trim extranous whitespace at the end of the code
-      lang,
+      lang: lang === "" ? null : lang,
       theme: "github-dark-dimmed",
       upscale: 3,
       lineNumber: linenr > 10,
