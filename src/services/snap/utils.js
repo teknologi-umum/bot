@@ -32,7 +32,8 @@ export async function generateImage(code, lang) {
       lineNumber: linenr > 10,
       border: {
         thickness: 20,
-        colour: "#A0ADB6"
+        colour: "#A0ADB6",
+        radius: 4
       }
     },
     responseType: "buffer",
