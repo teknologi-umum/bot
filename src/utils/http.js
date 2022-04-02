@@ -19,8 +19,11 @@ const DDG_SAFESEARCH_LEVEL = {
  * @param {string} url - Raw URL from duckduckgo
  * @return {string} Clean and valid URL
  */
-export const cleanURL = (url) =>
-  url.replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, "").replace(/&rut=.*$/, "");
+export const cleanURL = (url) => {
+  // TODO(elianiva): why do we even need this?
+  if (url === undefined) return ""; 
+  return url.replace(/^\/\/duckduckgo.com\/l\/\?uddg=/, "").replace(/&rut=.*$/, "");
+};
 
 /**
  * Fetch result from DuckDuckGo
