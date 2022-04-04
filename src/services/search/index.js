@@ -34,15 +34,16 @@ async function search(context, mongo) {
     return;
   }
 
+  logger.log({
+    command: "search",
+    message: body,
+    httpRequestUrl: requestUrl,
+    sendText: `Status code of ${statusCode}`
+  });
+
   const $ = cheerio.load(body);
-  let items = $(".results > .result .web-result")
+  let items = $(".web-result")
     .map((_, el) => {
-      logger.log({
-        httpRequestUrl: requestUrl,
-        sendText: $(el).text(),
-        message: $(el).html().toString(),
-        command: "search"
-      });
       const title = $(el).find(".result__title > a").first();
       const titleText = title !== "" ? title : "Title unavailable.";
       const url = title !== "" ? title.attr("href") : "";
