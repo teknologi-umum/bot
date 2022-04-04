@@ -57,6 +57,9 @@ async function search(context, mongo) {
     })
     .get();
 
+  // screw empty hrefs
+  items = items.filter((i) => i.href !== "");
+
   // Safer search
   items = await cleanFilter(items, mongo);
   items = items.slice(0, SEARCH_LIMIT + BEST_AMOUNT);
