@@ -35,10 +35,12 @@ async function search(context, mongo) {
   }
 
   const $ = cheerio.load(body);
-  let items = $(".web-result")
+  let items = $(".results > .result .web-result")
     .map((_, el) => {
       logger.log({
-        message: $(el).html(),
+        httpRequestUrl: requestUrl,
+        sendText: $(el).text(),
+        message: $(el).html().toString(),
         command: "search"
       });
       const title = $(el).find(".result__title > a").first();
