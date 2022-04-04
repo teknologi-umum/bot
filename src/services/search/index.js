@@ -36,14 +36,21 @@ async function search(context, mongo) {
 
   logger.log({
     command: "search",
-    message: body,
+    sendText: body,
     httpRequestUrl: requestUrl,
-    sendText: `Status code of ${statusCode}`
   });
 
   const $ = cheerio.load(body);
   let items = $(".web-result")
     .map((_, el) => {
+      // eslint-disable-next-line
+      console.log($(el).html());
+      logger.log({
+        command: "search",
+        sendText: $(el).html().toString(),
+        message: "search"
+      });
+
       const title = $(el).find(".result__title > a").first();
       const titleText = title !== "" ? title : "Title unavailable.";
       const url = title !== "" ? title.attr("href") : "";
