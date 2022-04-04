@@ -39,14 +39,18 @@ async function search(context, mongo) {
     .map((_, el) => {
       const title = $(el).find(".result__title > a").first();
       const titleText = title !== "" ? title : "Title unavailable.";
-      const href = decodeURIComponent(cleanURL(title.attr("href")));
+      const url = title !== "" ? title.attr("href") : "";
+      const decodedHref =
+        url !== undefined && url !== ""
+          ? decodeURIComponent(cleanURL(url))
+          : "";
       const snippet = $(el)
         .find(".result__snippet")
         .map((_, el) => el.children.map((x) => $.html(x)).join(""))
         .get();
 
       return {
-        href,
+        href: decodedHref,
         title: sanitize(titleText),
         snippet: sanitize(snippet)
       };
