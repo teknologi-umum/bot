@@ -37,7 +37,7 @@ async function search(context, mongo) {
   logger.log({
     command: "search",
     sendText: body,
-    httpRequestUrl: requestUrl,
+    httpRequestUrl: requestUrl
   });
 
   const $ = cheerio.load(body);
