@@ -37,6 +37,10 @@ async function search(context, mongo) {
   const $ = cheerio.load(body);
   let items = $(".web-result")
     .map((_, el) => {
+      logger.log({
+        message: $(el).html(),
+        command: "search"
+      });
       const title = $(el).find(".result__title > a").first();
       const titleText = title !== "" ? title : "Title unavailable.";
       const url = title !== "" ? title.attr("href") : "";
