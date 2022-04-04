@@ -34,30 +34,25 @@ async function search(context, mongo) {
     return;
   }
 
-  logger.log({
-    command: "search",
-    sendText: body,
-    httpRequestUrl: requestUrl
-  });
-
   const $ = cheerio.load(body);
+  // duckduckgo has this div when there are no results
+  const noResult = $(".no-results").length > 0;
+  if (noResult) {
+    const sentMessage = await context.telegram.sendMessage(
+      context.message.chat.id,
+      `No result was found for <b>${query}</b>`,
+      { parse_mode: "HTML", disable_web_page_preview: true }
+    );
+    await logger.fromContext(context, "search", { sendText: sentMessage.text });
+    return;
+  }
+
   let items = $(".web-result")
     .map((_, el) => {
-      // eslint-disable-next-line
-      console.log($(el).html());
-      logger.log({
-        command: "search",
-        sendText: $(el).html().toString(),
-        message: "search"
-      });
-
       const title = $(el).find(".result__title > a").first();
       const titleText = title !== "" ? title : "Title unavailable.";
-      const url = title !== "" ? title.attr("href") : "";
-      const decodedHref =
-        url !== undefined && url !== ""
-          ? decodeURIComponent(cleanURL(url))
-          : "";
+      const url = title.attr("href");
+      const decodedHref = decodeURIComponent(cleanURL(url));
       const snippet = $(el)
         .find(".result__snippet")
         .map((_, el) => el.children.map((x) => $.html(x)).join(""))
@@ -70,10 +65,7 @@ async function search(context, mongo) {
       };
     })
     .get();
-
-  // screw empty hrefs
-  items = items.filter((i) => i.href !== "");
-
+    
   // Safer search
   items = await cleanFilter(items, mongo);
   items = items.slice(0, SEARCH_LIMIT + BEST_AMOUNT);
