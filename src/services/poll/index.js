@@ -25,26 +25,18 @@ export async function poll(context, mongo, cache, poll, pollID) {
   const Poll = mongo.model("Poll", pollSchema, "poll");
 
   // If this is empty, this could be a null value. So this can't be directly destructured.
-  const pollCache = await cache.findOne({ key: `poll:${String(context.message.chat.id)}` });
+  const pollItem = await Poll.findOne({ createdAt: currentTime.formatDate() });
 
-  if (pollCache?.content === null && pollCache?.date === null) {
-    // If cache is empty, let's find out from the database
-    const document = await Poll.findOne({ createdAt: currentTime.formatDate() });
-    if (document !== null && document?.createdAt === currentTime.formatDate()) {
-      pollCache.content = document.content;
-      pollCache.date = document.createdAt;
-    }
-  }
   /** @type {{ survey: Array<{id: String, text: String}>, quiz: Array<{id: String, text: String}>}} lastMessageContent */
   let lastMessageContent;
 
   // Check if pollByGroup is null or not
-  if (pollCache === null || pollCache?.content === null || pollCache?.date === null) {
+  if (pollItem === null || pollItem?.content === null || pollItem?.createdAt === null) {
     lastMessageContent = { survey: [], quiz: [] };
   } else {
-    lastMessageContent = JSON.parse(pollCache.content);
+    lastMessageContent = JSON.parse(pollItem.content);
 
-    if (!lastMessageContent || !currentTime.compare(new Date(pollCache.date), "day")) {
+    if (!lastMessageContent || !currentTime.compare(new Date(pollItem.createdAt), "day")) {
       lastMessageContent = { survey: [], quiz: [] };
     }
   }
@@ -60,7 +52,6 @@ export async function poll(context, mongo, cache, poll, pollID) {
       text: poll.question.split(/\n/)[0]
     });
   }
-
 
   const chat = await context.getChat();
   const chatLink = `https://t.me/${chat.username}`;
@@ -82,10 +73,10 @@ export async function poll(context, mongo, cache, poll, pollID) {
       .join("\n")}\n`;
 
   if (
-    pollCache !== null &&
-    pollCache !== undefined &&
-    pollCache.date !== null &&
-    currentTime.compare(new Date(pollCache.date), "day")
+    pollItem !== null &&
+    pollItem !== undefined &&
+    pollItem.createdAt !== null &&
+    currentTime.compare(new Date(pollItem.createdAt), "day")
   ) {
     const { id } = await cache.findOne({ key: `poll:${String(context.message.chat.id)}` });
     // append to existing message
@@ -103,14 +94,6 @@ export async function poll(context, mongo, cache, poll, pollID) {
       Poll.updateOne(
         { createdAt: currentTime.formatDate() },
         { content: JSON.stringify(lastMessageContent) }
-      ),
-      cache.update(
-        { key: `poll:${String(context.message.chat.id)}` },
-        {
-          key: `poll:${String(context.message.chat.id)}`,
-          content: JSON.stringify(lastMessageContent)
-        },
-        { upsert: true }
       ),
       logger.fromContext(context, "poll", {
         actions: `Edited a message: ${Number(id)}`,
@@ -139,16 +122,6 @@ export async function poll(context, mongo, cache, poll, pollID) {
       content: JSON.stringify(lastMessageContent),
       createdAt: currentTime.formatDate()
     }),
-    cache.update(
-      { key: `poll:${String(context.message.chat.id)}` },
-      {
-        key: `poll:${String(context.message.chat.id)}`,
-        id: String(response.message_id),
-        content: JSON.stringify(lastMessageContent),
-        date: currentTime.formatDate()
-      },
-      { upsert: true }
-    ),
     context.telegram.pinChatMessage(
       context.message.chat.id,
       response.message_id,
