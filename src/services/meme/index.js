@@ -1,7 +1,7 @@
 import got from "got";
 import { randomNumber } from "carret";
 import { DEFAULT_HEADERS } from "#utils/http.js";
-import { isBigGroup, isHomeGroup } from "#utils/home.js";
+import { isBigGroup } from "#utils/home.js";
 import { logger } from "#utils/logger/logtail.js";
 
 /**
@@ -74,7 +74,6 @@ export function register(bot, cache) {
   bot.command("joke", async (context) => {
     const bigGroup = await isBigGroup(context);
     if (bigGroup) return;
-    if (isHomeGroup(context)) return;
 
     const cached = await cache.findOne({ key: "jokes:total" });
     let total = cached.total;
