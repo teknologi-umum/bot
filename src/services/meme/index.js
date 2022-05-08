@@ -76,7 +76,7 @@ export function register(bot, cache) {
     if (bigGroup) return;
 
     const cached = await cache.findOne({ key: "jokes:total" });
-    let total = cached.total;
+    let total = cached?.total;
     if (!total || cached?.ttl < Date.now()) {
       const { body } = await got.get(
         "https://jokesbapak2.herokuapp.com/total",
