@@ -22,7 +22,6 @@ Pada dokumen ini, kamu akan menemukan cara menggunakan Teknologi Umum Bot. Comma
 - 🛩📬 [`/yntkts`](#-yntkts)
 - 🛩📬 [`/hilih`](#-hilih)
 - 🌏📬 [`/laodeai`](#-laodeai)
-- 🚧🌏📬 [`/pastebin`](#-pastebin)
 
 Legends:
 
@@ -175,10 +174,3 @@ Mengirimkan jawaban dari masalahmu.
 
 <img src="../.github/images/laodeai.jpg" width="300px" />
 
-## `/pastebin`
-
-🚧 FITUR INI EKSPERIMENTAL
-
-Mengubah pastemu ke Polarite (Pastebin milik kami). Cara kerja serupa dengan `/snap`.
-
-- `/pastebin`
