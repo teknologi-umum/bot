@@ -29,12 +29,12 @@ jobs:
         run: npm run test
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
+        uses: github/codeql-action/init@v2
         with:
           languages: javascript
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
+        uses: github/codeql-action/analyze@v2
 
       - name: Send coverage report to Codecov
         uses: codecov/codecov-action@v2
