@@ -24,27 +24,27 @@
     "#utils/*": "./src/utils/*"
   },
   "dependencies": {
-    "@logtail/node": "^0.1.10",
-    "@sentry/node": "^6.17.9",
+    "@logtail/node": "^0.1.12",
+    "@sentry/node": "^7.11.1",
     "@teknologi-umum/nedb-promises": "^5.0.3",
     "carret": "^1.0.4",
-    "cheerio": "^1.0.0-rc.10",
-    "dotenv": "^16.0.0",
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.0.1",
     "esprima": "^4.0.1",
-    "got": "^12.0.1",
-    "kleur": "^4.1.4",
-    "mongoose": "^6.2.3",
-    "sanitize-html": "^2.7.0",
-    "telegraf": "^4.7.0",
+    "got": "^12.3.1",
+    "kleur": "^4.1.5",
+    "mongoose": "^6.5.2",
+    "sanitize-html": "^2.7.1",
+    "telegraf": "^4.8.6",
     "tempura": "^0.4.0"
   },
   "devDependencies": {
-    "@teknologi-umum/eslint-config-base": "^0.0.8",
-    "c8": "^7.11.0",
-    "eslint": "^8.9.0",
-    "husky": "^7.0.4",
-    "nodemon": "^2.0.15",
-    "uvu": "^0.5.3"
+    "@teknologi-umum/eslint-config-base": "^0.0.9",
+    "c8": "^7.12.0",
+    "eslint": "^8.22.0",
+    "husky": "^8.0.1",
+    "nodemon": "^2.0.19",
+    "uvu": "^0.5.6"
   },
   "engineStrict": true,
   "engines": {

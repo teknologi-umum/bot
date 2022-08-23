@@ -1,10 +1,6 @@
 import { logger } from "#utils/logger/index.js";
 import { getCommandArgs } from "#utils/command.js";
 import { terminal } from "#utils/logger/terminal.js";
-import {
-  makeRequest,
-  PASTEBIN_FILE_TOO_BIG
-} from "#services/pastebin/index.js";
 import { generateImage } from "./utils.js";
 import {
   ERR_INVALID_LANGUAGE,
@@ -47,7 +43,7 @@ async function snap(context) {
   const tooLong =
     code.length > CODE_LENGTH_LIMIT ||
     code.split("\n").length > CODE_LINES_LIMIT;
-  const fullCode = tooLong && await makeRequest(code);
+
 
   const lang = getCommandArgs("snap", context);
   try {
@@ -60,12 +56,9 @@ async function snap(context) {
         context.message.chat.id,
         { source: image },
         {
-          caption: `${isOwner ? "" : mentionUser + " "}${
-            fullCode === PASTEBIN_FILE_TOO_BIG
-              ? "Code is bigger than 512 KB, please upload the complete code yourself."
-              : fullCode
-                ? `Full code on: ${fullCode}`
-                : ""
+          caption: `${isOwner ? "" : mentionUser + " "}${tooLong
+            ? "Code is bigger than 512 KB, please upload the complete code yourself."
+            : ""
           }`,
           reply_to_message_id: !isOwner && replyMessage.message_id
         }

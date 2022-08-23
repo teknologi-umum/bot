@@ -22,7 +22,6 @@ In this document you will find how to use Teknologi Umum Bot. Its' commands and 
 - 🛩📬 [`/yntkts`](#-yntkts)
 - 🛩📬 [`/hilih`](#-hilih)
 - 🌏📬 [`/laodeai`](#-laodeai)
-- 🚧🌏📬 [`/pastebin`](#-pastebin)
 
 Legends:
 
@@ -175,11 +174,3 @@ Sends you his (yes, it's a HE) own answer of your problem.
 - `/laodeai <query>`
 
 <img src="../.github/images/laodeai.jpg" width="300px" />
-
-## `/pastebin`
-
-🚧 THIS FEATURE IS EXPERIMENTAL
-
-Put your paste into Polarite (our own Pastebin). Works similar with how `/snap` works.
-
-- `/pastebin`

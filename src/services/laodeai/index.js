@@ -6,7 +6,6 @@ import { sanitize } from "#utils/sanitize.js";
 import { trimHTML } from "#utils/trimHTML.js";
 import { logger } from "#utils/logger/index.js";
 import { generateImage } from "#services/snap/utils.js";
-import { makeRequest } from "#services/pastebin/index.js";
 import {
   stackoverflow,
   gist,
@@ -90,14 +89,13 @@ const CONTENT_MAX_LENGTH = 800;
 async function sendImage(result, context) {
   const tooLong =
     result.content.length > 3000 || result.content.split("\n").length > 190;
-  const fullCode = tooLong ? await makeRequest(result.content) : false;
   const image = await generateImage(result.content.substring(0, 3000), "");
 
   // no await, see https://eslint.org/docs/rules/no-return-await
   return context.telegram.sendPhoto(
     context.message.chat.id,
     { source: image },
-    { caption: tooLong ? `Read more on: ${fullCode || result.url}` : "" }
+    { caption: tooLong ? `Read more on: ${result.url}` : "" }
   );
 }
 
@@ -111,9 +109,7 @@ async function sendImage(result, context) {
 function sendText(result, context, trim) {
   let content = sanitize(result.content);
   if (trim && content.length > CONTENT_MAX_LENGTH) {
-    content = `${trimHTML(CONTENT_MAX_LENGTH, content)}...\n\nSee more on: ${
-      result.url
-    }`;
+    content = `${trimHTML(CONTENT_MAX_LENGTH, content)}...\n}`;
   }
 
   // no await, see https://eslint.org/docs/rules/no-return-await
