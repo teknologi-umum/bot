@@ -40,7 +40,7 @@ jobs:
           languages: javascript
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v12
+        uses: github/codeql-action/analyze@v2
 
       - name: Send coverage report to Codecov
         uses: codecov/codecov-action@v2
