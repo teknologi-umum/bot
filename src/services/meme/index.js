@@ -79,7 +79,7 @@ export function register(bot, cache) {
     let total = cached?.total;
     if (!total || cached?.ttl < Date.now()) {
       const { body } = await got.get(
-        "https://jokesbapak2.herokuapp.com/total",
+        "https://jokesbapak2.reinaldyrafli.com/api/total",
         {
           headers: DEFAULT_HEADERS,
           responseType: "json",
@@ -109,10 +109,10 @@ export function register(bot, cache) {
 
     await context.telegram.sendPhoto(
       context.message.chat.id,
-      `https://jokesbapak2.herokuapp.com/id/${id}`
+      `https://jokesbapak2.reinaldyrafli.com/api/id/${id.toString()}`
     );
     await logger.fromContext(context, "joke", {
-      sendText: `https://jokesbapak2.herokuapp.com/id/${id}`
+      sendText: `https://jokesbapak2.reinaldyrafli.com/api/id/${id.toString()}`
     });
   });
 
