@@ -22,6 +22,7 @@ import * as dukun from "#services/dukun/index.js";
 import * as laodeai from "#services/laodeai/index.js";
 import * as analytics from "#services/analytics/index.js";
 import * as news from "#services/news/index.js";
+import * as qr from "#services/qr/index.js";
 
 dotenv.config({ path: pathTo(import.meta.url, "../.env") });
 
@@ -57,7 +58,8 @@ async function main() {
     dukun.register(bot, mongo, cache),
     laodeai.register(bot),
     analytics.register(bot, mongo),
-    news.register(bot)
+    news.register(bot),
+    qr.register(bot)
   ]
     .filter((v) => Array.isArray(v))
     .flat();
