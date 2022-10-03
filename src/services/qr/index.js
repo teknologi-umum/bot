@@ -3,24 +3,6 @@ import { getCommandArgs } from "#utils/command.js";
 import { logger } from "#utils/logger/logtail.js";
 
 /**
- * Generate QR Code
- * 
- * @param {String} text 
- * @returns {base64: String}
- */
-async function generateQR(text) {
-  try {
-    return await QRCode.toDataURL(text);
-  } catch (err) {
-    logger.log({
-      message: err,
-      command: "qr"
-    });
-    return false;
-  }
-}
-
-/**
  * Handling /qr command
  * 
  * @param {import('telegraf').Context} context
@@ -38,14 +20,8 @@ async function qr(context) {
     return;
   }
 
-  const image = await generateQR(query);
-
-  if (!image) {
-    await context.telegram.sendMessage(
-      context.message.chat.id,
-      "Oppss.. Service sedang error.."
-    );
-  } else {  
+  try {
+    const image = await QRCode.toDataURL(query);
     const buffer = Buffer.from(image.split(",")[1], "base64");
     
     await context.telegram.sendPhoto(
@@ -53,6 +29,16 @@ async function qr(context) {
       { source: buffer },
       { caption: query }
     );  
+  } catch (err) {
+    await context.telegram.sendMessage(
+      context.message.chat.id,
+      "Oppss.. Service sedang error.."
+    );
+
+    logger.log({
+      message: err,
+      command: "qr"
+    });
   }
 
   await logger.fromContext(context, "qr");
