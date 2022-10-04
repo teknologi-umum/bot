@@ -24,7 +24,7 @@ Even if there is an error happened, there should be a message of:
 > uh oh, something went wrong. ask the devs to check their logs.
 
 On some commands, we collect just your Telegram user ID, username (if any), first name (if any), last name (if any),
-and group chat ID to be able to process some commands like `/dukun`, `/snap`, and `/quiz`.
+and group chat ID to be able to process some commands like `/suhu`, `/snap`, and `/quiz`.
 
 Those data is open for public via the Telegram API. It's not exposing your password or
 any credentials-related information. Even your phone number!
@@ -35,7 +35,7 @@ For joining data, it's for our analytics, we still want to keep track which grou
 Only one person in the Teknologi Umum Bot has the access to this data.
 
 For errors data, it's only for bug fix, and pin pointing where the error came from.
-`/dukun` command needs your ID and name to indicate who's who.
+`/suhu` command needs your ID and name to indicate who's who.
 That's it.
 
 ## How do we protect your information?

@@ -18,7 +18,7 @@ import * as evalBot from "#services/eval/index.js";
 import * as blog from "#services/devread/index.js";
 import * as quiz from "#services/quiz/index.js";
 import * as search from "#services/search/index.js";
-import * as dukun from "#services/dukun/index.js";
+import * as suhu from "#services/suhu/index.js";
 import * as laodeai from "#services/laodeai/index.js";
 import * as analytics from "#services/analytics/index.js";
 import * as news from "#services/news/index.js";
@@ -55,7 +55,7 @@ async function main() {
     blog.register(bot, cache),
     quiz.register(bot, mongo, cache),
     search.register(bot, mongo),
-    dukun.register(bot, mongo, cache),
+    suhu.register(bot, mongo, cache),
     laodeai.register(bot),
     analytics.register(bot, mongo),
     news.register(bot),
