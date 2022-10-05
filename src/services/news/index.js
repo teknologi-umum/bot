@@ -23,7 +23,7 @@ async function news(context) {
       }
     );
     return {
-      newsList: body.data
+      newsList: (body.data || [])
         .slice(0, MAX_NEWS_COUNT)
         .map(({ title, link, contentSnippet }) => ({
           title,
