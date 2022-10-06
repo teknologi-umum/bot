@@ -22,8 +22,16 @@ async function news(context) {
         throwHttpErrors: false
       }
     );
+
+    if (statusCode !== 200) {
+      return {
+        newsList: undefined,
+        statusCode: statusCode
+      };
+    }
+
     return {
-      newsList: (body.data || [])
+      newsList: body.data
         .slice(0, MAX_NEWS_COUNT)
         .map(({ title, link, contentSnippet }) => ({
           title,
