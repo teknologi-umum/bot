@@ -15,9 +15,12 @@ import {
  */
 async function snap(context) {
   if (!context.message.reply_to_message) return Promise.resolve();
-
+  
   /** @type {import("telegraf/typings/core/types/typegram").Message.TextMessage} */
   const replyMessage = context.message.reply_to_message;
+
+  if (typeof replyMessage.text !== "string") return Promise.resolve();
+
   const code = replyMessage.text;
   const isOwner = context.message.from.id === replyMessage.from.id;
   const isPrivateChat = context.chat.type === "private";
