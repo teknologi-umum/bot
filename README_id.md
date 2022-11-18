@@ -26,9 +26,9 @@ Untuk memulai proyek ini, paling tidak kamu perlu:
 
 - Node.js versi Current (sekarang itu versi 16)
 - Akun Telegram
-- MongoDB dan Redis (atau Docker, kami menyarankan Docker sebenarnya)
+- MongoDB (atau Docker, kami menyarankan Docker sebenarnya)
 
-Apakah kamu perlu semua ilmu tentang Redis dan MongoDB? Nggak kok! Kalau file yang kamu kerjakan nggak ada isi MongoDB dan Redis, untuk apa? Santai saja!
+Apakah kamu perlu semua ilmu tentang MongoDB? Nggak kok! Kalau file yang kamu kerjakan nggak ada isi MongoDB, untuk apa? Santai saja!
 
 Lihat [CONTRIBUTING](./CONTRIBUTING.md) untuk instruksi lebih lanjut (bahasa Inggris dulu yaa).
 

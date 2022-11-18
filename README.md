@@ -26,9 +26,9 @@ To work on this project, at least you will need:
 
 - Node.js Current Version (as of now, it's version 16)
 - A Telegram account
-- MongoDB and Redis (or Docker, we prefer Docker actually)
+- MongoDB (or Docker, we prefer Docker actually)
 
-Do you need all the knowledge of using Redis and MongoDB? Absolutely not! If the files you're working on doesn't have MongoDB and Redis in it, why bother? Have some fun!
+Do you need all the knowledge of using MongoDB? Absolutely not! If the files you're working on doesn't have MongoDB in it, why bother? Have some fun!
 
 See [CONTRIBUTING](./CONTRIBUTING.md) for more detailed instruction.
 

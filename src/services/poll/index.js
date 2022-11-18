@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 const pollSchema = new mongoose.Schema(
   {
     content: String,
+    messageId: String,
     createdAt: String
   },
   { collection: "poll" }
@@ -26,7 +27,6 @@ export async function poll(context, mongo, cache, poll, pollID) {
 
   // If this is empty, this could be a null value. So this can't be directly destructured.
   const pollItem = await Poll.findOne({ createdAt: currentTime.formatDate() });
-
   /** @type {{ survey: Array<{id: String, text: String}>, quiz: Array<{id: String, text: String}>}} lastMessageContent */
   let lastMessageContent;
 
@@ -36,7 +36,7 @@ export async function poll(context, mongo, cache, poll, pollID) {
   } else {
     lastMessageContent = JSON.parse(pollItem.content);
 
-    if (!lastMessageContent || !currentTime.compare(new Date(pollItem.createdAt), "day")) {
+    if (!lastMessageContent) {
       lastMessageContent = { survey: [], quiz: [] };
     }
   }
@@ -78,7 +78,7 @@ export async function poll(context, mongo, cache, poll, pollID) {
     pollItem.createdAt !== null &&
     currentTime.compare(new Date(pollItem.createdAt), "day")
   ) {
-    const { id } = await cache.findOne({ key: `poll:${String(context.message.chat.id)}` });
+    const id = pollItem.messageId;
     // append to existing message
     await Promise.allSettled([
       context.telegram.editMessageText(
@@ -120,6 +120,7 @@ export async function poll(context, mongo, cache, poll, pollID) {
     }),
     Poll.create({
       content: JSON.stringify(lastMessageContent),
+      messageId: response.message_id.toString(),
       createdAt: currentTime.formatDate()
     }),
     context.telegram.pinChatMessage(
