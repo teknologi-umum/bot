@@ -50,9 +50,9 @@ async function snap(context) {
         context.message.chat.id,
         { source: image },
         {
-          caption:
-            tooLong &&
-            "Code is bigger than 512 KB, please upload the complete code yourself.",
+          caption: tooLong
+            ? "Code is bigger than 512 KB, please upload the complete code yourself."
+            : "",
           reply_to_message_id: context.message.message_id
         }
       ),
