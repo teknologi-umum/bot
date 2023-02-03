@@ -15,7 +15,7 @@ import {
  */
 async function snap(context) {
   if (!context.message.reply_to_message) return Promise.resolve();
-  
+
   /** @type {import("telegraf/typings/core/types/typegram").Message.TextMessage} */
   const replyMessage = context.message.reply_to_message;
 
@@ -35,18 +35,9 @@ async function snap(context) {
     return Promise.resolve();
   }
 
-  const {
-    username,
-    first_name: firstName,
-    last_name: lastName
-  } = replyMessage.from;
-  const mentionUser = username
-    ? `@${username}`
-    : `${firstName} ${lastName ?? ""}`;
   const tooLong =
     code.length > CODE_LENGTH_LIMIT ||
     code.split("\n").length > CODE_LINES_LIMIT;
-
 
   const lang = getCommandArgs("snap", context);
   try {
@@ -59,11 +50,10 @@ async function snap(context) {
         context.message.chat.id,
         { source: image },
         {
-          caption: `${isOwner ? "" : mentionUser + " "}${tooLong
-            ? "Code is bigger than 512 KB, please upload the complete code yourself."
-            : ""
-          }`,
-          reply_to_message_id: !isOwner && replyMessage.message_id
+          caption:
+            tooLong &&
+            "Code is bigger than 512 KB, please upload the complete code yourself.",
+          reply_to_message_id: context.message.message_id
         }
       ),
       logger.fromContext(context, "snap", {
