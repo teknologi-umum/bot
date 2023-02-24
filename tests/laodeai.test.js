@@ -17,6 +17,7 @@ import { cookingNytimes } from "#services/laodeai/handlers/cooking_nytimes.js";
 import { zeroclick } from "#services/laodeai/handlers/zeroclick.js";
 import { caniuse } from "#services/laodeai/handlers/caniuse.js";
 import { manpage } from "#services/laodeai/handlers/manpage.js";
+import { dictionary } from "#services/laodeai/handlers/dictionary.js";
 
 const readFile = (path) =>
   readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), path), {
@@ -278,6 +279,22 @@ test("should be able to parse esolangs output", () => {
 
   assert.equal(output.type, "text");
   assert.fixture(output.content, readFile("./laodeai_snapshot/esolangs"));
+});
+
+test("should be able to parse dictionary output", () => {
+  const file = readFile("./laodeai_fixture/dictionary.html");
+  const html = cheerio.load(file);
+  const output = dictionary(html);
+
+  assert.equal(output.type, "text");
+  assert.fixture(output.content, readFile("./laodeai_snapshot/dictionary"));
+});
+
+test("should return error on empty dictionary html", () => {
+  const html = cheerio.load("<body></body>");
+  const output = dictionary(html);
+
+  assert.equal(output, { type: "error", content: "" });
 });
 
 test.run();
