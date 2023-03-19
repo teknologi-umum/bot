@@ -11,3 +11,4 @@ export * from "./cooking_nytimes.js";
 export * from "./caniuse.js";
 export * from "./zeroclick.js";
 export * from "./manpage.js";
+export * from "./dictionary.js";

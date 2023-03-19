@@ -1,4 +1,4 @@
-import cheerio from "cheerio";
+import { load } from "cheerio";
 import got from "got";
 import { getCommandArgs } from "#utils/command.js";
 import { cleanURL, fetchDDG } from "#utils/http.js";
@@ -19,7 +19,8 @@ import {
   cookingNytimes,
   caniuse,
   zeroclick,
-  manpage
+  manpage,
+  dictionary
 } from "./handlers/index.js";
 
 // list of handlers, also used to filter valid sites
@@ -77,7 +78,8 @@ const VALID_SOURCES = {
   "bonappetit.com": bonappetit,
   "cooking.nytimes.com": cookingNytimes,
   "caniuse.com": caniuse,
-  "man7.org": manpage
+  "man7.org": manpage,
+  "dictionary.com": dictionary
 };
 const CONTENT_MAX_LENGTH = 800;
 
@@ -157,7 +159,7 @@ async function goThroughURLs(validSources) {
     }
 
     const cleanHostname = url.hostname.replace("www.", "");
-    const urlDOM = cheerio.load(body);
+    const urlDOM = load(body);
     const parsedDOM = VALID_SOURCES[cleanHostname](urlDOM);
     const urlResult = {
       url: url.href,
@@ -197,7 +199,7 @@ async function laodeai(context) {
     return;
   }
 
-  const $ = cheerio.load(ddgBody);
+  const $ = load(ddgBody);
   const sources = $(".web-result").get();
   if (
     sources.length <= 1 &&
