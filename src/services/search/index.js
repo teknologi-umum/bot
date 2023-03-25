@@ -49,8 +49,8 @@ async function search(context, mongo) {
 
   let items = $(".web-result")
     .map((_, el) => {
-      const title = $(el).find(".result__title > a").first().text();
-      const titleText = title !== "" ? title : "Title unavailable.";
+      const title = $(el).find(".result__title > a").first();
+      const titleText = title.text() !== "" ? title.text() : "Title unavailable.";
       const url = title.attr("href");
       const decodedHref = decodeURIComponent(cleanURL(url));
       const snippet = $(el)
