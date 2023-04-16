@@ -1,6 +1,7 @@
 # fly.toml file generated for teknologi-umum-bot on 2021-08-08T13:56:06+07:00
 
-app = "teknologi-umum-bot"
+app = "teknologi-umum-bot-v2"
+primary_region = "cdg"
 kill_signal = "SIGINT"
 kill_timeout = 5
 
