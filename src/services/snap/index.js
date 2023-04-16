@@ -1,4 +1,4 @@
-import { logger } from "#utils/logger/index.js";
+import { logger, sentry } from "#utils/logger/index.js";
 import { getCommandArgs } from "#utils/command.js";
 import { terminal } from "#utils/logger/terminal.js";
 import { generateImage } from "./utils.js";
@@ -7,6 +7,7 @@ import {
   CODE_LENGTH_LIMIT,
   CODE_LINES_LIMIT
 } from "./constants.js";
+import { TimeoutError } from "got";
 
 /**
  * Snap a text code to a carbon image.
@@ -98,6 +99,48 @@ async function snap(context) {
       ]);
       return Promise.resolve();
     }
+
+    if (err instanceof TimeoutError) {
+      sentry.addBreadcrumb({
+        type: "default",
+        level: "warning",
+        category: "http.request",
+        message: "HTTP request timeout",
+        data: err
+      });
+
+      sentry.captureException(err, {
+        level: "warning",
+        extra: {
+          chat: {
+            chat_id: context.message.chat.id,
+            chat_title: context.message.chat.title,
+            chat_type: context.message.chat.type,
+            chat_username: context.message.chat.username,
+            text: context.message.text,
+            update_type: context.updateType,
+            isReplyTo: context.message?.reply_to_message?.id !== undefined,
+            replyToText: context.message?.reply_to_message?.text,
+            caption: context.message?.caption
+          },
+          from: {
+            from_id: context.message.from.id,
+            from_username: context.message.from.username,
+            is_bot: context.message.from.is_bot,
+            from_name: `${context.message.from.first_name} ${context.message.from.last_name}`
+          }
+        },
+        tags: {
+          chat_id: context.message.chat.id,
+          from_id: context.message.from.id,
+          from_username: context.message.from.username
+        }
+      });
+
+      await context.telegram.sendMessage(context.message.chat.id, "Uh oh, got a timeout while calling the API. So sorry!");
+      return Promise.resolve();
+    }
+
     return Promise.reject(err);
   }
 }

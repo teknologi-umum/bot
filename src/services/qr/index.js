@@ -1,6 +1,7 @@
 import QRCode from "qrcode";
 import { getCommandArgs } from "#utils/command.js";
 import { logger } from "#utils/logger/logtail.js";
+import { sentry } from "#utils/logger/index.js";
 
 /**
  * Handling /qr command
@@ -27,7 +28,7 @@ async function qr(context) {
     await context.telegram.sendPhoto(
       context.message.chat.id,
       { source: buffer },
-      { caption: query }
+      { caption: query.length > 30 ? query.slice(0, 27) + "..." : query }
     );  
   } catch (err) {
     await context.telegram.sendMessage(
@@ -35,9 +36,32 @@ async function qr(context) {
       "Oppss.. Service sedang error.."
     );
 
-    logger.log({
-      message: err,
-      command: "qr"
+    sentry.captureException(err, {
+      level: "warning",
+      extra: {
+        chat: {
+          chat_id: context.message.chat.id,
+          chat_title: context.message.chat.title,
+          chat_type: context.message.chat.type,
+          chat_username: context.message.chat.username,
+          text: context.message.text,
+          update_type: context.updateType,
+          isReplyTo: context.message?.reply_to_message?.id !== undefined,
+          replyToText: context.message?.reply_to_message?.text,
+          caption: context.message?.caption
+        },
+        from: {
+          from_id: context.message.from.id,
+          from_username: context.message.from.username,
+          is_bot: context.message.from.is_bot,
+          from_name: `${context.message.from.first_name} ${context.message.from.last_name}`
+        }
+      },
+      tags: {
+        chat_id: context.message.chat.id,
+        from_id: context.message.from.id,
+        from_username: context.message.from.username
+      }
     });
   }
 

@@ -1,4 +1,5 @@
 import { memoryUsage } from "process";
+import dns from "dns";
 import { Telegraf } from "telegraf";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -25,6 +26,14 @@ import * as news from "#services/news/index.js";
 import * as qr from "#services/qr/index.js";
 
 dotenv.config({ path: pathTo(import.meta.url, "../.env") });
+
+dns.setServers([
+  "1.1.1.1", "1.0.0.1", 
+  "8.8.4.4", "8.8.8.8", 
+  "[2606:4700:4700::1111]", 
+  "[2606:4700:4700::1001]", 
+  "1.1.1.2", "1.0.0.2"
+]);
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const cache = Datastore.create();
