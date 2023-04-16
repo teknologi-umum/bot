@@ -26,19 +26,23 @@ async function devRead(context, cache) {
 
   if (WHITELIST.includes(query.toLowerCase())) {
     // Check if the data exists in redis
-    const { value: queryData, ttl } = await cache.findOne({ key: `devread:${encodeURI(query.toLowerCase())}` });
+    const cacheData = await cache.findOne({ key: `devread:${encodeURI(query.toLowerCase())}` });
 
-    if (queryData && ttl < Date.now()) {
-      const items = shuffleArray(JSON.parse(queryData), 3);
-      const read = items
-        .map(({ title, body, url }) =>
-          renderTemplate("devread/devread.template.hbs", { title, body, url })
-        )
-        .join("\n");
-      await context.telegram.sendMessage(context.message.chat.id, read, {
-        parse_mode: "HTML"
-      });
-      return;
+    if (cacheData !== null) {
+      const { value: queryData, ttl } = cacheData;
+
+      if (queryData && ttl < Date.now()) {
+        const items = shuffleArray(JSON.parse(queryData), 3);
+        const read = items
+          .map(({ title, body, url }) =>
+            renderTemplate("devread/devread.template.hbs", { title, body, url })
+          )
+          .join("\n");
+        await context.telegram.sendMessage(context.message.chat.id, read, {
+          parse_mode: "HTML"
+        });
+        return;
+      }
     }
   }
 
