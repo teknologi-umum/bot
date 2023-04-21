@@ -1,8 +1,9 @@
-import got from "got";
+import got, { TimeoutError } from "got";
 import { randomNumber } from "carret";
 import { DEFAULT_HEADERS } from "#utils/http.js";
 import { isBigGroup } from "#utils/home.js";
 import { logger } from "#utils/logger/logtail.js";
+import { sentry } from "#utils/logger/index.js";
 
 /**
  * Send memes..
@@ -75,45 +76,91 @@ export function register(bot, cache) {
     const bigGroup = await isBigGroup(context);
     if (bigGroup) return;
 
-    const cached = await cache.findOne({ key: "jokes:total" });
-    let total = cached?.total;
-    if (!total || cached?.ttl < Date.now()) {
-      const { body } = await got.get(
-        "https://jokesbapak2.reinaldyrafli.com/api/total",
-        {
-          headers: DEFAULT_HEADERS,
-          responseType: "json",
-          timeout: {
-            request: 5_000
-          },
-          retry: {
-            limit: 1
+    try {
+      const cached = await cache.findOne({ key: "jokes:total" });
+      let total = cached?.total;
+      if (!total || cached?.ttl < Date.now()) {
+        const { body } = await got.get(
+          "https://jokesbapak2.reinaldyrafli.com/api/total",
+          {
+            headers: DEFAULT_HEADERS,
+            http2: true,
+            responseType: "json",
+            timeout: {
+              request: 60_000
+            },
+            retry: {
+              limit: 1
+            }
           }
-        }
+        );
+  
+        await cache.update(
+          { key: "jokes:total" },
+          {
+            key: "jokes:total",
+            total: String(body.message),
+            ttl: Date.now() + 1000 * 60 * 60 * 12
+          },
+          { upsert: true }
+        );
+  
+        total = Number.parseInt(body.message);
+      }
+  
+      const id = randomNumber(0, Number.parseInt(total));
+  
+      await context.telegram.sendPhoto(
+        context.message.chat.id,
+        `https://jokesbapak2.reinaldyrafli.com/api/id/${id.toString()}`
       );
+      await logger.fromContext(context, "joke", {
+        sendText: `https://jokesbapak2.reinaldyrafli.com/api/id/${id.toString()}`
+      });
+    } catch (error) {
+      if (error instanceof TimeoutError) {
+        sentry.addBreadcrumb({
+          type: "default",
+          level: "warning",
+          category: "http.request",
+          message: "HTTP request timeout",
+          data: error
+        });
 
-      await cache.update(
-        { key: "jokes:total" },
-        {
-          key: "jokes:total",
-          total: String(body.message),
-          ttl: Date.now() + 1000 * 60 * 60 * 12
-        },
-        { upsert: true }
-      );
+        sentry.captureException(error, {
+          level: "warning",
+          extra: {
+            chat: {
+              chat_id: context.message.chat.id,
+              chat_title: context.message.chat.title,
+              chat_type: context.message.chat.type,
+              chat_username: context.message.chat.username,
+              text: context.message.text,
+              update_type: context.updateType,
+              isReplyTo: context.message?.reply_to_message?.id !== undefined,
+              replyToText: context.message?.reply_to_message?.text,
+              caption: context.message?.caption
+            },
+            from: {
+              from_id: context.message.from.id,
+              from_username: context.message.from.username,
+              is_bot: context.message.from.is_bot,
+              from_name: `${context.message.from.first_name} ${context.message.from.last_name}`
+            }
+          },
+          tags: {
+            chat_id: context.message.chat.id,
+            from_id: context.message.from.id,
+            from_username: context.message.from.username
+          }
+        });
 
-      total = Number.parseInt(body.message);
+        await context.telegram.sendMessage(context.message.chat.id, "Uh oh, got a timeout while calling the API. So sorry!");
+        return;
+      }
+
+      throw error;
     }
-
-    const id = randomNumber(0, Number.parseInt(total));
-
-    await context.telegram.sendPhoto(
-      context.message.chat.id,
-      `https://jokesbapak2.reinaldyrafli.com/api/id/${id.toString()}`
-    );
-    await logger.fromContext(context, "joke", {
-      sendText: `https://jokesbapak2.reinaldyrafli.com/api/id/${id.toString()}`
-    });
   });
 
   return [

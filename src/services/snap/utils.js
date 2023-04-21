@@ -29,6 +29,7 @@ export async function generateImage(code, lang) {
   const linenr = code.split("\n").length;
   const { body } = await got.post("https://graphene.teknologiumum.com/api", {
     headers: DEFAULT_HEADERS,
+    http2: true,
     json: {
       code: code.replace(/^\s+|\s+$/g, ""), // trim extranous whitespace at the end of the code
       lang: lang === "" ? null : lang,
@@ -43,12 +44,10 @@ export async function generateImage(code, lang) {
     },
     responseType: "buffer",
     timeout: {
-      request: 30_000
+      request: 60_000
     },
     retry: {
-      limit: 3,
-      methods: ["POST"],
-      statusCodes: [429, 500, 502, 503, 504]
+      limit: 3
     }
   });
 
