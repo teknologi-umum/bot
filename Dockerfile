@@ -2,10 +2,10 @@ FROM node:18.16-bullseye
 
 WORKDIR /app
 
-COPY . .
+COPY package*.json LICENSE ./
 
-RUN npm install --production
+COPY src ./src/
 
-EXPOSE 8080
+RUN npm ci --ignore-script --omit dev
 
 CMD ["npm", "start"]

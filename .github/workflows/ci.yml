@@ -39,7 +39,7 @@ jobs:
       - name: Send coverage report to Codecov
         uses: codecov/codecov-action@v3
 
-  cd:
+  cd-legacy:
     name: CD
     needs: ci
     runs-on: ubuntu-latest
@@ -64,3 +64,41 @@ jobs:
           environment: production
           set_commits: skip
           version: ${{ github.sha }}
+
+  cd-new:
+    name: Build Image
+    needs:
+      - ci
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}
+          flavor: |
+            latest=false
+          tags: |
+            type=edge
+            type=sha
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
