@@ -39,33 +39,7 @@ jobs:
       - name: Send coverage report to Codecov
         uses: codecov/codecov-action@v3
 
-  cd-legacy:
-    name: CD
-    needs: ci
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - uses: superfly/flyctl-actions@master
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-        with:
-          args: "deploy"
-
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: production
-          set_commits: skip
-          version: ${{ github.sha }}
-
-  cd-new:
+  cd:
     name: Build Image
     needs:
       - ci
