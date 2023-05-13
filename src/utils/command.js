@@ -19,13 +19,32 @@ export const getCommandArgs = (cmd, context) => {
 
   const text = context.message.text;
   
-  if (text.startsWith(`/${cmd}`)) {
-    const [, ...results] = text.split(" ");
-    const result = results
-      .join(" ")
+  if (text.startsWith(`/${cmd}@${context.me}`)) {
+    return text.substring(cmd.length + context.me.length + 2)
       .split("")
-      .filter((t) => !INVALID_CHAR_CODES.includes(t.charCodeAt(0)));
-    return result.length > 0 ? result.join("") : "";
+      .map(char => {
+        if (INVALID_CHAR_CODES.includes(char.charCodeAt(0))) {
+          return "";
+        }
+        
+        return char;
+      })
+      .join("")
+      .trim();
+  }
+  
+  if (text.startsWith(`/${cmd}`)) {
+    return text.substring(cmd.length + 1)
+      .split("")
+      .map(char => {
+        if (INVALID_CHAR_CODES.includes(char.charCodeAt(0))) {
+          return "";
+        }
+        
+        return char;
+      })
+      .join("")
+      .trim();
   }
 
   return context.message.text;
