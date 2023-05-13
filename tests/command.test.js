@@ -66,6 +66,6 @@ test("should handle complicated new lines", () => {
   const argument = getCommandArgs("js", fakeContext);
 
   assert.equal(argument, "async function hello() {\n\tconst logger = new Logger();\r\n\tlogger.log(\"Hello world\");\r};");
-})
+});
 
 test.run();
