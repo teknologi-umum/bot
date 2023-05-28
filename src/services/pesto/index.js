@@ -24,7 +24,9 @@ async function executeCode(context, command, language) {
   if (codeResponse.compile.exitCode !== 0) {
     await context.telegram.sendMessage(
       context.chat.id,
-      `<code>${codeResponse.compile.output}</code>`,
+      `<code>${codeResponse.compile.output.replace(
+        /[\u00A0-\u9999<>&]/gim, 
+        (i) => "&#" + i.charCodeAt(0) + ";")}</code>`,
       { 
         parse_mode: "HTML", 
         reply_to_message_id: context.message.message_id, 
@@ -34,7 +36,9 @@ async function executeCode(context, command, language) {
   } else if (codeResponse.runtime.exitCode !== 0) {
     await context.telegram.sendMessage(
       context.chat.id,
-      `<code>${codeResponse.runtime.output}</code>`,
+      `<code>${codeResponse.runtime.output.replace(
+        /[\u00A0-\u9999<>&]/gim, 
+        (i) => "&#" + i.charCodeAt(0) + ";")}</code>`,
       { 
         parse_mode: "HTML", 
         reply_to_message_id: context.message.message_id, 
@@ -54,7 +58,10 @@ async function executeCode(context, command, language) {
   } else {
     await context.telegram.sendMessage(
       context.chat.id,
-      `Code:\n<code>${code}</code>\n\nOutput:\n<code>${
+      `Code:\n<code>${code.replace(
+        /[\u00A0-\u9999<>&]/gim, 
+        (i) => "&#" + i.charCodeAt(0) + ";")
+      }</code>\n\nOutput:\n<code>${
         // Stolen from https://stackoverflow.com/a/23834738/3153224
         codeResponse.runtime.output.replace(
           /[\u00A0-\u9999<>&]/gim, 
