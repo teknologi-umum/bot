@@ -19,6 +19,6 @@ export function isHomeGroup(context) {
  */
 export async function isBigGroup(context) {
   const num = await context.telegram.getChatMembersCount(context.chat.id);
-  if (num >= 500) return true;
+  if (num > 500) return true;
   return false;
 }
