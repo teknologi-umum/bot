@@ -4,7 +4,7 @@ import { renderTemplate } from "#utils/template.js";
 import { logger } from "#utils/logger/index.js";
 
 /**
- * @typedef {Object} Suhu
+ * @typedef {Object} Dukun
  * @property {Number} userID
  * @property {String} firstName
  * @property {String} lastName
@@ -15,7 +15,7 @@ import { logger } from "#utils/logger/index.js";
  * @property {Date} updatedAt
  */
 
-const suhuSchema = new mongoose.Schema(
+const dukunSchema = new mongoose.Schema(
   {
     userID: Number,
     firstName: String,
@@ -26,7 +26,7 @@ const suhuSchema = new mongoose.Schema(
     createdAt: Date,
     updatedAt: Date
   },
-  { collection: "suhu" }
+  { collection: "dukun" }
 );
 
 const MAX_POINT_INC = 10;
@@ -34,26 +34,26 @@ const MAX_POINT_DEC = -10;
 
 /**
  * Fetch upstream data, then store to cache.
- * @param {import('mongoose').Model} suhuModel
+ * @param {import('mongoose').Model} dukunModel
  * @param {import('@teknologi-umum/nedb-promises')} cache - This type is wrong atm. Might fix this later.
- * @param {Suhu} updatedData
+ * @param {Dukun} updatedData
  * @returns {Promise<void>}
  */
-async function fetchUpstream(suhuModel, cache, updatedData) {
-  const allSuhu = await suhuModel.find({}, null, { sort: { points: -1 } });
+async function fetchUpstream(dukunModel, cache, updatedData) {
+  const allDukun = await dukunModel.find({}, null, { sort: { points: -1 } });
   await cache.update(
-    { key: "suhu:all" },
+    { key: "dukun:all" },
     {
-      key: "suhu:all",
-      value: JSON.stringify(allSuhu)
+      key: "dukun:all",
+      value: JSON.stringify(allDukun)
     },
     { upsert: true }
   );
   if (updatedData.master) {
     await cache.update(
-      { key: "suhu:master" },
+      { key: "dukun:master" },
       {
-        key: "suhu:master",
+        key: "dukun:master",
         id: String(updatedData.userID),
         points: String(updatedData.points)
       },
@@ -69,33 +69,33 @@ async function fetchUpstream(suhuModel, cache, updatedData) {
  * @param {import('@teknologi-umum/nedb-promises')} cache
  * @returns {Promise<void>}
  */
-async function suhu(context, mongo, cache) {
+async function dukun(context, mongo, cache) {
   // Reject private and channels
   if (
     context.message.chat.type === "private" ||
     context.message.chat.type === "channel"
   ) {
-    await context.reply("Suhu is only available on groups.");
+    await context.reply("Dukun is only available on groups.");
     return;
   }
 
-  const argument = getCommandArgs("suhu", context);
+  const argument = getCommandArgs("dukun", context);
 
-  const Suhu = mongo.model("Suhu", suhuSchema, "suhu");
-  const suhuData = await cache.findOne({ key: "suhu:all" });
-  const data = suhuData?.value || "[]";
-  /**  @type {Suhu[]} */
-  const suhuDataParsed = JSON.parse(data);
+  const Dukun = mongo.model("Dukun", dukunSchema, "dukun");
+  const dukunData = await cache.findOne({ key: "dukun:all" });
+  const data = dukunData?.value || "[]";
+  /**  @type {Dukun[]} */
+  const dukunDataParsed = JSON.parse(data);
 
   if (context.message.reply_to_message) {
     const replyMessage = context.message.reply_to_message;
     const isOwner = context.message.from.id === replyMessage.from.id;
     if (isOwner) {
       const MESSAGE =
-        "Poin suhu hanya bisa diberikan oleh orang lain. Najis banget dah self-claimed🙄";
+        "Poin dukun hanya bisa diberikan oleh orang lain. Najis banget dah self-claimed🙄";
       await Promise.all([
         context.reply(MESSAGE),
-        logger.fromContext(context, "suhu", {
+        logger.fromContext(context, "dukun", {
           sendText: MESSAGE
         })
       ]);
@@ -106,29 +106,29 @@ async function suhu(context, mongo, cache) {
       const MESSAGE = "Cuma boleh buat orang-orang yang tidak fiktif.";
       await Promise.all([
         context.reply(MESSAGE),
-        logger.fromContext(context, "suhu", {
+        logger.fromContext(context, "dukun", {
           sendText: MESSAGE
         })
       ]);
       return;
     }
 
-    let suhuMaster = await cache.findOne({ key: "suhu:master" });
-    if (suhuMaster === null || suhuMaster === undefined) {
-      /** @type {Suhu} */
-      const master = await Suhu.findOne({ master: true });
+    let dukunMaster = await cache.findOne({ key: "dukun:master" });
+    if (dukunMaster === null || dukunMaster === undefined) {
+      /** @type {Dukun} */
+      const master = await Dukun.findOne({ master: true });
       await cache.update(
-        { key: "suhu:master" },
+        { key: "dukun:master" },
         {
-          key: "suhu:master",
+          key: "dukun:master",
           id: String(master.userID),
           points: String(master.points)
         },
         { upsert: true }
       );
-      suhuMaster = {};
-      suhuMaster.id = master.userID;
-      suhuMaster.points = master.points;
+      dukunMaster = {};
+      dukunMaster.id = master.userID;
+      dukunMaster.points = master.points;
     }
 
     /** @type {Number} point */
@@ -152,15 +152,15 @@ async function suhu(context, mongo, cache) {
 
     // Validate given point
     if (Number.isNaN(point) && !Number.isFinite(point)) {
-      await context.reply("Poin suhu nggak valid. Nggak jadi ditambah.");
+      await context.reply("Poin dukun nggak valid. Nggak jadi ditambah.");
       return;
     }
 
-    // Check if submitted suhu's a suhu master
-    if (suhuMaster.id === String(replyMessage.from.id)) {
+    // Check if submitted dukun's a dukun master
+    if (dukunMaster.id === String(replyMessage.from.id)) {
       // Allow insertion
-      /** @type {Suhu} */
-      const updatedData = await Suhu.findOneAndUpdate(
+      /** @type {Dukun} */
+      const updatedData = await Dukun.findOneAndUpdate(
         { userID: replyMessage.from.id },
         {
           $inc: {
@@ -178,7 +178,7 @@ async function suhu(context, mongo, cache) {
 
       const sentMessage = await context.telegram.sendMessage(
         context.chat.id,
-        `Suhu master <a href="tg://user?id=${replyMessage.from.id}">${
+        `Dukun master <a href="tg://user?id=${replyMessage.from.id}">${
           replyMessage.from.first_name
         }${
           replyMessage.from.last_name !== undefined
@@ -188,28 +188,28 @@ async function suhu(context, mongo, cache) {
         { parse_mode: "HTML" }
       );
 
-      await fetchUpstream(Suhu, cache, updatedData);
-      await logger.fromContext(context, "suhu", {
+      await fetchUpstream(Dukun, cache, updatedData);
+      await logger.fromContext(context, "dukun", {
         sendText: sentMessage.text
       });
       return;
     }
 
-    // Check submitted suhu's current point
-    const submittedSuhu =
-      suhuDataParsed.find((d) => d.userID === replyMessage.from.id)?.points ??
+    // Check submitted dukun's current point
+    const submittedDukun =
+      dukunDataParsed.find((d) => d.userID === replyMessage.from.id)?.points ??
       0;
-    if (submittedSuhu + point >= Number.parseInt(suhuMaster.points)) {
-      // Only may increment up to suhuMasterPoint - 1
+    if (submittedDukun + point >= Number.parseInt(dukunMaster.points)) {
+      // Only may increment up to dukunMasterPoint - 1
       point =
         point -
-        (submittedSuhu + point - Number.parseInt(suhuMaster.points)) -
+        (submittedDukun + point - Number.parseInt(dukunMaster.points)) -
         1;
     }
 
-    // Add suhu point
-    /** @type {Suhu} */
-    const updatedData = await Suhu.findOneAndUpdate(
+    // Add dukun point
+    /** @type {Dukun} */
+    const updatedData = await Dukun.findOneAndUpdate(
       { userID: replyMessage.from.id },
       {
         $inc: {
@@ -232,7 +232,7 @@ async function suhu(context, mongo, cache) {
 
     const sentMessage = await context.telegram.sendMessage(
       context.chat.id,
-      `Suhu <a href="tg://user?id=${replyMessage.from.id}">${
+      `Dukun <a href="tg://user?id=${replyMessage.from.id}">${
         replyMessage.from.first_name
       }${
         replyMessage.from.last_name !== undefined
@@ -242,35 +242,35 @@ async function suhu(context, mongo, cache) {
       { parse_mode: "HTML" }
     );
 
-    await fetchUpstream(Suhu, cache, updatedData);
-    await logger.fromContext(context, "suhu", { sendText: sentMessage.text });
+    await fetchUpstream(Dukun, cache, updatedData);
+    await logger.fromContext(context, "dukun", { sendText: sentMessage.text });
     return;
   }
 
-  // Suhu leaderboard LOL.
-  if (!suhuData?.value) {
+  // Dukun leaderboard LOL.
+  if (!dukunData?.value) {
     await context.telegram.sendMessage(
       context.chat.id,
-      "No suhu data available. Try to ngesuhu and ask someone to reply your message with /suhu +1. Jangan lupa dipasang sesajennya.",
+      "No dukun data available. Try to ngedukun and ask someone to reply your message with /dukun +1. Jangan lupa dipasang sesajennya.",
       { parse_mode: "HTML" }
     );
-    await logger.fromContext(context, "suhu", {
+    await logger.fromContext(context, "dukun", {
       sendText:
-        "No suhu data available. Try to ngesuhu and ask someone to reply your message with /suhu +1. Jangan lupa dipasang sesajennya."
+        "No dukun data available. Try to ngedukun and ask someone to reply your message with /dukun +1. Jangan lupa dipasang sesajennya."
     });
     return;
   }
 
-  const leaderboard = suhuDataParsed.sort((a, b) => b.points - a.points);
+  const leaderboard = dukunDataParsed.sort((a, b) => b.points - a.points);
   const sentMessage = await context.telegram.sendMessage(
     context.chat.id,
-    renderTemplate("suhu/suhu.template.hbs", {
-      suhu: leaderboard.slice(0, 15),
+    renderTemplate("dukun/dukun.template.hbs", {
+      dukun: leaderboard.slice(0, 15),
       others: leaderboard.length - 15
     }),
     { parse_mode: "HTML" }
   );
-  await logger.fromContext(context, "suhu", { sendText: sentMessage.text });
+  await logger.fromContext(context, "dukun", { sendText: sentMessage.text });
 }
 
 /**
@@ -281,12 +281,12 @@ async function suhu(context, mongo, cache) {
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, mongo, cache) {
-  bot.command("suhu", (context) => suhu(context, mongo, cache));
+  bot.command("dukun", (context) => dukun(context, mongo, cache));
 
   return [
     {
-      command: "suhu",
-      description: "Siapa yang paling suhu disini"
+      command: "dukun",
+      description: "Siapa yang paling dukun disini"
     }
   ];
 }
