@@ -1,7 +1,7 @@
 import got, { TimeoutError } from "got";
 import { randomNumber } from "carret";
 import { DEFAULT_HEADERS } from "#utils/http.js";
-import { isBigGroup } from "#utils/home.js";
+import { isBigGroup, isHomeGroup } from "#utils/home.js";
 import { logger } from "#utils/logger/logtail.js";
 import { sentry } from "#utils/logger/index.js";
 
@@ -74,7 +74,8 @@ export function register(bot, cache) {
 
   bot.command("joke", async (context) => {
     const bigGroup = await isBigGroup(context);
-    if (bigGroup) return;
+    const homeGroup = await isHomeGroup(context);
+    if (bigGroup && !homeGroup) return;
 
     try {
       const cached = await cache.findOne({ key: "jokes:total" });
