@@ -1,4 +1,5 @@
 import { logger } from "#utils/logger/logtail.js";
+import { getCommandArgs } from "#utils/command.js";
 
 /**
  *
@@ -6,11 +7,13 @@ import { logger } from "#utils/logger/logtail.js";
  * @returns {Promise<void>}
  */
 async function bcrypt(context) {
+  const text = getCommandArgs("bcrypt", context);
+
   await Promise.all([
     context.deleteMessage(context.message.message_id),
     context.telegram.sendMessage(
       context.message.chat.id,
-      "test"
+      text
     )
   ]);
 
