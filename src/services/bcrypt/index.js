@@ -1,5 +1,6 @@
 import { logger } from "#utils/logger/logtail.js";
 import { getCommandArgs } from "#utils/command.js";
+import * as bc from "bcrypt";
 
 /**
  *
@@ -8,12 +9,14 @@ import { getCommandArgs } from "#utils/command.js";
  */
 async function bcrypt(context) {
   const text = getCommandArgs("bcrypt", context);
+  const salt = bc.genSaltSync(10);
+  const hashedText = bc.hashSync(text, salt);
 
   await Promise.all([
     context.deleteMessage(context.message.message_id),
     context.telegram.sendMessage(
       context.message.chat.id,
-      text
+      hashedText
     )
   ]);
 
