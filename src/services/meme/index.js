@@ -14,7 +14,8 @@ import { sentry } from "#utils/logger/index.js";
 export function register(bot, cache) {
   bot.command("hilih", async (context) => {
     const bigGroup = await isBigGroup(context);
-    if (bigGroup) return;
+    const homeGroup = isHomeGroup(context);
+    if (bigGroup && !homeGroup) return;
     await context.telegram.sendPhoto(
       context.message.chat.id,
       "https://i.ibb.co/dMbd6dF/short.jpg"
@@ -26,7 +27,8 @@ export function register(bot, cache) {
 
   bot.command("kktbsys", async (context) => {
     const bigGroup = await isBigGroup(context);
-    if (bigGroup) return;
+    const homeGroup = isHomeGroup(context);
+    if (bigGroup && !homeGroup) return;
     await context.telegram.sendPhoto(
       context.message.chat.id,
       "https://i.ibb.co/XtSbXBT/image.png"
@@ -38,7 +40,8 @@ export function register(bot, cache) {
 
   bot.command("illuminati", async (context) => {
     const bigGroup = await isBigGroup(context);
-    if (bigGroup) return;
+    const homeGroup = isHomeGroup(context);
+    if (bigGroup && !homeGroup) return;
     await context.telegram.sendAnimation(
       context.message.chat.id,
       "https://media.giphy.com/media/uFOW5cbNaoTaU/giphy.gif"
@@ -50,7 +53,8 @@ export function register(bot, cache) {
 
   bot.command("yntkts", async (context) => {
     const bigGroup = await isBigGroup(context);
-    if (bigGroup) return;
+    const homeGroup = isHomeGroup(context);
+    if (bigGroup && !homeGroup) return;
     await context.telegram.sendPhoto(
       context.message.chat.id,
       "https://i.ibb.co/P1Q0650/yntkts.jpg"
@@ -62,7 +66,8 @@ export function register(bot, cache) {
 
   bot.command("homework", async (context) => {
     const bigGroup = await isBigGroup(context);
-    if (bigGroup) return;
+    const homeGroup = isHomeGroup(context);
+    if (bigGroup && !homeGroup) return;
     await context.telegram.sendPhoto(
       context.message.chat.id,
       "https://i.ibb.co/541knqp/photo-2021-08-21-02-54-24.jpg"
@@ -74,7 +79,7 @@ export function register(bot, cache) {
 
   bot.command("joke", async (context) => {
     const bigGroup = await isBigGroup(context);
-    const homeGroup = await isHomeGroup(context);
+    const homeGroup = isHomeGroup(context);
     if (bigGroup && !homeGroup) return;
 
     try {
