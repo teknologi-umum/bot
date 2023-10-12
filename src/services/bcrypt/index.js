@@ -9,8 +9,8 @@ import * as bc from "bcrypt";
  */
 async function bcrypt(context) {
   const text = getCommandArgs("bcrypt", context);
-  const salt = bc.genSaltSync(10);
-  const hashedText = bc.hashSync(text, salt);
+  const saltRounds = 10;
+  const hashedText = await bc.hash(text, saltRounds);
 
   await Promise.all([
     context.deleteMessage(context.message.message_id),
