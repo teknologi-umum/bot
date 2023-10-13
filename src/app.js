@@ -24,7 +24,6 @@ import * as analytics from "#services/analytics/index.js";
 import * as news from "#services/news/index.js";
 import * as qr from "#services/qr/index.js";
 import * as pesto from "#services/pesto/index.js";
-import * as bcrypt from "#services/bcrypt/index.js";
 
 dotenv.config({ path: pathTo(import.meta.url, "../.env") });
 
@@ -62,8 +61,7 @@ async function main() {
     analytics.register(bot, mongo),
     news.register(bot),
     qr.register(bot),
-    pesto.register(bot),
-    bcrypt.register(bot)
+    pesto.register(bot)
   ]
     .filter((v) => Array.isArray(v))
     .flat();
