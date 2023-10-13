@@ -1,6 +1,6 @@
 import { logger } from "#utils/logger/logtail.js";
 import { getCommandArgs } from "#utils/command.js";
-import * as bc from "bcrypt";
+import bcryptjs from "bcryptjs";
 
 /**
  *
@@ -10,7 +10,7 @@ import * as bc from "bcrypt";
 async function bcrypt(context) {
   const text = getCommandArgs("bcrypt", context);
   const saltRounds = 10;
-  const hashedText = await bc.hash(text, saltRounds);
+  const hashedText = await bcryptjs.hash(text, saltRounds);
 
   await Promise.all([
     context.deleteMessage(context.message.message_id),
