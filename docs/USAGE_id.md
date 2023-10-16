@@ -10,7 +10,7 @@ Pada dokumen ini, kamu akan menemukan cara menggunakan Teknologi Umum Bot. Comma
 - 💙 [`/quiz`](#-quiz)
 - 🌏📬 [`/covid`](#-covid)
 - 🌏📬 [`/devread`](#-devread)
-- 🌏 [`/suhu`](#-suhu)
+- 🌏 [`/dukun`](#-dukun)
 - 🌏📬 [`/eval`](#-eval)
 - 🌏📬 [`/search`](#-search)
 - 🌏📬 [`/snap`](#-snap)
@@ -66,23 +66,23 @@ Akan mengirimkan kumpulan artikel atau postingan dari developer terkait topik te
 
 <img src="../.github/images/devread.jpg" width="300px" />
 
-## `/suhu`
+## `/dukun`
 
 Semacam bercandaan untuk mereka yang dapat menjawab suatu masalah tanpa penjelasan lebih lanjut tentang masalah tersebut.
 
 Tidak tersedia di pesan privat.
 
-Balas ke pesan orang lain dengan `/suhu +<poin>` atau `/suhu -<poin>` untuk memberikan mereka poin suhu.
+Balas ke pesan orang lain dengan `/dukun +<poin>` atau `/dukun -<poin>` untuk memberikan mereka poin dukun.
 Poin maksimum yang dapat diberikan kepada seseorang adalah +10 dan -10.
 
 Hati-hati menggunakan ini, hidup itu kompetitif.
 
-- `/suhu` - Menunjukan papan peringkat suhu
-- `/suhu +<poin>` - Menambah poin suhu seseorang
-- `/suhu -<poin>` - mengurangi poin suhu seseorang
+- `/dukun` - Menunjukan papan peringkat dukun
+- `/dukun +<poin>` - Menambah poin dukun seseorang
+- `/dukun -<poin>` - mengurangi poin dukun seseorang
 
-<img src="../.github/images/suhu-leaderboard.jpg" width="300px" />
-<img src="../.github/images/suhu.jpg" width="300px" />
+<img src="../.github/images/dukun-leaderboard.jpg" width="300px" />
+<img src="../.github/images/dukun.jpg" width="300px" />
 
 ## `/eval`
 
