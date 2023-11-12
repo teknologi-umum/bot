@@ -1,4 +1,5 @@
 import { memoryUsage } from "process";
+import { fork } from "child_process";
 import { Telegraf } from "telegraf";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -111,6 +112,8 @@ async function main() {
       terminal.error(e);
     }
   });
+
+  fork(pathTo("./hackernews.js"), { detached: false });
 
   // For more information about what this is, please refer to:
   // https://nodejs.org/api/process.html#process_process_memoryusage
