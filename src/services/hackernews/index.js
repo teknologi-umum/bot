@@ -51,7 +51,7 @@ export async function run(context) {
     // It's useless if it's dead.
     if (item?.dead) continue;
     // We don't want old stories to come up. Limit this to last 24 hours.
-    if (item?.time && item.time < last24Hours.getTime()) continue;
+    if (item?.time && (item.time * 1000) < last24Hours.getTime()) continue;
 
     resultingStories.push(item);
   }
