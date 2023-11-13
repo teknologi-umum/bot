@@ -73,7 +73,7 @@ export async function run(context) {
   }
 
   // Finally, send the message
-  await context.telegram.sen1dMessage(
+  await context.telegram.sendMessage(
     process.env.HOME_GROUP_ID, 
     message, 
     { parse_mode: "HTML", disable_web_page_preview: false }
