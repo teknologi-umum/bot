@@ -44,15 +44,15 @@ export async function run(context) {
 
     // eslint-disable-next-line no-await-in-loop
     const item = await getItem(story);
-    if (item == null) continue;
+    if (item === undefined) continue;
     // We only want stories. Not job, comment, or poll
     if (item.type !== "story") continue;
     // We only want stories that's high in rating
-    if (item.score != null && item.score < 100) continue;
+    if (item.score !== undefined && item.score < 100) continue;
     // It's useless if it's dead.
     if (item.dead) continue;
     // We don't want old stories to come up. Limit this to last 24 hours.
-    if (item.time != null && (item.time * 1000) < last24Hours.getTime()) continue;
+    if (item.time !== undefined && (item.time * 1000) < last24Hours.getTime()) continue;
 
     resultingStories.push(item);
   }
