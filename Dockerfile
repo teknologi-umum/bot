@@ -1,4 +1,4 @@
-FROM node:18.16-bullseye
+FROM node:20.9.0-bookworm
 
 WORKDIR /app
 
