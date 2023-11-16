@@ -1,8 +1,8 @@
 import { Telegraf } from "telegraf";
 import dotenv from "dotenv";
 import { pathTo } from "#utils/path.js";
-import { run } from "#services/hackernews.js";
-import { sentry } from "#utils/logger.js";
+import { run } from "#services/hackernews/index.js";
+import { sentry } from "#utils/logger/index.js";
 
 dotenv.config({ path: pathTo(import.meta.url, "../.env") });
 

@@ -34,6 +34,22 @@ const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
   useNewUrlParser: true
 });
 
+// Fork processes
+const hackernewsFork = fork(pathTo(import.meta.url, "./hackernews.js"), { detached: true });
+
+function terminate(caller) {
+  const t = Date.now();
+  mongo.close();
+  bot.stop(caller);
+  hackernewsFork.kill();
+  terminal.info(`${caller}: ${Date.now() - t}ms`);
+}
+
+// Enable graceful stop, register to process;
+process.once("SIGINT", () => terminate("SIGINT"));
+process.once("SIGTERM", () => terminate("SIGTERM"));
+
+
 async function main() {
   mongo.on("connected", () => terminal.info("MongoDB connected"));
 
@@ -113,7 +129,6 @@ async function main() {
     }
   });
 
-  fork(pathTo("./hackernews.js"), { detached: false });
 
   // For more information about what this is, please refer to:
   // https://nodejs.org/api/process.html#process_process_memoryusage
@@ -128,16 +143,3 @@ async function main() {
 }
 
 main();
-
-function terminate(caller) {
-  const t = Date.now();
-  mongo.close((err) => {
-    err && terminal.error(err);
-  });
-  bot.stop(caller);
-  terminal.info(`${caller}: ${Date.now() - t}ms`);
-}
-
-// Enable graceful stop
-process.once("SIGINT", () => terminate("SIGINT"));
-process.once("SIGTERM", () => terminate("SIGTERM"));
