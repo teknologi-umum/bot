@@ -37,10 +37,10 @@ for (;;) {
 
   if (now.getUTCHours() >= 11) {
     // The next time is 00:00 AM
-    nextTime = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDay() + 1, 11, 0, 0, 0);
+    nextTime = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 11, 0, 0, 0);
   } else if (now.getUTCHours() < 11) {
     // The next time is 11:00 AM
-    nextTime = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDay(), 11, 0, 0, 0);
+    nextTime = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 11, 0, 0, 0);
   }
 
   // eslint-disable-next-line no-await-in-loop
