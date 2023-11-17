@@ -27,6 +27,7 @@ for (;;) {
   
     while (!done) {
       // wait
+      await sleep(1000);
     }
   }
 
@@ -36,8 +37,8 @@ for (;;) {
 
   if (now.getUTCHours() >= 11) {
     // The next time is 00:00 AM
-    nextTime = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDay() + 1, 0, 0, 0, 0);
-  } else if (now.getHours() < 11) {
+    nextTime = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDay() + 1, 11, 0, 0, 0);
+  } else if (now.getUTCHours() < 11) {
     // The next time is 11:00 AM
     nextTime = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDay(), 11, 0, 0, 0);
   }
