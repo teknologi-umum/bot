@@ -34,7 +34,7 @@ for (;;) {
   const now = new Date();
   let nextTime;
 
-  if (now.getUTCHours() > 11) {
+  if (now.getUTCHours() >= 11) {
     // The next time is 00:00 AM
     nextTime = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDay() + 1, 0, 0, 0, 0);
   } else if (now.getHours() < 11) {
