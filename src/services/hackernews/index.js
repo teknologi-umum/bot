@@ -64,7 +64,16 @@ export async function run(context) {
 
     message += `${i}. <a href="${story.url}">${story.title}</a>\n`;
     if (story?.text) {
-      message += sanitize(story.text, true);
+      // Limit the story text to have 300 characters only.
+      // Assuming worst case scenario of all 10 stories to have story text.
+      // Where in the real world scenario, usually there's just one or two stories
+      // that will have a story text.
+      let storyText = story.text;
+      if (storyText.length > 300) {
+        storyText = storyText.slice(0, 300) + "...";
+      }
+
+      message += sanitize(storyText, true);
       message += "\n";
     }
 
@@ -75,7 +84,7 @@ export async function run(context) {
 
   // Finally, send the message
   await context.telegram.sendMessage(
-    process.env.HOME_GROUP_ID, 
+    process.env.HOME_GROUP_ID,
     message, 
     { parse_mode: "HTML", disable_web_page_preview: false }
   );
