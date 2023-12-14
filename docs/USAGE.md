@@ -10,7 +10,7 @@ In this document you will find how to use Teknologi Umum Bot. Its' commands and 
 - 💙 [`/quiz`](#-quiz)
 - 🌏📬 [`/covid`](#-covid)
 - 🌏📬 [`/devread`](#-devread)
-- 🌏 [`/suhu`](#-suhu)
+- 🌏 [`/dukun`](#-dukun)
 - 🌏📬 [`/eval`](#-eval)
 - 🌏📬 [`/search`](#-search)
 - 🌏📬 [`/snap`](#-snap)
@@ -66,21 +66,21 @@ Will send you a collection of developer articles and posts around a certain topi
 
 <img src="../.github/images/devread.jpg" width="300px" />
 
-## `/suhu`
+## `/dukun`
 
-Suhu is an Indonesian term for shaman or sorcerer.
+Dukun is an Indonesian term for shaman or sorcerer.
 It's kind of a joke for specifying those who could answer a given problem without any details about it whatsoever.
 
 Not available on private chats.
 
-Reply to other person's message with `/suhu +<point>` or `/suhu -<point>` to give them a suhu point.
+Reply to other person's message with `/dukun +<point>` or `/dukun -<point>` to give them a dukun point.
 Maximum point given for a person is +10 and -10.
 
 Be careful of using this, it's a competitive life.
 
-- `/suhu` - Shows suhu leaderboard
-- `/suhu +<point>` - Increment someone's suhu point
-- `/suhu -<point>` - Decrement someone's suhu point
+- `/dukun` - Shows dukun leaderboard
+- `/dukun +<point>` - Increment someone's dukun point
+- `/dukun -<point>` - Decrement someone's dukun point
 
 <img src="../.github/images/dukun-leaderboard.jpg" width="300px" />
 <img src="../.github/images/dukun.jpg" width="300px" />

@@ -10,7 +10,7 @@ const cache = new SingleValueCache(cacheTtl);
 async function getCurrencyDictionary() {
   const c = await cache.getOrCreate(async () => {
     const { statusCode, body } = await got.get(
-      "https://monty.vmasdani.my.id/currencies",
+      "https://gold.teknologiumum.com/currencies",
       {
         responseType: "json",
         throwHttpErrors: false

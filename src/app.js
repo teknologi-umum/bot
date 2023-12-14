@@ -1,4 +1,5 @@
 import { memoryUsage } from "process";
+import { fork } from "child_process";
 import { Telegraf } from "telegraf";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -18,7 +19,7 @@ import * as evalBot from "#services/eval/index.js";
 import * as blog from "#services/devread/index.js";
 import * as quiz from "#services/quiz/index.js";
 import * as search from "#services/search/index.js";
-import * as suhu from "#services/suhu/index.js";
+import * as dukun from "#services/dukun/index.js";
 import * as laodeai from "#services/laodeai/index.js";
 import * as analytics from "#services/analytics/index.js";
 import * as news from "#services/news/index.js";
@@ -32,6 +33,22 @@ const cache = Datastore.create();
 const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
   useNewUrlParser: true
 });
+
+// Fork processes
+const hackernewsFork = fork(pathTo(import.meta.url, "./hackernews.js"), { detached: true });
+
+function terminate(caller) {
+  const t = Date.now();
+  mongo.close();
+  bot.stop(caller);
+  hackernewsFork.kill();
+  terminal.info(`${caller}: ${Date.now() - t}ms`);
+}
+
+// Enable graceful stop, register to process;
+process.once("SIGINT", () => terminate("SIGINT"));
+process.once("SIGTERM", () => terminate("SIGTERM"));
+
 
 async function main() {
   mongo.on("connected", () => terminal.info("MongoDB connected"));
@@ -56,7 +73,7 @@ async function main() {
     blog.register(bot, cache),
     quiz.register(bot, mongo, cache),
     search.register(bot, mongo),
-    suhu.register(bot, mongo, cache),
+    dukun.register(bot, mongo, cache),
     laodeai.register(bot),
     analytics.register(bot, mongo),
     news.register(bot),
@@ -112,6 +129,7 @@ async function main() {
     }
   });
 
+
   // For more information about what this is, please refer to:
   // https://nodejs.org/api/process.html#process_process_memoryusage
   terminal.log(
@@ -125,16 +143,3 @@ async function main() {
 }
 
 main();
-
-function terminate(caller) {
-  const t = Date.now();
-  mongo.close((err) => {
-    err && terminal.error(err);
-  });
-  bot.stop(caller);
-  terminal.info(`${caller}: ${Date.now() - t}ms`);
-}
-
-// Enable graceful stop
-process.once("SIGINT", () => terminate("SIGINT"));
-process.once("SIGTERM", () => terminate("SIGTERM"));
