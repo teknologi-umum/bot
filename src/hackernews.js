@@ -1,8 +1,8 @@
 import { Telegraf } from "telegraf";
 import dotenv from "dotenv";
+import * as Sentry from "@sentry/node";
 import { pathTo } from "#utils/path.js";
 import { run } from "#services/hackernews/index.js";
-import { sentry } from "#utils/logger/index.js";
 
 dotenv.config({ path: pathTo(import.meta.url, "../.env") });
 
@@ -19,7 +19,7 @@ for (;;) {
     // eslint-disable-next-line no-await-in-loop
     await run(bot)
       .catch((error) => {
-        sentry.captureException(error);
+        Sentry.captureException(error);
       })
       .finally(() => {
         done = true;

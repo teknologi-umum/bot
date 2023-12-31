@@ -1,7 +1,7 @@
 import QRCode from "qrcode";
 import { getCommandArgs } from "#utils/command.js";
 import { logger } from "#utils/logger/logtail.js";
-import { sentry } from "#utils/logger/index.js";
+import * as Sentry from "@sentry/node";
 
 /**
  * Handling /qr command
@@ -36,7 +36,7 @@ async function qr(context) {
       "Oppss.. Service sedang error.."
     );
 
-    sentry.captureException(err, {
+    Sentry.getCurrentHub().captureException(err, {
       level: "warning",
       extra: {
         chat: {
