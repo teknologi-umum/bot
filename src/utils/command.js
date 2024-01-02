@@ -61,7 +61,7 @@ export const getCommandName = (context) => {
   }
 
   const text = context.message.text;
-  if (text && !text.startsWith("/")) {
+  if (!text || !text.startsWith("/")) {
     return "";
   }
 
