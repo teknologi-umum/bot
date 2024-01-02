@@ -49,3 +49,29 @@ export const getCommandArgs = (cmd, context) => {
 
   return context.message.text;
 };
+
+/**
+ * Get command name from given context
+ * @param {import("telegraf").Context} context - The Telegraf context
+ * @return {string} command argument, empty string if context is not a command
+ */
+export const getCommandName = (context) => {
+  if (context === undefined || context === null) {
+    return "";
+  }
+
+  const text = context.message.text;
+  if (text && !text.startsWith("/")) {
+    return "";
+  }
+
+  const command = text
+    .substring(1)
+    .split(/\s/)
+    .at(0);
+  if (command === undefined) {
+    return "";
+  }
+
+  return command.replace(`@${context.me}`, "");
+};
