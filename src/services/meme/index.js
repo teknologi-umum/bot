@@ -63,6 +63,19 @@ export function register(bot, cache) {
       sendText: "https://i.ibb.co/P1Q0650/yntkts.jpg"
     });
   });
+  
+  bot.command("kerjakerjakerja", async (context) => {
+    const bigGroup = await isBigGroup(context);
+    const homeGroup = isHomeGroup(context);
+    if (bigGroup && !homeGroup) return;
+    await context.telegram.sendDocument(
+      context.message.chat.id,
+      "https://s13.gifyu.com/images/SjAzq.gif"
+    );
+    await logger.feomContext(context, "kerjakerjakerja", {
+      sendText: "https://s13.gifyu.com/images/SjAzq.gif"
+    });
+  });
 
   bot.command("homework", async (context) => {
     const bigGroup = await isBigGroup(context);
@@ -185,6 +198,10 @@ export function register(bot, cache) {
     {
       command: "yntkts",
       description: "Yo ndak tahu! Kok tanya saya."
+    },
+    {
+      command: "kerjakerjakerja",
+      description: "Meme untuk menyemangati para pemuda yang suka bermalas-malasan dan menunda pekerjaan, dan juga bagus untuk membubarkan debat kusir"
     },
     {
       command: "homework",
