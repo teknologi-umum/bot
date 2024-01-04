@@ -72,7 +72,7 @@ export function register(bot, cache) {
       context.message.chat.id,
       "https://s13.gifyu.com/images/SjAzq.gif"
     );
-    await logger.feomContext(context, "kerjakerjakerja", {
+    await logger.fromContext(context, "kerjakerjakerja", {
       sendText: "https://s13.gifyu.com/images/SjAzq.gif"
     });
   });
