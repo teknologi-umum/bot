@@ -226,10 +226,10 @@ test("should not be able to evaluate ASII without dollar sign", async () => {
   assert.equal(result, "Tidak boleh mengakses ASII");
 });
 
-test("should not be able to evaluate more than 3 cashtags", async () => {
+test("should not be able to evaluate more than 5 cashtags", async () => {
   let result;
   try {
-    result = await safeEval("$ASII + $BBCA + $GGRM + $TLKM", [resolveStocks]);
+    result = await safeEval("$ASII + $BBCA + $GGRM + $TLKM + $AAPL + $MSFT", [resolveStocks]);
   } catch (error) {
     result = error;
   }
