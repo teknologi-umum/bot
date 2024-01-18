@@ -282,6 +282,7 @@ async function dukun(context, mongo, cache) {
  */
 export function register(bot, mongo, cache) {
   bot.command("dukun", (context) => dukun(context, mongo, cache));
+  bot.command("suhu", (context) => dukun(context, mongo, cache));
 
   return [
     {
