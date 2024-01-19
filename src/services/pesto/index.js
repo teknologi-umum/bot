@@ -87,6 +87,7 @@ export function register(bot) {
   bot.command("clisp", (context) => executeCode(context, "clisp", "Common Lisp"));
   bot.command("dotnet", (context) => executeCode(context, "dotnet", ".NET"));
   bot.command("go", (context) => executeCode(context, "go", "Go"));
+  bot.command("janet", (context) => executeCode(context, "janet", "Janet"));
   bot.command("java", (context) => executeCode(context, "java", "Java"));
   bot.command("js", (context) => executeCode(context, "js", "Javascript"));
   bot.command("julia", (context) => executeCode(context, "julia", "Julia"));
@@ -119,6 +120,10 @@ export function register(bot) {
     {
       command: "go",
       description: "Execute Go code"
+    },
+    {
+      command: "janet",
+      description: "Execute Janet code"
     },
     {
       command: "java",
