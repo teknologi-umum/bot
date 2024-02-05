@@ -96,7 +96,7 @@ export function register(bot) {
   bot.command("python", (context) => executeCode(context, "python", "Python"));
   bot.command("ruby", (context) => executeCode(context, "ruby", "Ruby"));
   bot.command("sqlite3", (context) => executeCode(context, "sqlite3", "SQLite3"));
-  bot.command("tengo", (context) => executeCode(context, "tengo", "TenGo"));
+  bot.command("tengo", (context) => executeCode(context, "tengo", "Tengo"));
   bot.command("ts", (context) => executeCode(context, "ts", "Typescript"));
   bot.command("v", (context) => executeCode(context, "v", "V"));
   bot.command("brainfuck", (context) => executeCode(context, "brainfuck", "Brainfuck"));
