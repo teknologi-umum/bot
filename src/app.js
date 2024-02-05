@@ -76,7 +76,7 @@ async function main() {
     }
 
     // TODO: Move this somewhere else
-    const validCommands = ["blidingej", "covid", "devread", "dukun", "eval", "laodeai", "news", "hilih", "joke", "kktbsys", "yntks", "homework", "illuminati", "c", "cpp", "clisp", "dotnet", "go", "java", "js", "julia", "lua", "php", "python", "ruby", "sqlite3", "ts", "v", "brainfuck", "qr", "quote", "search", "snap"];
+    const validCommands = ["blidingej", "covid", "devread", "dukun", "eval", "laodeai", "news", "hilih", "joke", "kktbsys", "yntks", "homework", "illuminati", "c", "cpp", "clisp", "dotnet", "go", "java", "js", "julia", "lua", "php", "python", "ruby", "sqlite3", "tengo", "ts", "v", "brainfuck", "qr", "quote", "search", "snap"];
     if (ctx.updateType === "message") {
       const command = getCommandName(ctx);
       if (command === "" || !validCommands.includes(command)) {
