@@ -66,7 +66,6 @@ async function terminate(caller) {
 process.once("SIGINT", () => terminate("SIGINT"));
 process.once("SIGTERM", () => terminate("SIGTERM"));
 
-
 async function main() {
   mongo.on("connected", () => terminal.info("MongoDB connected"));
 
@@ -168,7 +167,6 @@ async function main() {
       terminal.error(e);
     }
   });
-
 
   // For more information about what this is, please refer to:
   // https://nodejs.org/api/process.html#process_process_memoryusage

@@ -1,6 +1,6 @@
 services:
   mongo:
-    image: mongo:6.0-jammy
+    image: mongo:7.0.8-rc0-jammy
     restart: always
     ports:
       - 27017:27017
