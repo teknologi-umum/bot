@@ -1,11 +1,12 @@
-import { memoryUsage } from "process";
-import { fork } from "child_process";
+import { memoryUsage } from "node:process";
+import { fork } from "node:child_process";
 import { Telegraf } from "telegraf";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import Datastore from "@teknologi-umum/nedb-promises";
+import * as Sentry from "@sentry/node";
 
-import { sentry, terminal, logger } from "#utils/logger/index.js";
+import { terminal, logger } from "#utils/logger/index.js";
 import { pathTo } from "#utils/path.js";
 
 import * as poll from "#services/poll/index.js";
@@ -25,8 +26,23 @@ import * as analytics from "#services/analytics/index.js";
 import * as news from "#services/news/index.js";
 import * as qr from "#services/qr/index.js";
 import * as pesto from "#services/pesto/index.js";
+import { getCommandName } from "#utils/command.js";
 
 dotenv.config({ path: pathTo(import.meta.url, "../.env") });
+
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  enabled: process.env.NODE_ENV === "production",
+  environment: process.env.NODE_ENV,
+  sampleRate: 1.0,
+  tracesSampleRate: 0.2,
+  integrations: [
+    new Sentry.Integrations.Http({ tracing: true }),
+    new Sentry.Integrations.Undici(),
+    ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations()
+  ]
+});
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const cache = Datastore.create();
@@ -37,11 +53,12 @@ const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
 // Fork processes
 const hackernewsFork = fork(pathTo(import.meta.url, "./hackernews.js"), { detached: true });
 
-function terminate(caller) {
+async function terminate(caller) {
   const t = Date.now();
-  mongo.close();
   bot.stop(caller);
   hackernewsFork.kill();
+  await mongo.close();
+  await Sentry.flush();
   terminal.info(`${caller}: ${Date.now() - t}ms`);
 }
 
@@ -55,6 +72,29 @@ async function main() {
 
   bot.use((ctx, next) => {
     if (ctx.from.id === 136817688 || ctx.from.is_bot) {
+      return;
+    }
+
+    // TODO: Move this somewhere else
+    const validCommands = ["blidingej", "covid", "devread", "dukun", "eval", "laodeai", "news", "hilih", "joke", "kktbsys", "yntks", "homework", "illuminati", "c", "cpp", "clisp", "dotnet", "go", "java", "js", "julia", "lua", "php", "python", "ruby", "sqlite3", "tengo", "ts", "v", "brainfuck", "qr", "quote", "search", "snap"];
+    if (ctx.updateType === "message") {
+      const command = getCommandName(ctx);
+      if (command === "" || !validCommands.includes(command)) {
+        next();
+        return;
+      }
+
+      Sentry.startSpan({
+        name: command,
+        op: "bot.update",
+        data: {
+          from_username: ctx.from.username,
+          chat_type: ctx.message.chat.type,
+          chat_title: ctx.message.chat.title
+        }
+      }, () => {
+        next();
+      });
       return;
     }
 
@@ -83,11 +123,11 @@ async function main() {
     .filter((v) => Array.isArray(v))
     .flat();
 
-  bot.telegram.setMyCommands(commands);
+  await bot.telegram.setMyCommands(commands);
 
   bot.catch(async (error, context) => {
     try {
-      sentry.captureException(error, (scope) => {
+      Sentry.captureException(error, (scope) => {
         scope.setContext("chat", {
           chat_id: context.message.chat.id,
           chat_title: context.message.chat.title,

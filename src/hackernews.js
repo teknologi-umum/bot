@@ -1,8 +1,8 @@
 import { Telegraf } from "telegraf";
 import dotenv from "dotenv";
+import * as Sentry from "@sentry/node";
 import { pathTo } from "#utils/path.js";
 import { run } from "#services/hackernews/index.js";
-import { sentry } from "#utils/logger/index.js";
 
 dotenv.config({ path: pathTo(import.meta.url, "../.env") });
 
@@ -19,7 +19,7 @@ for (;;) {
     // eslint-disable-next-line no-await-in-loop
     await run(bot)
       .catch((error) => {
-        sentry.captureException(error);
+        Sentry.captureException(error);
       })
       .finally(() => {
         done = true;
@@ -37,10 +37,15 @@ for (;;) {
 
   if (now.getUTCHours() >= 11) {
     // The next time is 00:00 AM
-    nextTime = new Date(`${now.getUTCFullYear()}-${(now.getUTCMonth() + 1).toString().padStart(2, "0")}-${(now.getUTCDate() + 1).toString().padStart(2, "0")}T00:00:00Z`);
+    const now = new Date();
+    now.setUTCHours(0, 0, 0, 0);
+    now.setUTCDate(now.getUTCDate() + 1);
+    nextTime = now;
   } else if (now.getUTCHours() < 11) {
     // The next time is 11:00 AM
-    nextTime = new Date(`${now.getUTCFullYear()}-${(now.getUTCMonth() + 1).toString().padStart(2, "0")}-${now.getUTCDate().toString().padStart(2, "0")}T11:00:00Z`);
+    const now = new Date();
+    now.setUTCHours(11, 0, 0, 0);
+    nextTime = now;
   }
 
   // eslint-disable-next-line no-await-in-loop

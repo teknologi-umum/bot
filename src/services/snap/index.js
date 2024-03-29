@@ -1,4 +1,5 @@
-import { logger, sentry } from "#utils/logger/index.js";
+import * as Sentry from "@sentry/node";
+import { logger } from "#utils/logger/index.js";
 import { getCommandArgs } from "#utils/command.js";
 import { terminal } from "#utils/logger/terminal.js";
 import { generateImage } from "./utils.js";
@@ -101,7 +102,7 @@ async function snap(context) {
     }
 
     if (err instanceof TimeoutError) {
-      sentry.addBreadcrumb({
+      Sentry.getCurrentHub().addBreadcrumb({
         type: "default",
         level: "warning",
         category: "http.request",
@@ -109,7 +110,7 @@ async function snap(context) {
         data: err
       });
 
-      sentry.captureException(err, {
+      Sentry.getCurrentHub().captureException(err, {
         level: "warning",
         extra: {
           chat: {

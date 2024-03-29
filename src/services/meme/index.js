@@ -1,9 +1,9 @@
 import got, { TimeoutError } from "got";
+import * as Sentry from "@sentry/node";
 import { randomNumber } from "carret";
 import { DEFAULT_HEADERS } from "#utils/http.js";
 import { isBigGroup, isHomeGroup } from "#utils/home.js";
 import { logger } from "#utils/logger/logtail.js";
-import { sentry } from "#utils/logger/index.js";
 
 /**
  * Send memes..
@@ -125,7 +125,7 @@ export function register(bot, cache) {
       });
     } catch (error) {
       if (error instanceof TimeoutError) {
-        sentry.addBreadcrumb({
+        Sentry.addBreadcrumb({
           type: "default",
           level: "warning",
           category: "http.request",
@@ -133,7 +133,7 @@ export function register(bot, cache) {
           data: error
         });
 
-        sentry.captureException(error, {
+        Sentry.captureException(error, {
           level: "warning",
           extra: {
             chat: {

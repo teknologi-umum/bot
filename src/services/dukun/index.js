@@ -69,7 +69,7 @@ async function fetchUpstream(dukunModel, cache, updatedData) {
  * @param {import('@teknologi-umum/nedb-promises')} cache
  * @returns {Promise<void>}
  */
-async function dukun(context, mongo, cache) {
+async function dukun(context, mongo, cache, cmd) {
   // Reject private and channels
   if (
     context.message.chat.type === "private" ||
@@ -79,7 +79,7 @@ async function dukun(context, mongo, cache) {
     return;
   }
 
-  const argument = getCommandArgs("dukun", context);
+  const argument = getCommandArgs(cmd, context);
 
   const Dukun = mongo.model("Dukun", dukunSchema, "dukun");
   const dukunData = await cache.findOne({ key: "dukun:all" });
@@ -281,7 +281,8 @@ async function dukun(context, mongo, cache) {
  * @returns {{command: String, description: String}[]}
  */
 export function register(bot, mongo, cache) {
-  bot.command("dukun", (context) => dukun(context, mongo, cache));
+  bot.command("dukun", (context) => dukun(context, mongo, cache, "dukun"));
+  bot.command("suhu", (context) => dukun(context, mongo, cache, "suhu"));
 
   return [
     {

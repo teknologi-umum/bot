@@ -1,5 +1,4 @@
 import got from "got";
-import cheerio from "cheerio";
 
 export async function fetchStock(stockCode) {
   if (typeof stockCode !== "string") throw "Kode saham harus berupa string";
@@ -7,10 +6,13 @@ export async function fetchStock(stockCode) {
     throw `Kode saham ${stockCode} tidak valid`;
   }
 
+  const requestSearchParams = new URLSearchParams();
+  requestSearchParams.set("stockCode", stockCode);
+
   const { statusCode, body } = await got.get(
-    `https://www.duniainvestasi.com/bei/summaries/${stockCode}`,
+    `https://gold.teknologiumum.com/stock?${requestSearchParams.toString()}`,
     {
-      responseType: "text",
+      responseType: "json",
       throwHttpErrors: false
     }
   );
@@ -19,55 +21,18 @@ export async function fetchStock(stockCode) {
     throw `Gagal mendapatkan data saham ${stockCode}`;
   }
 
-
-  const $ = cheerio.load(body);
-  const name = $("#CONTENT h3").text();
-
-  if (/Kode saham ".*" tidak ditemukan./.test(name)) throw name;
-
-  return {
-    name: name,
-    close: parseInt(
-      $(
-        "#CONTENT>:first-child>:nth-last-child(2)>:first-child>:nth-child(2)>:first-child>:last-child>div"
-      )
-        .text()
-        .replaceAll(",", "")
-    ),
-    previous: parseInt(
-      $(
-        "#CONTENT>:first-child>:nth-last-child(2)>:first-child>:nth-child(2)>:nth-child(2)>:last-child>div"
-      )
-        .text()
-        .replaceAll(",", "")
-    ),
-    high: parseInt(
-      $(
-        "#CONTENT>:first-child>:nth-last-child(2)>:first-child>:nth-child(2)>:nth-child(5)>:last-child>div"
-      )
-        .text()
-        .replaceAll(",", "")
-    ),
-    low: parseInt(
-      $(
-        "#CONTENT>:first-child>:nth-last-child(2)>:first-child>:nth-child(2)>:nth-child(6)>:last-child>div"
-      )
-        .text()
-        .replaceAll(",", "")
-    ),
-    volume: parseInt(
-      $(
-        "#CONTENT>:first-child>:nth-last-child(2)>:first-child>:nth-child(3)>:first-child>:last-child>div"
-      )
-        .text()
-        .replaceAll(",", "")
-    ),
-    value: parseInt(
-      $(
-        "#CONTENT>:first-child>:nth-last-child(2)>:first-child>:nth-child(3)>:nth-child(3)>:last-child>div"
-      )
-        .text()
-        .replaceAll(",", "")
-    )
+  const response = {
+    name: body.symbol,
+    close: body.close,
+    previous: body.open,
+    high: body.high,
+    low: body.low,
+    volume: body.volume,
+    value: body.close
   };
+
+
+  if (response.name === "") throw stockCode;
+
+  return response;
 }

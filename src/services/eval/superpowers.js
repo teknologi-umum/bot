@@ -19,26 +19,13 @@ export async function resolveStocks(source) {
   }
 
   // 4 or more stockCodes: throw error
-  if (stockCodes.size > 3) throw "Terlalu banyak kode saham";
+  if (stockCodes.size > 5) throw "Terlalu banyak kode saham";
 
-  let i = 0;
   for (const stockCode of stockCodes) {
-    // 1 stockCode: no delay
-    // 2 stockCodes: 5000ms delay
-    // 3 stockCodes: 2500ms delay
-    /* eslint-disable no-await-in-loop */
-    if (i > 0) {
-      await new Promise((resolve) =>
-        setTimeout(resolve, 5000 / (stockCodes.size - 1))
-      );
-    }
-    /* eslint-enable no-await-in-loop */
-
     /* eslint-disable no-await-in-loop */
     const stock = await fetchStock(stockCode);
     /* eslint-enable no-await-in-loop */
     stockByCode[stockCode] = stock;
-    i++;
   }
 
   // sort descending to prevent shorter queries to be
