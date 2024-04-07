@@ -52,11 +52,13 @@ const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
 
 // Fork processes
 const hackernewsFork = fork(pathTo(import.meta.url, "./hackernews.js"), { detached: true });
+const uptimeFork = fork(pathTo(import.meta.url, "./uptime.js", { detached: true }));
 
 async function terminate(caller) {
   const t = Date.now();
   bot.stop(caller);
   hackernewsFork.kill();
+  uptimeFork.kill();
   await mongo.close();
   await Sentry.flush();
   terminal.info(`${caller}: ${Date.now() - t}ms`);
