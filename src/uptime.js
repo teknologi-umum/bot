@@ -17,7 +17,7 @@ async function run(url) {
   searchParams.set("ping", "0");
   searchParams.set("status", "up");
 
-  await got.post(url + "?" + searchParams.toString());
+  await got.get(url + "?" + searchParams.toString());
 }
 
 for (;;) {
@@ -44,7 +44,7 @@ for (;;) {
 
   // How long do we need to sleep
   const now = new Date();
-  const nextTime = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes() + 1, now.getUTCSeconds(), 0);
+  const nextTime = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes() + 1, 0, 0);
 
   // eslint-disable-next-line no-await-in-loop
   await sleep(nextTime.getTime() - now.getTime());
