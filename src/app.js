@@ -36,10 +36,10 @@ Sentry.init({
   enabled: process.env.NODE_ENV === "production",
   environment: process.env.NODE_ENV,
   sampleRate: 1.0,
-  tracesSampleRate: 0.2,
+  tracesSampleRate: 0.5,
   integrations: [
-    new Sentry.Integrations.Http({ tracing: true }),
-    new Sentry.Integrations.Undici(),
+    Sentry.nativeNodeFetchIntegration(),
+    Sentry.httpIntegration({ tracing: true }),
     ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations()
   ]
 });

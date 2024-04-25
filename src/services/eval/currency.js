@@ -1,4 +1,3 @@
-import got from "got";
 import { SingleValueCache } from "#utils/cache.js";
 
 // cache TTL: 10 minutes
@@ -9,18 +8,13 @@ const cache = new SingleValueCache(cacheTtl);
 
 async function getCurrencyDictionary() {
   const c = await cache.getOrCreate(async () => {
-    const { statusCode, body } = await got.get(
-      "https://gold.teknologiumum.com/currencies",
-      {
-        responseType: "json",
-        throwHttpErrors: false
-      }
-    );
+    const response = await fetch("https://gold.teknologiumum.com/currencies");
 
-    if (statusCode !== 200) {
+    if (response.status !== 200) {
       throw "Gagal mendapatkan data forex";
     }
 
+    const body = await response.json();
 
     return body.reduce((currencyBySymbol, currency) => {
       currencyBySymbol[currency.name] = currency;
