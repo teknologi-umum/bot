@@ -1,5 +1,3 @@
-import got from "got";
-
 export async function fetchCryptoCurrency(cryptoSymbol) {
   if (typeof cryptoSymbol !== "string") {
     throw "Simbol mata uang crypto harus berupa string";
@@ -7,30 +5,25 @@ export async function fetchCryptoCurrency(cryptoSymbol) {
   if (!/^[A-Z]{3,8}(?:IDR|USDT)$/.test(cryptoSymbol)) {
     throw `Simbol mata uang crypto ${cryptoSymbol} tidak valid`;
   }
+  const requestSearchParams = new URLSearchParams();
+  requestSearchParams.set("symbol", cryptoSymbol.toUpperCase());
+  const response = await fetch(`https://gold.teknologiumum.com/crypto?${requestSearchParams.toString()}`);
 
-  const { statusCode, body } = await got.get(
-    `https://indodax.com/api/ticker/${cryptoSymbol.toLowerCase()}`,
-    {
-      responseType: "json",
-      throwHttpErrors: false
-    }
-  );
-
-  if (statusCode !== 200) {
+  if (response.status !== 200) {
     throw `Gagal mendapatkan data crypto ${cryptoSymbol}`;
   }
 
-
-  if (body.error_description !== undefined) {
-    throw body.error_description;
-  }
-
+  const body = await response.json();
 
   return {
-    last: parseFloat(body.ticker.last),
-    buy: parseFloat(body.ticker.buy),
-    sell: parseFloat(body.ticker.sell),
-    high: parseFloat(body.ticker.high),
-    low: parseFloat(body.ticker.low)
+    symbol: body.symbol,
+    base_currency: body.base_currency,
+    quote_currency: body.quote_currency,
+    open: parseFloat(body.open),
+    high: parseFloat(body.high),
+    low: parseFloat(body.low),
+    last: parseFloat(body.last),
+    volume: parseFloat(body.volume),
+    date: new Date(body.date)
   };
 }

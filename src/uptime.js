@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import got from "got";
 import * as Sentry from "@sentry/node";
 import { pathTo } from "#utils/path.js";
 
@@ -17,7 +16,7 @@ async function run(url) {
   searchParams.set("ping", "0");
   searchParams.set("status", "up");
 
-  await got.get(url + "?" + searchParams.toString());
+  await fetch(url + "?" + searchParams.toString());
 }
 
 for (;;) {
