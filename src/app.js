@@ -38,7 +38,7 @@ Sentry.init({
   sampleRate: 1.0,
   tracesSampleRate: 0.5,
   integrations: [
-    Sentry.nativeNodeFetchIntegration(),
+    Sentry.nativeNodeFetchintegration(),
     Sentry.httpIntegration({ tracing: true }),
     ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations()
   ]
