@@ -102,6 +102,30 @@ async function main() {
     next();
   });
 
+  const commands = [
+    meme.register(bot, cache),
+    help.register(bot),
+    quote.register(bot),
+    covid.register(bot, cache),
+    poll.register(bot, mongo, cache),
+    snap.register(bot),
+    blidingej.register(bot),
+    evalBot.register(bot),
+    blog.register(bot, cache),
+    quiz.register(bot, mongo, cache),
+    search.register(bot, mongo),
+    dukun.register(bot, mongo, cache),
+    laodeai.register(bot),
+    analytics.register(bot, mongo),
+    news.register(bot),
+    qr.register(bot),
+    pesto.register(bot)
+  ]
+    .filter((v) => Array.isArray(v))
+    .flat();
+
+  bot.telegram.setMyCommands(commands.slice(0, 100)).then(o => o).catch((error) => Sentry.captureException(error));
+
   bot.catch(async (error, context) => {
     try {
       Sentry.captureException(error, (scope) => {
@@ -145,30 +169,6 @@ async function main() {
       terminal.error(e);
     }
   });
-
-  const commands = [
-    meme.register(bot, cache),
-    help.register(bot),
-    quote.register(bot),
-    covid.register(bot, cache),
-    poll.register(bot, mongo, cache),
-    snap.register(bot),
-    blidingej.register(bot),
-    evalBot.register(bot),
-    blog.register(bot, cache),
-    quiz.register(bot, mongo, cache),
-    search.register(bot, mongo),
-    dukun.register(bot, mongo, cache),
-    laodeai.register(bot),
-    analytics.register(bot, mongo),
-    news.register(bot),
-    qr.register(bot),
-    pesto.register(bot)
-  ]
-    .filter((v) => Array.isArray(v))
-    .flat();
-
-  await bot.telegram.setMyCommands(commands.slice(0, 100));
 
   // For more information about what this is, please refer to:
   // https://nodejs.org/api/process.html#process_process_memoryusage
