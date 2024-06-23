@@ -27,7 +27,6 @@
     "@logtail/node": "^0.4.21",
     "@sentry/node": "^7.112.2",
     "@teknologi-umum/nedb-promises": "^5.0.3",
-    "@teknologi-umum/pesto": "^1.0.0",
     "carret": "^1.0.4",
     "cheerio": "^1.0.0-rc.12",
     "dotenv": "^16.3.1",

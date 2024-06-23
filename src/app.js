@@ -14,7 +14,6 @@ import * as meme from "#services/meme/index.js";
 import * as help from "#services/help/index.js";
 import * as quote from "#services/quote/index.js";
 import * as covid from "#services/covid/index.js";
-import * as snap from "#services/snap/index.js";
 import * as blidingej from "#services/bliding-ej/index.js";
 import * as evalBot from "#services/eval/index.js";
 import * as blog from "#services/devread/index.js";
@@ -25,7 +24,6 @@ import * as laodeai from "#services/laodeai/index.js";
 import * as analytics from "#services/analytics/index.js";
 import * as news from "#services/news/index.js";
 import * as qr from "#services/qr/index.js";
-import * as pesto from "#services/pesto/index.js";
 import { getCommandName } from "#utils/command.js";
 
 dotenv.config({ path: pathTo(import.meta.url, "../.env") });
@@ -52,13 +50,11 @@ const mongo = mongoose.createConnection(String(process.env.MONGO_URL), {
 
 // Fork processes
 const hackernewsFork = fork(pathTo(import.meta.url, "./hackernews.js"), { detached: true });
-const uptimeFork = fork(pathTo(import.meta.url, "./uptime.js", { detached: true }));
 
 async function terminate(caller) {
   const t = Date.now();
   bot.stop(caller);
   hackernewsFork.kill();
-  uptimeFork.kill();
   await mongo.close();
   await Sentry.flush();
   terminal.info(`${caller}: ${Date.now() - t}ms`);
@@ -77,7 +73,7 @@ async function main() {
     }
 
     // TODO: Move this somewhere else
-    const validCommands = ["blidingej", "covid", "devread", "dukun", "eval", "laodeai", "news", "hilih", "joke", "kktbsys", "yntks", "homework", "illuminati", "c", "cpp", "clisp", "dotnet", "go", "java", "js", "julia", "lua", "php", "python", "ruby", "sqlite3", "tengo", "ts", "v", "brainfuck", "qr", "quote", "search", "snap"];
+    const validCommands = ["blidingej", "covid", "devread", "dukun", "eval", "laodeai", "news", "hilih", "joke", "kktbsys", "yntks", "homework", "illuminati", "qr", "quote", "search"];
     if (ctx.updateType === "message") {
       const command = getCommandName(ctx);
       if (command === "" || !validCommands.includes(command)) {
@@ -108,7 +104,6 @@ async function main() {
     quote.register(bot),
     covid.register(bot, cache),
     poll.register(bot, mongo, cache),
-    snap.register(bot),
     blidingej.register(bot),
     evalBot.register(bot),
     blog.register(bot, cache),
@@ -118,8 +113,7 @@ async function main() {
     laodeai.register(bot),
     analytics.register(bot, mongo),
     news.register(bot),
-    qr.register(bot),
-    pesto.register(bot)
+    qr.register(bot)
   ]
     .filter((v) => Array.isArray(v))
     .flat();
