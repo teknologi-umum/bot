@@ -37,7 +37,7 @@
     "qrcode": "^1.5.3",
     "sanitize-html": "^2.13.0",
     "telegraf": "^4.16.3",
-    "tempura": "^0.4.0"
+    "tempura": "^0.4.1"
   },
   "devDependencies": {
     "@teknologi-umum/eslint-config-base": "^0.0.11",

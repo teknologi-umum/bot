@@ -1,9 +1,4 @@
 import { safeEval } from "./parser.js";
-import {
-  resolveCryptoCurrencies,
-  resolveCurrencyRates,
-  resolveStocks
-} from "./superpowers.js";
 import { getCommandArgs } from "#utils/command.js";
 import { logger } from "#utils/logger/logtail.js";
 
@@ -16,9 +11,12 @@ async function evalCommand(context) {
   const source = getCommandArgs("eval", context);
 
   const output = await safeEval(source, [
-    resolveCurrencyRates,
-    resolveStocks,
-    resolveCryptoCurrencies
+    // XXX(reinaldy): Since we're saving cost by reducing the number of VPS we own,
+    //     we're disabling these features. They're making a HTTP call to one of our
+    //     internal API, which is not available in the current setup.
+    // resolveCurrencyRates,
+    // resolveStocks,
+    // resolveCryptoCurrencies
   ]);
 
   await context.replyWithMarkdown(`
